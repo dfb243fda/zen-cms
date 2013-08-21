@@ -12,7 +12,7 @@ return array(
     'ZfcBase\\' => $vendorDir . '/ZfcBase/src/',
     
     'Munee\\' => $vendorDir . '/meenie/munee/src/',
-    'JShrink\\' => $vendorDir . '/tedivm/jshrink/src/',
+    'JShrink\\' => $vendorDir . '/tedivm/JShrink/src/',
     'Imagine\\' => $vendorDir . '/avalanche123/Imagine/lib/',
     'CoffeeScript\\' => $vendorDir . '/coffeescript/src/',
 );
