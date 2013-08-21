@@ -1,0 +1,59 @@
+<?php
+$this->headLink()->appendStylesheet($this->basePath('/css/Installer/install.css'));
+$this->headLink(array('rel' => 'icon', 'href' => $this->basePath('/img/Installer/favicon.ico')));
+
+$this->headTitle()->setSeparator(' - ');
+$this->headTitle('Zen-CMS');
+$this->headTitle($this->translate('Installer:System installation'));
+$this->headTitle($this->translate('Installer:Step 5'));
+
+$this->headMeta()->appendHttpEquiv('Content-Type', 'text/html; charset=UTF-8');
+$sm = $this->getHelperPluginManager()->getServiceLocator();
+?>
+<div class="container">
+    <div class="header clearfix">	
+        <img alt="Chameleon CMS" style="background-color: rgb(136, 136, 136)" src="<?php echo $this->basePath('/img/core/pixel.gif') ?>" class="logo" id="logo">
+    </div>
+    <?php echo $this->partial('content_template/Installer/steps.phtml', array('currentStep' => 5)); ?>    
+    <div class="content">
+        <div class="content__title"><?php echo $this->translate('Installer install demo site') ?></div>
+        <?php
+        if (!empty($this->msg)) :
+            ?>
+            <div class="content__msg">
+                <?php foreach ($this->msg as $msg) : ?>
+                <div class="content__msg-item"><?php echo $msg ?></div>
+                <?php endforeach; ?>
+            </div>
+            <?php
+        endif;
+        ?>
+        <div class="content__sub-title"><?php echo $this->translate('Installer install demo site subtitle') ?></div>
+        <div class="content__body form-wrap">
+            <form method="post">
+                <div class="demo-sites clearfix">
+                    <?php      
+                        foreach ($this->demoSites as $k=>$site) :
+                            ?>
+                            <div class="demo-sites__item">
+                                <label for="demo-id-<?php echo $k ?>"><?php echo $site['title'] ?></label>  
+                                <input id="demo-id-<?php echo $k ?>" type="radio" name="demo_site" value="<?php echo $k ?>" />
+                                <?php
+                                if (isset($site['image'])) :
+                                    ?>
+                                    <img src="<?php echo $this->basePath($site['image']) ?>" alt="" />
+                                    <?php
+                                endif;
+                                ?>
+                            </div>    
+                            <?php
+                        endforeach;
+                    ?>                    
+                </div>  
+                <div class="form-element form-element__submit">
+                    <input type="submit" value="<?php echo $this->translate('Installer next button') ?>" />
+                </div>
+            </form>        
+        </div>
+    </div>
+</div>

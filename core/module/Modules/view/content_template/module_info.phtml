@@ -1,0 +1,116 @@
+<?php
+$sm = $this->getHelperPluginManager()->getServiceLocator();
+
+$this->headLink()->appendStylesheet(ROOT_URL_SEGMENT . '/css/Modules/modules.css');
+
+?>
+<div class="module-info">
+    <div class="module-info__title"><?php echo $this->moduleConfig['title'] ?></div>
+    <div class="module-info__desc"><?php echo $this->moduleConfig['description'] ?></div>
+    <?php
+    if (!empty($this->moduleConfig['methods'])) {
+        ?>
+        <div class="module-info__methods">
+            <div class="module-info__methods-title"><?php echo $this->translate('Module has these methods') ?></div>
+            <?php
+            foreach ($this->moduleConfig['methods'] as $method) {
+                ?>
+                <div class="module-info__method">
+                    <div class="module-info__method-name"><?php echo $method['title'] ?></div>
+                    <div class="module-info__method-desc"><?php echo $method['description'] ?></div>
+                </div>
+                <?php
+            }
+            ?>
+        </div>
+        <?php
+    }
+    ?>
+    <div class="full-update">
+        <div class="full-update__title"><?php echo $this->translate('Modules:Full update') ?></div>
+        <div class="full-update__body">
+            <form method="post">
+                <input type="hidden" name="task" value="full_update" />
+                <input type="submit" value="<?php echo $this->translate('Modules:Update module') ?>" />
+            </form>
+        </div>
+    </div>
+    <div class="db_updates">
+        <div class="db_updates__title"><?php echo $this->translate('Modules db difference update') ?></div>
+        <?php if (empty($this->dbDifference)) : ?>
+            <div class="module-info__msg"><?php echo $this->translate('Modules db difference none') ?></div>
+        <?php else : ?>
+            <div class="db_updates__body">
+                <form method="post">
+                    <input type="hidden" name="task" value="db_difference" />
+                    <?php 
+                    foreach ($this->dbDifference as $v) : 
+                        foreach ($v as $queryMd5 => $query) :
+                            $curVal = '';
+                            if (is_array($query)) {
+                                $curVal = $query['currentValue'];
+                                $query = $query['query'];
+                            }
+                            ?>
+                            <div class="db_updates__body-item clearfix">
+                                <input type="checkbox" name="query[]" id="<?php echo $queryMd5 ?>" value="<?php echo $queryMd5 ?>" /><label for="<?php echo $queryMd5 ?>"><?php echo $query ?></label>
+                                <?php if ($curVal) : ?>
+                                <div class="db_updates__body-item-desc"><?php printf($this->translate('Module db difference current val: %s'), $curVal) ?></div>
+                                <?php endif; ?>
+                            </div>
+                            <?php
+                        endforeach;
+                    endforeach; 
+                    ?>
+                    <div class="form-element__submit">
+                        <input type="submit" value="<?php echo $this->translate('Module db update button') ?>" />
+                    </div>
+                </form>
+            </div>
+        <?php endif; ?>
+    </div>
+    <div class="module-info__files-diff">
+        <div class="module-info__files-diff-title"><?php echo $this->translate('Module files difference') ?></div>    
+        <?php
+        if (empty($this->filesDifference)) :
+            ?>
+            <div class="module-info__msg"><?php echo $this->translate('Modules files difference none') ?></div>
+            <?php
+        else :
+            ?>        
+            <form method="post">
+                <input type="hidden" name="task" value="files_difference" />
+                <?php
+                foreach ($this->filesDifference as $value) {
+                    ?>
+                    <div class="module-info__files-diff-item">
+                        <div class="module-info__files-diff-item-title"><?php echo $value['title'] ?></div>
+                        <table class="module-info__files-diff-item-body">
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th><?php echo $this->translate('Module files difference source') ?></th>
+                                <th><?php echo $this->translate('Module files difference target') ?></th>
+                                <th><?php echo $this->translate('Module files difference state') ?></th>
+                            </tr>
+                            <?php foreach ($value['items'] as $item) : ?>
+                            <tr class="module-info__files-diff-item-state_<?php echo $item['status'] ?>">
+                                <td class="module-info__files-diff-item-td-1"><input type="checkbox" name="file[]" value="<?php echo $item['pathMd5'] ?>" /></td>
+                                <td class="module-info__files-diff-item-td-2"><?php echo $item['sourceFile'] ?></td>
+                                <td class="module-info__files-diff-item-td-3"><?php echo $item['targetFile'] ?></td>
+                                <td class="module-info__files-diff-item-td-4"><?php echo $item['statusMsg'] ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </table>
+                    </div>
+                    <?php
+                }
+                ?>
+                <div class="form-element__submit">
+                    <input type="submit" value="<?php echo $this->translate('Module files recover button') ?>" />
+                </div>
+            </form>        
+            <?php
+        endif;
+        ?>
+    </div>
+</div>

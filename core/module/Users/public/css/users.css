@@ -1,0 +1,80 @@
+body {
+	margin: 0;
+}
+	.chameleon_happy {
+		background: url(../../img/Users/chameleon_happy.jpg) no-repeat;
+	}
+	.chameleon_unhappy {
+		background: url(../../img/Users/chameleon_unhappy.jpg) no-repeat;
+	}
+.b-login_form__wrapper {
+	border: 1px solid #0F890D;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	height: 280px;
+	left: 50%;
+	margin-left: -235px;
+	margin-top: -140px;
+	position: absolute;
+	top: 50%;
+	width: 470px;
+}
+	.b-login_form {
+		color: #E8E8E8;
+		background-color: #0F890D;
+		-webkit-border-radius: 10px;
+		-moz-border-radius: 10px;
+		border-radius: 10px;
+		height: 226px;
+		left: 50%;
+		margin-left: -232px;
+		margin-top: -138px;
+		padding: 25px;
+		position: absolute;
+		top: 50%;
+		width: 414px;
+		font-size: 18px;
+	}
+		.b-login_form__login_div {
+			margin-bottom: 15px;
+		}
+			.b-login_form__login_div input {
+				font-size: 2em;
+				width: 99%;
+			}
+		.b-login_form__pass_div {
+			margin-bottom: 30px;
+		}
+			.b-login_form__pass_div input {
+				font-size: 2em;
+				width: 99%;
+			}
+		.b-login_form__sbmt_div input[type="submit"] {
+			font-size: 2em;
+		}
+.b-login_form ul {
+    color: #960000;
+	margin-top: -170px;
+	position: absolute;
+	text-align: center;
+	top: 50%;
+	width: 100%;
+    padding: 0;
+    margin-left: -25px;
+}
+    .b-login_form ul li {
+        list-style-type: none;
+    }
+
+.b-login_form__register_div {
+    float: right;
+    margin-top: -10px;
+}
+
+.b-login_form__register_div a {
+    color: #fff;
+}
+.b-login_form__register_div a:hover {
+    text-decoration: none;
+}

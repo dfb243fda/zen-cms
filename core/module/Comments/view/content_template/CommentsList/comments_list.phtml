@@ -1,0 +1,16 @@
+<div class="comments-list">
+    <?php if (!$this->isAllowedComments) : ?>
+        <div class="comments-list__msg">Комментарии запрещены</div>
+    <?php elseif (!$this->isAllowedCommentsToUser) :?>
+        <div class="comments-list__msg">Вы не можете комментировать этот объект</div>
+    <?php elseif (empty($this->comments)) : ?>
+        <div class="comments-list__msg">Комментариев нет</div>
+    <?php else : ?>    
+        <?php foreach ($this->comments as $comment) : ?>
+            <div class="comments-list__item">
+                <div class="comments-list__item-title"><?php echo $comment['title']; ?></div>
+                <div class="comments-list__item-text"><?php echo $comment['text']; ?></div>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</div>

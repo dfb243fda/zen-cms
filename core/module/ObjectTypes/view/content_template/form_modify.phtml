@@ -1,0 +1,394 @@
+<?php
+
+$sm = $this->getHelperPluginManager()->getServiceLocator();
+
+$this->headScript()->appendFile(ROOT_URL_SEGMENT . '/js/ObjectTypes/object_types.js');
+
+$args = array(
+    'addFieldGroupUrl' => $this->url('admin/method', array(
+        'module' => 'ObjectTypes',
+        'method' => 'AddGroup',    
+        'id' => $this->objectTypeId,
+    )),
+    'editFieldGroupUrl' => $this->url('admin/method', array(
+        'module' => 'ObjectTypes',
+        'method' => 'EditGroup',                 
+        'id' => '--GROUP_ID--',
+    )),
+    'delGroupUrl' => $this->url('admin/method', array(
+        'module' => 'ObjectTypes',
+        'method' => 'DelGroup',
+    )),
+    'sortGroupUrl' => $this->url('admin/method', array(
+        'module' => 'ObjectTypes',
+        'method' => 'SortGroup',              
+    )),
+    'editFieldUrl' => $this->url('admin/EditObjectTypeField', array(
+        'fieldId' => '--FIELD_ID--',
+        'groupId' => '--GROUP_ID--',
+    )),
+    'addFieldUrl' => $this->url('admin/AddObjectTypeField', array(
+        'groupId' => '--GROUP_ID--',
+        'objectTypeId' => $this->objectTypeId,
+    )),
+    'delFieldUrl' => $this->url('admin/method', array(
+        'module' => 'ObjectTypes',
+        'method' => 'DelField',
+    )),
+    'sortFieldUrl' => $this->url('admin/method', array(
+        'module' => 'ObjectTypes',
+        'method' => 'SortField',   
+    )),
+);
+
+$this->inlineScript()->appendScript('zen.objectTypes.init(' . json_encode($args) . ');');  
+
+?>
+
+
+<div class="group-block__item clearfix hide" id="field-example">
+    <div class="group-block__item-block hide">
+        <div class="group-block__item-c1"></div>
+        <div class="group-block__item-c1"></div>
+        <div class="group-block__item-c1"></div>
+        <div class="group-block__item-c1">
+            <div class="icons">
+                <img onclick="zen.objectTypes.showEditFieldForm(this);" title="Редактировать" alt="Редактировать" src="<?php echo $this->basePath('/img/core/pixel.gif') ?>" class="icons__item icons__item-edit" alt="" />
+                <img onclick="zen.objectTypes.delField(this)" title="Удалить" alt="Удалить" src="<?php echo $this->basePath('/img/core/pixel.gif') ?>" class="icons__item icons__item-del" alt="" />
+            </div>  
+        </div>
+    </div>
+    <div class="group-block__item-edit">
+        <?php
+        
+        $factory = new Zend\Form\Factory($sm->get('FormElementManager'));
+            
+        $formConfig = $this->fieldFormConfig;        
+        
+        $formConfig['fieldsets'] = array(
+            array(
+                'spec' => array(
+                    'name' => 'submit',
+                    'elements' => array(
+                        array(
+                            'spec' => array(
+                                'name' => 'cancel',
+                                'attributes' => array(
+                                    'type'  => 'button',
+                                    'value' => $this->translate('ObjectTypes:Cancel button'),
+                                    'onclick' => 'zen.objectTypes.cancelFieldAdding(this)'
+                                ),
+                            ),
+                        ),
+                        array(
+                            'spec' => array(
+                                'name' => 'submit',
+                                'attributes' => array(
+                                    'type'  => 'submit',
+                                    'value' => $this->translate('ObjectTypes:Save button'),
+                                ),
+                            ),
+                        ),
+                    ),
+                    'options' => array(
+                        'label' => ' ',
+                    ),
+                ),
+            ), 
+        );        
+        
+        $form = $factory->createForm($formConfig);   
+        $form->setAttribute('class', 'form-2c');
+        $form->setData($this->fieldFormValues);
+        $form->prepare();
+
+        echo $this->form()->openTag($form); 
+        foreach ($form->getElements() as $el) :
+            echo $this->formElementWrapper($el);
+        endforeach;
+
+        foreach ($form->getFieldsets() as $fieldset) :
+            echo $this->formCollection($fieldset);
+        endforeach;
+
+        echo $this->form()->closeTag($form); 
+        
+//        echo $this->form($form);
+
+        ?>
+    </div>
+</div>
+
+
+<div class="block hide" id="block-example">
+    <div class="icons hide">
+        <img onclick="zen.objectTypes.showEditGroupForm(this)" title="Редактировать" alt="Редактировать" src="<?php echo $this->basePath('/img/core/pixel.gif') ?>" class="icons__item icons__item-edit" alt="" />
+        <img onclick="zen.objectTypes.delGroup(this)" title="Удалить" alt="Удалить" src="<?php echo $this->basePath('/img/core/pixel.gif') ?>" class="icons__item icons__item-del" alt="" />
+    </div>
+    <div class="block__title">Новая группа [  ]</div>
+    <div class="block__body">
+        <div class="group-block hide">
+            <div class="block-btn"><div class="btn__wrap btn__wrap-add" onclick="zen.objectTypes.showAddFieldForm(this)"><div class="btn">Добавить поле</div></div></div>
+            <div class="group-block__list"></div>
+        </div>                                
+        <div class="group-edit-block">
+            <?php
+
+            $factory = new Zend\Form\Factory($sm->get('FormElementManager'));
+            
+            $formConfig = $this->groupFormConfig;
+            
+            $formConfig['fieldsets'] = array(
+                array(
+                    'spec' => array(
+                        'name' => 'submit',
+                        'elements' => array(
+                            array(
+                                'spec' => array(
+                                    'name' => 'cancel',
+                                    'attributes' => array(
+                                        'type'  => 'button',
+                                        'value' => $this->translate('ObjectTypes:Cancel button'),
+                                        'onclick' => 'zen.objectTypes.cancelGroupAdding(this)'
+                                    ),
+                                ),
+                            ),
+                            array(
+                                'spec' => array(
+                                    'name' => 'submit',
+                                    'attributes' => array(
+                                        'type'  => 'submit',
+                                        'value' => $this->translate('ObjectTypes:Save button'),
+                                    ),
+                                ),
+                            ),
+                        ),
+                        'options' => array(
+                            'label' => ' ',
+                        ),
+                    ),
+                ), 
+            );
+            
+            $form = $factory->createForm($formConfig);   
+            $form->setAttribute('class', 'form-2c');
+            $form->setData($this->groupFormValues);         
+            $form->prepare();
+            
+            echo $this->form()->openTag($form); 
+            foreach ($form->getElements() as $el) :
+                echo $this->formElementWrapper($el);
+            endforeach;
+
+            foreach ($form->getFieldsets() as $fieldset) :
+                echo $this->formCollection($fieldset);
+            endforeach;
+            
+            echo $this->form()->closeTag($form); 
+            ?>
+        </div>    
+    </div>    
+</div>
+
+
+<div class="blocks" data-object-type-id="<?php echo $this->objectTypeId ?>">
+    <div class="block">
+        <div class="block__title"><?php echo $this->translate('ObjectTypes:Type properties') ?></div>
+        <div class="block__body">
+            <?php    
+            
+            $factory = new Zend\Form\Factory($sm->get('FormElementManager'));
+            
+            $form = $factory->createForm($this->objectTypeFormConfig);   
+            $form->setAttribute('class', 'form-2c');
+            $form->setData($this->objectTypeFormValues);
+            $form->setMessages($this->objectTypeFormMsg);
+            $form->prepare();
+            
+            echo $this->form()->openTag($form); 
+            foreach ($form->getElements() as $el) :
+                echo $this->formElementWrapper($el);
+            endforeach;
+
+            foreach ($form->getFieldsets() as $fieldset) :
+                echo $this->formCollection($fieldset);
+            endforeach;
+            
+            echo $this->form()->closeTag($form); 
+            
+   //         echo $this->form($form);
+            ?>
+        </div>    
+    </div>   
+    <div class="block-btn"><div class="btn__wrap btn__wrap-add" id="btn-add-fields-group"><div class="btn"><?php echo $this->translate('ObjectTypes:Add group') ?></div></div></div>
+    <div id="groups-wrap">
+    <?php
+
+    foreach ($this->fieldGroups as $group) {
+        ?>
+
+        <div class="block" data-group-id="<?php echo $group['id'] ?>">
+            <?php
+            if (!$group['is_locked']) {
+                ?>
+                <div class="icons">
+                    <img onclick="zen.objectTypes.showEditGroupForm(this);" title="Редактировать" alt="Редактировать" src="<?php echo $this->basePath('/img/core/pixel.gif') ?>" class="icons__item icons__item-edit" alt="" />
+                    <img onclick="zen.objectTypes.delGroup(this)" title="Удалить" alt="Удалить" src="<?php echo $this->basePath('/img/core/pixel.gif') ?>" class="icons__item icons__item-del" alt="" />
+                </div>  
+                <?php
+            }
+            ?>
+            <div class="block__title"><?php echo $group['title'] ?> [ <?php echo $group['name'] ?> ]</div>
+            <div class="block__body">
+                <div class="group-block">
+                    <div class="block-btn"><div class="btn__wrap btn__wrap-add" onclick="zen.objectTypes.showAddFieldForm(this)"><div class="btn"><?php echo $this->translate('ObjectTypes:Add field') ?></div></div></div>
+                    <div class="group-block__list">
+                    <?php
+                    foreach ($group['fields'] as $field) {
+                        ?>
+                        <div class="group-block__item clearfix" data-field-id="<?php echo $field['id'] ?>" data-group-id="<?php echo $group['id'] ?>">
+                            <div class="group-block__item-block">
+                                <div class="group-block__item-c1"><?php echo $field['title'] ?></div>
+                                <div class="group-block__item-c1"><?php echo '[ ' . $field['name'] . ' ]' ?></div>
+                                <div class="group-block__item-c1"><?php  echo $field['field_type_name']; ?></div>
+                                <div class="group-block__item-c1">
+                                    <?php                                    
+                                    if (!$field['is_locked']) {
+                                        ?>
+                                        <div class="icons">
+                                            <img onclick="zen.objectTypes.showEditFieldForm(this);" title="Редактировать" alt="Редактировать" src="<?php echo $this->basePath('/img/core/pixel.gif') ?>" class="icons__item icons__item-edit" alt="" />
+                                            <img onclick="zen.objectTypes.delField(this)" title="Удалить" alt="Удалить" src="<?php echo $this->basePath('/img/core/pixel.gif') ?>" class="icons__item icons__item-del" alt="" />
+                                        </div>  
+                                        <?php
+                                    }                                    
+                                    ?>
+                                </div>
+                            </div>
+                            <div class="group-block__item-edit hide">
+                                <?php
+
+                                $factory = new Zend\Form\Factory($sm->get('FormElementManager'));
+            
+                                $formConfig = $this->fieldFormConfig;
+                                $formConfig['fieldsets'] = array(
+                                    array(
+                                        'spec' => array(
+                                            'name' => 'submit',
+                                            'elements' => array(
+                                                array(
+                                                    'spec' => array(
+                                                        'name' => 'cancel',
+                                                        'attributes' => array(
+                                                            'type'  => 'button',
+                                                            'value' => $this->translate('ObjectTypes:Cancel button'),
+                                                            'onclick' => 'zen.objectTypes.cancelFieldEditing(this)'
+                                                        ),
+                                                    ),
+                                                ),
+                                                array(
+                                                    'spec' => array(
+                                                        'name' => 'submit',
+                                                        'attributes' => array(
+                                                            'type'  => 'submit',
+                                                            'value' => $this->translate('ObjectTypes:Save button'),
+                                                        ),
+                                                    ),
+                                                ),
+                                            ),
+                                            'options' => array(
+                                                'label' => ' ',
+                                            ),
+                                        ),
+                                    ), 
+                                );
+                                
+                                
+                                $form = $factory->createForm($formConfig); 
+                                $form->setAttribute('class', 'form-2c');
+                                $form->setData($field);
+                                $form->prepare();
+
+                                echo $this->form()->openTag($form); 
+                                foreach ($form->getElements() as $el) :
+                                    echo $this->formElementWrapper($el);
+                                endforeach;
+
+                                foreach ($form->getFieldsets() as $fieldset) :
+                                    echo $this->formCollection($fieldset);
+                                endforeach;
+
+                                echo $this->form()->closeTag($form); 
+                                ?>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                    ?>   
+                    </div>
+                </div>                                
+                <div class="group-edit-block hide">
+                    <?php
+
+                    
+                    $factory = new Zend\Form\Factory($sm->get('FormElementManager'));
+                    
+                    $formConfig = $this->groupFormConfig;
+                    
+                    $formConfig['fieldsets'] = array(
+                        array(
+                            'spec' => array(
+                                'name' => 'submit',
+                                'elements' => array(
+                                    array(
+                                        'spec' => array(
+                                            'name' => 'cancel',
+                                            'attributes' => array(
+                                                'type'  => 'button',
+                                                'value' => $this->translate('ObjectTypes:Cancel button'),
+                                                'onclick' => 'zen.objectTypes.cancelGroupEditing(this)'
+                                            ),
+                                        ),
+                                    ),
+                                    array(
+                                        'spec' => array(
+                                            'name' => 'submit',
+                                            'attributes' => array(
+                                                'type'  => 'submit',
+                                                'value' => $this->translate('ObjectTypes:Save button'),
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                                'options' => array(
+                                    'label' => ' ',
+                                ),
+                            ),
+                        ), 
+                    );
+                    
+            
+                    $form = $factory->createForm($formConfig);      
+                    $form->setAttribute('class', 'form-2c');
+                    $form->setData($group);
+                    $form->prepare();
+
+                    echo $this->form()->openTag($form); 
+                    foreach ($form->getElements() as $el) :
+                        echo $this->formElementWrapper($el);
+                    endforeach;
+
+                    foreach ($form->getFieldsets() as $fieldset) :
+                        echo $this->formCollection($fieldset);
+                    endforeach;
+
+                    echo $this->form()->closeTag($form); 
+                    ?>
+                </div>    
+            </div>    
+        </div>   
+
+        <?php
+    }                    
+    ?>     
+    </div>
+</div>    

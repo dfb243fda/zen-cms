@@ -1,0 +1,66 @@
+<?php
+
+$sm = $this->getHelperPluginManager()->getServiceLocator();
+
+if (empty($this->formConfig)) :
+    ?>
+    <div class="dynamic-config__msg"><?php echo $this->translate('Dynamic config no config in this tab') ?></div>
+    <?php
+    return;
+endif;
+
+?>
+<div class="dynamic-config form-3c-wrap">
+    <?php
+    
+    $factory = new \Zend\Form\Factory($sm->get('FormElementManager'));
+
+    $form = $factory->createForm($this->formConfig);
+    $form->setAttribute('class', 'form-3c');
+    $form->prepare();
+    $form->setData($this->formValues);
+    if (!empty($this->formMsg)) {
+        $form->setMessages($this->formMsg);
+    }    
+    
+    echo $this->form()->openTag($form);
+    ?>
+    <?php
+    
+    foreach ($form->getFieldsets() as $fieldset) :
+        foreach ($fieldset->getElements() as $el) :
+            echo $this->formElementWrapper3C($el);
+        /*
+        ?>
+            <div class="form-3c-element form-3c-element__<?php echo strtolower(basename(get_class($el))) ?> clearfix"> 
+                <div class="form-3c-element__col-l"><?php echo $this->translateI18n($el->getLabel()) ?></div>
+                <div class="form-3c-element__col-c">
+                <?php
+                    echo $this->formElement($el);
+                    if (count($el->getMessages()) > 0) :
+                        ?>
+                        <div class="form-3c-element__col-c__err">
+                            <?php
+                            foreach ($el->getMessages() as $msg) :
+                                ?>
+                                <div class="form-3c-element__col-c__err-item"><?php echo $msg ?></div>
+                                <?php
+                            endforeach;
+                            ?>
+                        </div>
+                        <?php
+                    endif;
+                ?>
+                </div>
+                <div class="form-3c-element__col-r"><?php echo $this->translateI18n($el->getOption('description')) ?></div>
+            </div> 
+        <?php
+        */
+        endforeach;
+    endforeach;
+    ?>
+    <div class="form-3c-element form-element__submit">
+        <input type="submit" value="<?php echo $this->translate('Save button') ?>" />
+    </div>
+    <?php echo $this->form()->closeTag($form); ?>
+</div>

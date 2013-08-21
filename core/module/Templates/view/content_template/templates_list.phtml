@@ -1,0 +1,46 @@
+<?php
+    $this->headLink()->appendStylesheet(ROOT_URL_SEGMENT . '/css/Templates/templates_list.css');
+    
+    $this->headScript()->appendFile(ROOT_URL_SEGMENT . '/js/Templates/templates.js');
+?>
+<div class="templates-list">
+    <div class="templates-list__modules">
+        <?php if (!empty($this->modules)) : ?>
+            <ul>
+            <?php foreach ($this->modules as $module) : ?>
+                <li>
+                    <?php if (isset($module['link'])) : ?>
+                        <a href="<?php echo $module['link'] ?>"><?php echo $module['title'] ?></a></span>
+                    <?php else : ?>
+                        <div><?php echo $module['title'] ?></div>
+                    <?php endif; ?>
+                    <?php if (!empty($module['methods'])) : ?>
+                        <ul>
+                        <?php foreach ($module['methods'] as $method) : ?>
+                            <li><a href="<?php echo $method['link'] ?>"><?php echo $method['title'] ?></a></li>
+                        <?php endforeach; ?>    
+                        </ul>    
+                    <?php endif; ?>
+                </li>
+            <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+    </div>
+    
+    <?php if ($this->createTemplateLink) : ?>
+        <div class="templates-list__cr-btn"><a class="templates-list__cr-btn-inside" href="<?php echo $this->createTemplateLink ?>"><?php echo $this->translate('Templates:Create new template') ?></a></div>
+    <?php endif; ?>
+    
+    <?php if (!empty($this->templates)) : ?>    
+        <table class="templates-list__templates">
+            <tr>
+                <th><?php echo $this->translate('Templates:Template name') ?></th><th><?php echo $this->translate('Templates:Template file') ?></th><th><?php echo $this->translate('Templates:Is default template') ?></th><th>&nbsp;</th>
+            </tr>
+        <?php foreach ($this->templates as $template) : ?>
+            <tr>
+                <td><a href="<?php echo $template['editLink'] ?>"><?php echo $template['title'] ?></a></td><td><?php echo $template['name'] ?></td><td><?php echo $template['is_default'] ? $this->translate('Templates:Template is default') : $this->translate('Templates:Template is not default') ?></td><td class="templates-list__icons"><a href="<?php echo $template['editLink'] ?>"><img class="templates-list__icon templates-list__icon-edit" src="<?php echo ROOT_URL_SEGMENT ?>/img/core/pixel.gif" alt="" /></a><img class="link templates-list__icon templates-list__icon-del" onclick="zen.templates.delTemplate('<?php echo $template['delLink'] ?>', <?php echo $template['id'] ?>)" src="<?php echo ROOT_URL_SEGMENT ?>/img/core/pixel.gif" alt="" /></td>
+            </tr>
+        <?php endforeach; ?>
+        </table>
+    <?php endif; ?>
+</div>

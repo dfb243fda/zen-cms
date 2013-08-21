@@ -1,0 +1,10 @@
+<div class="search-index">
+    <div class="search-index__item">Проиндексировано страниц: <?php echo $this->indexedPagesCount ?></div>
+    <br />
+    <div class="search-index__btn-wrap">
+        <form action="" method="post">
+            <input type="hidden" name="task" value="refresh_search_index" />
+            <input type="submit" value="Обновить индекс" />
+        </form>
+    </div>
+</div>

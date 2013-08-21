@@ -1,0 +1,93 @@
+<div class="markers clearfix">
+    <?php
+    
+    foreach ($this->markers as $marker) :
+        if (isset($marker['id'])) {
+            $addUrl = $this->url('admin/AddContent', array(
+                'markerId' => $marker['id'],
+                'beforeContentId' => 0,
+                'pageId' => $this->pageId,
+            ));
+        } else {
+            $addUrl = '';
+        }
+        
+        
+        ?>
+        <div class="markers__item" data-id="<?php echo isset($marker['id']) ? $marker['id'] : 0 ?>">
+            <div class="markers__item-title">
+                <?php if ($addUrl) : ?> 
+                    <div class="markers__item-title-icons"><a href="<?php echo $addUrl ?>"><img class="icons__item" alt="" src="<?php echo $this->basePath('/img/core/pixel.gif') ?>" /></a></div>
+                <?php endif; ?>
+                <div class="markers__item-title-text"><?php echo $marker['title'] ?></div>                
+            </div>  
+            <?php
+            if (empty($marker['modules'])) {
+                $tmpClass = '';
+            } else {
+                $tmpClass = ' hidden';
+            }
+            ?>
+            <div class="markers__item-msg<?php echo $tmpClass ?>">
+                Содержимого нет
+            </div> 
+            <div class="markers__item-body">
+                <?php
+
+                foreach ($marker['modules'] as $module) {
+                    if (isset($marker['id'])) {
+                        $addUrl = $this->url('admin/AddContent', array(
+                            'markerId' => $marker['id'],
+                            'beforeContentId' => $module['id'],
+                            'pageId' => $this->pageId,
+                        ));
+                    } else {
+                        $addUrl = '';
+                    }
+                    
+
+                    $editUrl = $this->url('admin/method', array(
+                        'module' => 'Pages',
+                        'method' => 'EditContent',
+                        'id' => $module['id'],
+                    ));
+
+                    ?>
+
+                    <div class="marker-modul<?php echo $module['is_active'] ? '' : ' marker-modul-hidden' ?>" data-id="<?php echo $module['id'] ?>">
+                        <img class="marker-modul-cross" alt="" src="<?php echo $this->basePath('/img/Pages/move_cross_16x16.png') ?>" />
+                        <div class="marker-modul__icons">
+                            <?php if ($addUrl) : ?>
+                            <a href="<?php echo $addUrl ?>"><img title="Добавить после" alt="Добавить после" src="<?php echo $this->basePath('/img/core/pixel.gif') ?>" class="icons__item icons__item-add" alt="" /></a>
+                            <?php endif; ?>
+                            <a href="<?php echo $editUrl ?>"><img title="Редактировать содержимое" alt="Редактировать" src="<?php echo $this->basePath('/img/core/pixel.gif') ?>" class="icons__item icons__item-edit" alt="" /></a>
+                            <img title="Удалить содержимое" onclick="zen.pages.delContent(<?php echo $module['id'] ?>)" alt="Удалить" src="<?php echo $this->basePath('/img/core/pixel.gif') ?>" class="icons__item icons__item-del" alt="" />
+                            <?php
+
+                            if ($module['is_active']) {
+                                ?>
+                                <img title="Отключить содержимое" onclick="zen.pages.hideContent(<?php echo $module['id'] ?>)" alt="Отключить" src="<?php echo $this->basePath('/img/core/pixel.gif') ?>" class="icons__item icons__item-deactive" alt="" />
+                                <?php
+                            } else {
+                                ?>                                    
+                                <img title="Включить содержимое" onclick="zen.pages.showContent(<?php echo $module['id'] ?>)" alt="Включить" src="<?php echo $this->basePath('/img/core/pixel.gif') ?>" class="icons__item icons__item-active" alt="" />                                    
+                                <?php
+                            }
+
+                            ?>
+
+                        </div>
+                        <div class="marker-modul__title"><?php echo $module['contentTitle'] ?></div>
+                        <div class="marker-modul__body"><?php echo $module['moduleTitle'] ?></div>
+                    </div>    
+
+                    <?php
+                }             
+
+                ?>
+            </div>
+        </div>    
+        <?php
+    endforeach;
+    ?>
+</div>

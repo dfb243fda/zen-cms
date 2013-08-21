@@ -1,0 +1,13 @@
+<div class="err-msg">
+<?php
+if ($this->access) :
+    foreach ($this->list as $error) :
+        ?>
+        <div class="err-msg__item"><?php echo $error['message'] ?> : file : <?php echo $error['extra']['file'] ?> : line <?php echo $error['extra']['line'] ?></div>
+        <?php    
+    endforeach;
+else :
+    echo $this->msg;       
+endif;
+?>
+</div>

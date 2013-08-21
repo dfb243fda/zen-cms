@@ -1,0 +1,57 @@
+<?php
+	
+$html = '';
+
+$html .= '<div class="main-menu__wrap">';
+
+$html .= '<img class="hide_frame_arrow link" onclick="zen.chameleonTheme.showHideMainMenu(this);" src="' . $this->basePath('/img/core/pixel.gif') . '" alt="Скрыть меню" title="Скрыть меню" />';
+
+$html .= '<div class="main-menu" id="main_menu">';
+
+
+if (!empty($this->mainMenu)) {
+    foreach ($this->mainMenu as $k=>$v)
+    {
+        if (!empty($v['items']))
+        {
+            $html .= '<div class="main-menu__item">';
+            $html .= '<div class="main-menu__title">' . $v['title'] . '</div>';
+
+            foreach ($v['items'] as $k2=>$v2)
+            {
+                $classes = array();
+                if (isset($v2['active']) && $v2['active'] == true)
+                {
+                    $classes[] = 'active';
+                }
+
+                if (empty($classes)) {
+                    $class = '';
+                }
+                else {
+                    $class = ' class="' . implode(' ', $classes) . '"';
+                }
+
+                if (isset($v2['onclick']))
+                {
+                    $onclick = ' onclick="' . $v2['onclick'] . '"';
+                }
+                else
+                {
+                    $onclick = '';
+                }
+
+                $html .= '<div class="main-menu__sub-item"><a href="' . $v2['link'] . '"' . $class . $onclick . '>' . $v2['title'] . '</a></div>';
+            }			
+
+            $html .= '</div>';
+        }
+    }
+}
+
+
+$html .= '</div>';	
+
+$html .= '</div>';
+
+echo $html;

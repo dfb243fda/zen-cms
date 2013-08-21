@@ -1,0 +1,44 @@
+<?php
+
+$sm = $this->getHelperPluginManager()->getServiceLocator();
+
+$this->headScript()->appendFile(ROOT_URL_SEGMENT . '/js/News/news.js');
+
+$this->inlineScript()->appendScript('zen.news.initNewsForm(' . json_encode($this->jsArgs) . ');');  
+?>
+
+<div class="blocks">
+    <?php
+    $factory = new Zend\Form\Factory($sm->get('FormElementManager'));
+    $formConfig = $this->formConfig;
+    
+    $form = $factory->createForm($formConfig);      
+    $form->setAttribute('class', 'form-2c');
+    $form->setData($this->formValues);
+    $form->prepare();
+    
+    if (isset($this->formMsg)) {
+        $form->setMessages($this->formMsg);
+    }
+    
+    echo $this->form()->openTag($form);
+    foreach ($form->getFieldsets() as $fieldset) :     
+        ?>
+        <div class="block">
+            <div class="block__title"><?php echo $fieldset->getLabel() ?></div>
+            <div class="block__body">
+                <?php           
+                foreach ($fieldset->getElements() as $el) :
+                    echo $this->formElementWrapper($el);
+                endforeach;
+                ?>
+            </div>
+        </div>
+        <?php
+    endforeach;
+    ?>
+    <div class="block__buttons block__buttons-left clearfix">
+        <dd><input type="submit" name="submit" id="submit" value="Сохранить"></dd>
+    </div>
+    <?php echo $this->form()->closeTag($form); ?>
+</div>    

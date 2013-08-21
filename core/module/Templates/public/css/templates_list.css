@@ -1,0 +1,89 @@
+.templates-list {
+    
+}
+.templates-list__modules {
+    margin-bottom: 30px;
+}
+.templates-list__modules div,
+.templates-list__modules a {
+    display: block;
+    padding: 10px;
+    background-color: #dfdfdf;
+    border: 1px dotted #BBBBBB;
+}
+    .templates-list__modules ul ul a {
+        margin-left: 20px;
+    }
+    
+.templates-list__templates {
+    
+}    
+    .templates-list__templates-item {
+        padding: 5px;
+        border-bottom: 1px dotted #BBBBBB;
+        margin-bottom: 3px;
+    }
+    
+    
+.templates-list__cr-btn {
+    margin-bottom: 20px;
+}    
+    .templates-list__cr-btn-inside {
+        -moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+        -webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+        box-shadow:inset 0px 1px 0px 0px #ffffff;
+        background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+        background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
+        filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
+        background-color:#ededed;
+        -moz-border-radius:6px;
+        -webkit-border-radius:6px;
+        border-radius:6px;
+        border:1px solid #dcdcdc;
+        display:inline-block;
+        color:#777777;
+        font-family:arial;
+        font-size:15px;
+        font-weight:bold;
+        padding:6px 24px;
+        text-decoration:none;
+        text-shadow:1px 1px 0px #ffffff;
+    }
+    .templates-list__cr-btn-inside:hover {
+        background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
+        background:-moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
+        filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed');
+        background-color:#dfdfdf;
+    }
+    .templates-list__cr-btn-inside:active {
+        position:relative;
+        top:1px;
+    }
+    
+.templates-list__icon {
+    width: 16px;
+    height: 16px;
+    background: url("../../img/Templates/icons.png");
+    margin-right: 5px;
+}
+.templates-list__icon-edit {
+    background-position: 16px -16px;
+}
+    .templates-list__icon-edit:hover {
+        background-position: 0 -16px;
+    }
+.templates-list__icon-del {
+    background-position: 16px -32px;
+}
+    .templates-list__icon-del:hover {
+        background-position: 0 -32px;
+    }
+    
+    
+    
+.templates-list__templates td,
+.templates-list__templates th {
+    padding: 10px;
+    text-align: center;
+    border: 1px dotted #BBBBBB;
+}

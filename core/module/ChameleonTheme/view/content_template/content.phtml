@@ -1,0 +1,80 @@
+<div class="content" id="content">
+    <?php
+    if (!isset($this->showTitle) || $this->showTitle) :
+        ?>
+        <div class="content__title"><?php echo $this->title ?></div>
+        <?php
+    endif;
+    if (!empty($this->msg)) :
+        ?>
+        <div class="content-msg">
+            <?php
+            if (!is_array($this->msg)) {
+                $this->msg = array($this->msg);
+            }
+            foreach ($this->msg as $msg) :
+                ?>
+                <div class="content-msg-item"><div class="content-msg-item-inside"><?php echo $msg ?></div></div>
+                <?php
+            endforeach;
+            ?>
+        </div>
+        <?php
+    endif;
+    if (!empty($this->errMsg)) :
+        ?>
+        <div class="content-err-msg">
+            <?php
+            if (!is_array($this->errMsg)) {
+                $this->errMsg = array($this->errMsg);
+            }
+            foreach ($this->errMsg as $msg) :
+                ?>
+                <div class="content-err-msg-item"><div class="content-err-msg-item-inside"><?php echo $msg ?></div></div>
+                <?php
+            endforeach;
+            ?>
+        </div>
+        <?php
+    endif;
+    if (empty($this->tabs)) :
+        ?>
+        <div class="content__body">
+            <?php
+            echo $this->beforeContent; 
+            echo $this->content;
+            ?>
+        </div>    
+        <?php
+    else :
+        ?>
+        <div class="tab-content">
+            <div class="tab-content__tabs clearfix">
+                <?php
+                $i = 0;
+                foreach ($this->tabs as $tab) :
+                    $i++;
+                    $class = '';
+                    if ($i == 1) {
+                        $class .= ' tab-content__tabs-item-first';
+                    }
+                    if (isset($tab['active']) && $tab['active']) {
+                        $class .= ' tab-content__tabs-item-act';
+                    }                
+                    ?>
+                    <a class="tab-content__tabs-item<?php echo $class ?>" href="<?php echo $tab['link'] ?>"><?php echo $tab['title'] ?></a>                    
+                    <?php
+                endforeach;
+                ?>
+            </div>        
+            <div class="tab-content__body">
+                <?php
+                echo $this->beforeContent; 
+                echo $this->content;
+                ?>
+            </div>
+        </div>
+        <?php
+    endif;
+    ?>                
+</div>

@@ -1,0 +1,11 @@
+<div class="menu">
+    <ul>
+        <?php
+
+        foreach ($this->items as $v) {
+            echo '<li><a href="' . $v['link'] . '" onclick="return zen.fe_theme.getAjaxContent(this.href);">' . $v['name'] . '</a></li>';
+        }
+
+        ?>
+    </ul>
+</div>    

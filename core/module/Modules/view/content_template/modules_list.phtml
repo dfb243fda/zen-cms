@@ -1,0 +1,73 @@
+<?php
+$sm = $this->getHelperPluginManager()->getServiceLocator();
+
+$this->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/Modules/modules.js');
+
+$this->headLink()->appendStylesheet(ROOT_URL_SEGMENT . '/css/Modules/modules.css');
+
+?>
+<table class="modules_list">
+    <tr>
+        <th>&nbsp;</th>
+        <th><?php echo $this->translate('Module name') ?></th>
+        <th><?php echo $this->translate('Module key') ?></th>
+        <th><?php echo $this->translate('Module version') ?></th>
+        <th><?php echo $this->translate('Module status') ?></th>
+    </tr>
+    <?php
+    foreach ($this->modules as $moduleKey=>$moduleData) {
+        $installUrl = $this->url('admin/method', array(
+            'module' => 'Modules',
+            'method' => 'InstallModule',
+        ));
+        $uninstallUrl = $this->url('admin/method', array(
+            'module' => 'Modules',
+            'method' => 'UninstallModule',
+        ));
+        $activateUrl = $this->url('admin/method', array(
+            'module' => 'Modules',
+            'method' => 'ActivateModule',
+        ));
+        $deactivateUrl = $this->url('admin/method', array(
+            'module' => 'Modules',
+            'method' => 'DeactivateModule',
+        ));
+        
+        $icons = '';
+        if ('installed_and_activated' == $moduleData['status']['key']) {
+            if ($moduleData['is_required']) {
+                $icons .= '<img class="modules-list__icon modules-list__icon-required" src="' . ROOT_URL_SEGMENT . '/img/core/pixel.gif' . '" alt="' . $this->translate('This is required module, you can`t delete it') . '" title="' . $this->translate('This is required module, you can`t delete it') . '" />';
+            } else {
+                $icons .= '<img onclick="zen.modules.deactivate(\'' . $deactivateUrl . '\', \'' . $moduleKey . '\')" class="modules-list__icon modules-list__icon-deactivate link" src="' . ROOT_URL_SEGMENT . '/img/core/pixel.gif' . '" alt="' . $this->translate('Deactivate module') . '" title="' . $this->translate('Deactivate module') . '" />';
+                $icons .= '<img onclick="zen.modules.uninstall(\'' . $uninstallUrl . '\', \'' . $moduleKey . '\')" class="modules-list__icon modules-list__icon-uninstall link" src="' . ROOT_URL_SEGMENT . '/img/core/pixel.gif' . '" alt="' . $this->translate('Uninstall module') . '" title="' . $this->translate('Uninstall module') . '" />';
+            }                    
+        } elseif ('installed_and_deactivated' == $moduleData['status']['key']) {
+            $icons .= '<img onclick="zen.modules.activate(\'' . $activateUrl . '\', \'' . $moduleKey . '\')" class="modules-list__icon modules-list__icon-activate link" src="' . ROOT_URL_SEGMENT . '/img/core/pixel.gif' . '" alt="' . $this->translate('Activate module') . '" title="' . $this->translate('Activate module') . '" />';
+            $icons .= '<img onclick="zen.modules.uninstall(\'' . $uninstallUrl . '\', \'' . $moduleKey . '\')" class="modules-list__icon modules-list__icon-uninstall link" src="' . ROOT_URL_SEGMENT . '/img/core/pixel.gif' . '" alt="' . $this->translate('Uninstall module') . '" title="' . $this->translate('Uninstall module') . '" />';
+        } elseif ('not_installed') {
+            $icons .= '<img onclick="zen.modules.install(\'' . $installUrl . '\', \'' . $moduleKey . '\')" class="modules-list__icon modules-list__icon-install link" src="' . ROOT_URL_SEGMENT . '/img/core/pixel.gif' . '" alt="' . $this->translate('Install module') . '" title="' . $this->translate('Install module') . '" />';
+        }
+        ?>
+        <tr class="<?php echo 'modules_list__tr-' . $moduleData['status']['key']; ?>">
+            <td><?php echo $icons ?></td>
+            <td><?php
+                if ('installed_and_activated' == $moduleData['status']['key']) {
+                    echo '<a href="' . $this->url('admin/method', array(
+                        'module' => 'Modules',
+                        'method' => 'ModuleInfo',
+                        'id'     => $moduleKey,
+                    )) . '">';
+                    echo $moduleData['title'];
+                    echo '</a>';
+                } else {
+                    echo $moduleData['title'];
+                }
+            ?></td>
+            <td><?php echo $moduleKey ?></td>
+            <td><?php echo $moduleData['version'] ?></td>
+            <td><?php echo $moduleData['status']['description'] ?></td>
+        </tr>
+        <?php
+    }
+    ?>
+</table>

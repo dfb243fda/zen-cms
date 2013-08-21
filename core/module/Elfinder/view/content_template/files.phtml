@@ -1,0 +1,14 @@
+<?php
+    $this->headLink()->appendStylesheet(ROOT_URL_SEGMENT . '/js/core/file_manager/elfinder-2.0-rc1/css/elfinder.min.css');
+    $this->headScript()->appendFile(ROOT_URL_SEGMENT . '/js/core/file_manager/elfinder-2.0-rc1/js/elfinder.min.js');
+    
+    $jsAttrStr = json_encode(array(
+        'url' => $this->url('elfinder'),
+    ));
+    
+    $this->inlineScript()->appendScript('
+        $(\'#elfinder-files\').elfinder(' . $jsAttrStr . ');
+    ');
+        
+?>
+<div id="elfinder-files"></div>

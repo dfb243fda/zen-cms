@@ -1,0 +1,15 @@
+<div class="search-result">
+    <div class="search-result__title">Результаты поиска</div>
+    <?php if (empty($this->items)) : ?>
+        <div class="search-result__empty-msg">По вашему запросу ничего найдено</div>
+    <?php else: ?>
+        <div class="search-result__items">
+            <?php foreach ($this->items as $value) : ?>
+                <div class="search-result__item">
+                    <div class="search-result__item-title"><a href="<?php echo $value['link'] ?>"><?php echo $value['title'] ?></a></div>
+                    <div class="search-result__item-body"><?php echo $value['body'] ?></div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+</div>

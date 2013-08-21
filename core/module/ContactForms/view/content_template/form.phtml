@@ -1,0 +1,59 @@
+<?php
+$this->headLink()->appendStylesheet($this->basePath('/css/ContactForms/contact_forms.css'));    
+$this->headScript()->appendFile($this->basePath('/js/ContactForms/contact_forms.js'));
+$this->inlineScript()->appendScript('zen.contact_forms.initContactFormEditing();');
+?>
+<div class="contact-forms">
+    <?php
+        $sm = $this->getHelperPluginManager()->getServiceLocator();
+        $factory = new Zend\Form\Factory($sm->get('FormElementManager'));
+        $form = $factory->createForm($this->formConfig);
+        $form->setData($this->formValues);
+        $form->prepare();
+
+        if (!empty($this->formMsg)) {
+            $form->setMessages($this->formMsg);
+        }        
+    ?>
+    <?php echo $this->partial('content_template/ContactForms/tag_generator.phtml'); ?>
+    <?php echo $this->form()->openTag($form) ?>
+    <div class="contact-forms__block clearfix">
+        <div class="contact-forms__block-l">
+            <?php echo $this->formRow($form->get('name')) ?>
+            <?php echo $this->formRow($form->get('template')) ?>
+        </div>
+    </div>
+    <div class="contact-forms__block clearfix">
+        <div class="contact-forms__block-title"><?php echo $this->translate('ContactForms:Recipient') ?></div>   
+        <div class="contact-forms__block-cols-wrap">
+            <div class="contact-forms__block-l">
+                <?php echo $this->formRow($form->get('recipient')) ?>
+                <?php echo $this->formRow($form->get('sender')) ?>
+                <?php echo $this->formRow($form->get('subject')) ?>
+            </div>
+            <div class="contact-forms__block-r">
+                <?php echo $this->formRow($form->get('mail_template')) ?>
+            </div>
+        </div>
+    </div>
+    <div class="contact-forms__block clearfix">
+        <div class="contact-forms__block-title"><?php echo $this->translate('ContactForms:Recipient-2') ?></div>
+        <div class="contact-forms__block-use-this" id="contact-forms__block-use-this">
+            <?php echo $this->formRow($form->get('use_recipient2')) ?>
+        </div>
+        <div class="contact-forms__block-cols-wrap">
+            <div class="contact-forms__block-l">
+                <?php echo $this->formRow($form->get('recipient2')) ?>
+                <?php echo $this->formRow($form->get('sender2')) ?>
+                <?php echo $this->formRow($form->get('subject2')) ?>
+            </div>
+            <div class="contact-forms__block-r">
+                <?php echo $this->formRow($form->get('mail_template2')) ?>
+            </div>
+        </div>
+    </div>
+    <div class="block__buttons">
+        <input type="submit" name="submit" id="submit" value="Сохранить">
+    </div>
+    <?php echo $this->form()->closeTag($form) ?>
+</div>

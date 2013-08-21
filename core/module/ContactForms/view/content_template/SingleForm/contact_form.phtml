@@ -1,0 +1,10 @@
+<?php
+
+if ($this->msg) {
+    echo '<div class="contact-forms__msg">' . $this->msg . '</div>';
+}
+if ($this->errMsg) {
+    echo '<div class="contact-forms__err-msg">' . $this->errMsg . '</div>';
+}
+
+echo $this->form_html;

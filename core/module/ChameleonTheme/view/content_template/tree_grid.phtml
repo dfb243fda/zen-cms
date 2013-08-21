@@ -1,0 +1,103 @@
+<?php
+
+$sm = $this->getHelperPluginManager()->getServiceLocator();
+
+//$publicResources = $sm->get('publicResources');
+
+//$publicResources->includeJS(array(
+//    'be-modul' => ROOT_URL_SEGMENT . '/js/ObjectTypes/object_types.js',
+//));
+
+//if (isset($this->jsInclude)) {
+//    $publicResources->includeJS($this->jsInclude);
+//}
+
+
+if (!isset($this->idField)) {
+    $this->idField = 'id';
+}
+if (!isset($this->treeField)) {
+    $this->treeField = 'name';
+}
+if (!isset($this->loadFilter)) {
+    $this->loadFilter = new Zend\Json\Expr('
+        function(data) {
+            data.page.items = zen.chameleonTheme.renderIcons(data.page.items);
+
+            var opts = $(this).treegrid(\'options\');
+            var originalData = $(this).treegrid(\'getData\');
+            if (originalData){
+                setState(data.page.items);
+            }
+            
+            function setState(data){
+                for(var i=0; i<data.length; i++){
+                    var node = data[i];
+                    var originalNode = findNode(node[opts.idField], originalData);
+                    if (originalNode){
+                        node.state =originalNode.state;
+                    }
+                    if (node.children){
+                        setState(node.children);
+                    }
+                }
+            }
+
+            function findNode(id, data){
+                var cc = [data];
+                while(cc.length){
+                    var c = cc.shift();
+                    for(var i=0; i<c.length; i++){
+                        var node = c[i];
+                        if (node[opts.idField] == id){
+                            return node;
+                        } else if (node[\'children\']){
+                            cc.push(node[\'children\']);
+                        }
+                    }
+                }
+                return null;
+            }
+
+            return data.page.items;
+        }
+    ');
+}
+
+/*
+if (!isset($data['onLoadSuccess'])) {
+    $data['onLoadSuccess'] = new Zend_Json_Expr('
+        function(row, param) { zen.chameleonTheme.treeGrid.enableDnd($(\'#easyui-tree-grid\')); }
+    ');
+}
+*/
+
+
+$data = array(
+    'idField' => $this->idField,
+    'treeField' => $this->treeField,
+    'loadFilter' => $this->loadFilter,
+    'url' => $this->url,
+    'columns' => $this->columns,
+);
+
+$jsonStr = Zend\Json\Json::encode($data, false, array('enableJsonExprFinder' => true));  
+
+$this->inlineScript()->appendScript('$(\'#easyui-tree-grid\').treegrid(' . $jsonStr . ');');
+
+//$publicResources->includeJSCallback(array(
+//    'be-modul' => array(
+//        array(
+//            'code' => '$(\'#easyui-tree-grid\').treegrid(' . $jsonStr . ');',
+//        ),      
+//   ),
+//));
+
+if (isset($this->createBtn)) {
+    echo '<div class="buttons">';
+    echo '<a href="' . $this->createBtn['link'] . '"><div class="btn__wrap"><div class="btn">' . $this->createBtn['text'] . '</div></div></a>';
+
+    echo '</div>';
+}
+
+echo '<div id="easyui-tree-grid"></div>'; 

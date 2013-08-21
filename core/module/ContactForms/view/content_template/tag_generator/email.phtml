@@ -1,0 +1,53 @@
+<div class="tag-generator__item tag-generator__item-email" id="tag-generator__item-email">
+	<div class="tag-generator__item-title"><?php echo $this->translate('ContactForms:Tag email') ?></div>
+	<div class="tag-generator__item-body" data-tag="email">
+		<div class="tag-generator__field-row">
+			<label><?php echo $this->translate('ContactForms:Is required') ?></label>
+			<input name="is_required" type="checkbox" />
+		</div>
+		<div class="tag-generator__field-row">
+			<label><?php echo $this->translate('ContactForms:Field name') ?></label>
+			<input name="name" type="text" value="email-<?php echo rand(0, 999) ?>" />
+		</div>
+		<div class="tag-generator__field-row clearfix">
+			<div class="tag-generator__field-row-2c-item">
+				<label><?php echo $this->translate('ContactForms:Attr id') ?></label>
+				<input name="id" type="text" />
+			</div>
+			<div class="tag-generator__field-row-2c-item">
+				<label><?php echo $this->translate('ContactForms:Attr class') ?></label>
+				<input name="class" type="text" />
+			</div>
+		</div>
+		<div class="tag-generator__field-row clearfix">
+			<div class="tag-generator__field-row-2c-item">
+				<label><?php echo $this->translate('ContactForms:Attr size') ?></label>
+				<input name="size" type="text" />
+			</div>
+			<div class="tag-generator__field-row-2c-item">
+				<label><?php echo $this->translate('ContactForms:Attr maxlength') ?></label>
+				<input name="maxlength" type="text" value="" />
+			</div>
+		</div>
+		<div class="tag-generator__field-row clearfix">
+			<div class="tag-generator__field-row-2c-item">
+				<label><?php echo $this->translate('ContactForms:Default val') ?></label>
+				<input name="default" type="text" />
+			</div>
+			<div class="tag-generator__field-row-2c-item">
+				<label><?php echo $this->translate('ContactForms:Attr is placeholder') ?></label>
+				<input name="is_placeholder" type="checkbox" value="1" />
+			</div>
+		</div>
+	</div>
+	<div class="tag-generator__item-res">
+		<div class="tag-generator__item-res1">
+			<label><?php echo $this->translate('ContactForms:Copy this to the left') ?></label>
+			<input type="text" readonly="readonly" name="text" value="" onfocus="this.select()" />
+		</div>
+		<div class="tag-generator__item-res2">
+			<label><?php echo $this->translate('ContactForms:Copy this to the bottom') ?></label>
+			<input type="text" readonly="readonly" name="text" value="" onfocus="this.select()" />
+		</div>
+	</div>
+</div>

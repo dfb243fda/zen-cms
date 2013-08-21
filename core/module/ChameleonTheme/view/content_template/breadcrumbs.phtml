@@ -1,0 +1,36 @@
+<?php
+
+if (empty($this->parents)) {
+    $data = array();
+}
+else {
+    $data = $this->parents;
+}
+
+$data[] = $this->page;
+
+$cnt = count($data);
+
+?>
+<div class="breadcrumbs__wrap">
+    <?php
+    if ($cnt > 1) :
+        ?>
+        <div class="breadcrumbs">
+            <?php
+                $i = 0;
+                foreach ($data as $k=>$v) :
+                    $i++;
+                    ?>
+                    <a href="<?php echo $v['link'] ?>"><?php echo $v['title'] ?></a>
+                    <?php
+                    if ($i != $cnt) :
+                        echo ' / ';
+                    endif;
+                endforeach;
+            ?>
+        </div>
+        <?php
+    endif;    
+    ?>
+</div>

@@ -1,0 +1,36 @@
+<div class="main-page__title1"><?php echo $this->translate('Welcome to zen-cms!') ?></div>
+<div class="main-page__title2"><?php echo $this->translate('List of active modules:') ?></div>
+<div class="extensions_list">
+    <?php
+    foreach ($this->modulesList as $ext_key=>$r) :
+        ?>
+        <div class="item">
+            <div class="title"><?php echo $r['title'] ?></div>
+            <div class="descr"><?php $r['description'] ?></div>
+            <div class="sub_items">
+                <?php
+                if (!empty($r['methods'])) :
+                ?>
+                <div class="group">
+                    <div class="group__title"><?php echo $this->translate('Methods') ?></div>
+                    <?php
+                    foreach ($r['methods'] as $modul=>$r2) :
+                    ?>					
+                    <div class="sub_item">
+                        <div class="title"><?php echo $r2['title'] ?></div>
+                        <div class="description"><?php echo $r2['description'] ?></div>
+                    </div>					
+                    <?php
+                    endforeach;
+                    ?>
+                </div>
+                <?php
+                endif;
+                ?>
+            </div>	
+        </div>
+        <?php
+    endforeach;
+    ?>
+</div>
+

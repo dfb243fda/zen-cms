@@ -1,0 +1,42 @@
+<?php
+
+    $this->headScript()
+        ->appendFile(ROOT_URL_SEGMENT . '/js/FeTheme/jquery.tagcanvas.js');
+    
+    $this->inlineScript()
+        ->appendScript('
+            if (! $(\'#tag_cloud_canvas\').css(\'display\', \'block\').tagcanvas({
+                    outlineThickness : 1,
+                    outlineColour: \'#6DA300\',
+                    maxSpeed : 0.012,
+                    initial : [0.8, -0.3],
+                    depth : 0.75,
+                    textFont : \'Arial\',
+                    textColour: \'#3C2800\',
+                    textHeight: 18,
+                    outlineMethod: \'classic\',
+                    wheelZoom : false,
+                    minBrightness : 0.6,
+                    reverse : true
+                }, \'tag_list\')  ) {
+
+                    $(\'#tag_cloud_canvas\').css(\'display\', \'none\');
+                }
+        ');
+
+?>
+
+<div class="tag_cloud" id="tag_cloud">
+    <canvas width="500" height="500" id="tag_cloud_canvas"></canvas>
+    <div class="tag_list" id="tag_list">
+        <ul>
+            <?php
+            
+            foreach ($this->items as $v) {
+                echo '<li><a href="' . $v['link'] . '" onclick="return zen.fe_theme.getAjaxContent(this.href);">' . $v['name'] . '</a></li>';
+            }
+            
+            ?>
+        </ul>
+    </div>
+</div>    

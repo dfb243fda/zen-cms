@@ -1,0 +1,55 @@
+<?php
+$this->headLink()->appendStylesheet($this->basePath('/css/Installer/install.css'));
+$this->headLink(array('rel' => 'icon', 'href' => $this->basePath('/img/Installer/favicon.ico')));
+
+$this->headTitle()->setSeparator(' - ');
+$this->headTitle('Zen-CMS');
+$this->headTitle($this->translate('Installer:System installation'));
+$this->headTitle($this->translate('Installer:Step 3'));
+
+$this->headMeta()->appendHttpEquiv('Content-Type', 'text/html; charset=UTF-8');
+$sm = $this->getHelperPluginManager()->getServiceLocator();
+?>
+<div class="container">
+    <div class="header clearfix">	
+        <img alt="Chameleon CMS" style="background-color: rgb(136, 136, 136)" src="<?php echo $this->basePath('/img/core/pixel.gif') ?>" class="logo" id="logo">
+    </div>
+    <?php echo $this->partial('content_template/Installer/steps.phtml', array('currentStep' => 3)); ?>
+    <div class="content">
+        <div class="content__title"><?php echo $this->translate('Installer check server') ?></div>
+        <?php
+        if (!empty($this->msg)) :
+            ?>
+            <div class="content__msg">
+                <?php foreach ($this->msg as $msg) : ?>
+                <div class="content__msg-item"><?php echo $msg ?></div>
+                <?php endforeach; ?>
+            </div>
+            <?php
+        endif;
+        ?>
+        <div class="content__body">
+            <div class="check-result">
+            <?php                        
+            foreach ($this->checkResult['items'] as $item) :   
+                ?>
+                <div class="check-result__item"> 
+                    <?php echo $item['title'] ?>
+                    <img class="check-result__item-icon" src="<?php echo $this->basePath('/img/Installer/' . ($item['success'] ? 'checkon.gif' : 'checkoff.gif')) ?>" alt="" />
+                </div> 
+                <?php
+            endforeach;              
+            ?>
+            </div>
+            <div class="form-element form-element__submit">
+                <?php if ($this->checkResult['success']) : ?>
+                <form method="post">
+                    <input type="submit" value="<?php echo $this->translate('Installer next button') ?>" />
+                </form>
+                <?php else : ?>
+                <input type="button" value="<?php echo $this->translate('Installer refresh button') ?>" onclick="window.location.href=window.location.href;" />
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>

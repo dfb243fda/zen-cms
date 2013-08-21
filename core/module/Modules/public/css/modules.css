@@ -1,0 +1,172 @@
+.modules_list td {
+    border: 1px dotted rgb(187, 187, 187);
+	vertical-align: middle;
+    padding: 3px 5px;
+}
+.modules_list th {
+    text-align: left;
+    font-weight: bold;
+    padding: 6px 15px;
+}
+    .modules-list__icon {
+        width: 20px;
+        height: 20px;
+        background: url('../../img/Modules/icons.png');
+        margin-right: 3px;
+    }
+    .modules-list__icon-required {
+        background-position: -40px 0;
+    }
+        .modules-list__icon-required:hover {
+            background-position: -40px 20px;
+        }
+    .modules-list__icon-activate {
+        background-position: -80px 0;
+    }    
+        .modules-list__icon-activate:hover {
+            background-position: -80px 20px;
+        }        
+    .modules-list__icon-deactivate {
+        background-position: -60px 0;
+    }  
+        .modules-list__icon-deactivate:hover {
+            background-position: -60px 20px;
+        }    
+    .modules-list__icon-install {
+        background-position: -20px 0;
+    }    
+        .modules-list__icon-install:hover {
+            background-position: -20px 20px;
+        }
+    .modules-list__icon-uninstall {
+        background-position: 0 0;    
+    }
+        .modules-list__icon-uninstall:hover {
+            background-position: 0 20px;
+        }
+.modules_list__tr-installed_and_activated {
+    color: #37A014;
+}        
+    .modules_list__tr-installed_and_activated a {
+        color: #37A014;
+		text-decoration: underline;
+    }
+        .modules_list__tr-installed_and_activated a:hover {
+            color: #1A10E5;
+            text-decoration: none;
+        }    
+.modules_list__tr-installed_and_deactivated {
+    color: #ADADAD;
+}    
+    .modules_list__tr-installed_and_deactivated a {
+        color: #ADADAD;
+		text-decoration: underline;
+    }
+        .modules_list__tr-installed_and_deactivated a:hover {
+            color: #1A10E5;
+            text-decoration: none;
+        }
+.modules_list__tr-not_installed {
+    color: #B51717;
+}        
+    .modules_list__tr-not_installed a {
+        color: #B51717;
+		text-decoration: underline;
+    }
+        .modules_list__tr-not_installed a:hover {
+            color: #1A10E5;
+			text-decoration: none;
+        }
+        
+
+.module-info__title {
+    font-weight: bold;
+	font-size: 1.1em;
+	color: #1A10E5;
+	margin-bottom: 5px;
+}        
+.module-info__desc {
+    border-bottom: 1px dotted #BBBBBB;
+	margin-bottom: 10px;
+	padding-bottom: 5px;
+}
+.module-info__methods-title {
+    color: #960000;
+    font-weight: bold;
+    border-bottom: 1px dotted #BBBBBB;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+}
+
+.module-info__method-title {
+    font-weight: bold;     
+}
+.module-info__method-desc {
+    border-bottom: 1px dotted #BBBBBB;
+    margin-bottom: 3px;
+    padding-bottom: 4px;
+}
+
+.db_updates,
+.full-update,
+.module-info__methods {
+    margin-bottom: 15px;
+}
+.db_updates__title,
+.full-update__title,
+.module-info__files-diff-title {
+    border-bottom: 1px dotted #BBBBBB;
+    color: #960000;
+    font-weight: bold;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+}
+.db_updates__body-item {
+    border-bottom: 1px dotted #BBBBBB;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    line-height:  1.5em;
+}
+.db_updates__body-item input {
+    float: left;    
+    vertical-align: middle;
+}
+.db_updates__body-item label {
+    margin-left: 30px;
+    display: block;
+    vertical-align: middle;
+}
+
+.module-info__files-diff-item-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.module-info__files-diff-item-body th {
+    font-weight: bold;
+}
+.module-info__files-diff-item-body td,
+.module-info__files-diff-item-body th {
+    border: 1px dotted #BBBBBB;
+    padding: 5px;
+}
+.module-info__files-diff-item-body {
+    margin-bottom: 15px;
+}
+.module-info__files-diff-item-state_removed {
+    color: #960000;
+}
+.module-info__files-diff-item-state_modified {
+    color: #E05D1B;
+}
+.module-info__files-diff-item {
+    margin-bottom: 15px;
+}
+.module-info__msg {
+    border: 1px dotted #BBBBBB;
+    padding: 10px;
+    display: inline-block;
+    background-color: #FCFF9C;
+}
+.db_updates__body-item-desc {
+    margin-left: 30px;
+}

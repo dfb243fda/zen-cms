@@ -1,0 +1,11 @@
+<?php
+    $this->headTitle()->setSeparator(' - ');
+    $this->headTitle('Zen-CMS');
+    $this->headTitle($this->translate('Rbac:Access forbidden'));
+    
+    $this->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=utf-8');
+    $this->headLink(array('rel' => 'icon', 'href' => ROOT_URL_SEGMENT . '/img/Rbac/favicon.ico'));   
+    
+    $this->headLink()->appendStylesheet($this->basePath('/css/Rbac/403.css'));
+?>
+<img src="<?php echo $this->basePath('/img/Rbac/403.jpg') ?>" alt="Access denied" />

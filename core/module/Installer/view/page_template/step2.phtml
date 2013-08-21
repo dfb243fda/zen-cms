@@ -1,0 +1,61 @@
+<?php
+$this->headLink()->appendStylesheet($this->basePath('/css/Installer/install.css'));
+$this->headLink(array('rel' => 'icon', 'href' => $this->basePath('/img/Installer/favicon.ico')));
+
+$this->headTitle()->setSeparator(' - ');
+$this->headTitle('Zen-CMS');
+$this->headTitle($this->translate('Installer:System installation'));
+$this->headTitle($this->translate('Installer:Step 2'));
+
+$this->headMeta()->appendHttpEquiv('Content-Type', 'text/html; charset=UTF-8');
+$sm = $this->getHelperPluginManager()->getServiceLocator();
+?>
+<div class="container">
+    <div class="header clearfix">	
+        <img alt="Chameleon CMS" style="background-color: rgb(136, 136, 136)" src="<?php echo $this->basePath('/img/core/pixel.gif') ?>" class="logo" id="logo">
+    </div>
+    <?php echo $this->partial('content_template/Installer/steps.phtml', array('currentStep' => 2)); ?>
+    <div class="content">
+        <div class="content__title"><?php echo $this->translate('Installer DB settings') ?></div>
+        <?php
+        if (!empty($this->msg)) :
+            ?>
+            <div class="content__msg">
+                <?php foreach ($this->msg as $msg) : ?>
+                <div class="content__msg-item"><?php echo $msg ?></div>
+                <?php endforeach; ?>
+            </div>
+            <?php
+        endif;
+        ?>
+        <div class="content__sub-title"><?php echo $this->translate('Installer DB settings subtitle') ?></div>
+        <div class="content__body form-wrap">
+            <?php
+            $factory = new Zend\Form\Factory($sm->get('FormElementManager'));
+            $formConfig = $this->formConfig;
+
+            $form = $factory->createForm($formConfig);    
+            $form->setAttribute('class', 'form-3c');
+            $form->setData($this->formValues);
+            $form->prepare();
+
+            if (!empty($this->formMsg)) {
+                $form->setMessages($this->formMsg);
+            }
+            
+            echo $this->form()->openTag($form);
+            
+            foreach ($form->getElements() as $el) :   
+                echo $this->formElementWrapper3C($el);
+            endforeach;
+            
+            ?>
+            <div class="form-element form-element__submit">
+                <input type="submit" value="<?php echo $this->translate('Installer next button') ?>" />
+            </div>
+            <?php
+            echo $this->form()->closeTag($form); 
+            ?>
+        </div>
+    </div>
+</div>

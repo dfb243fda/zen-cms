@@ -1,0 +1,75 @@
+<?php
+
+$this->headTitle()->setSeparator(' - ');
+$this->headTitle('Zen-CMS');
+$this->headTitle('Административная панель');
+$this->headTitle($this->page['title']);
+$this->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=utf-8');
+$this->headMeta()->appendHttpEquiv('X-UA-Compatible', 'IE=edge');
+$this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1');
+$this->headLink(array('rel' => 'icon', 'href' => ROOT_URL_SEGMENT . '/img/ChameleonTheme/favicon.ico'));  
+
+$this->headLink(array('rel' => 'canonical', 'href' => $this->page['canonicalUrl']));  
+
+
+$sm = $this->getHelperPluginManager()->getServiceLocator();
+
+//$layout = $this->layout();
+
+$this->inlineScript()->prependFile($this->basePath('/js/core/jquery_plugins/fancybox/jquery.fancybox.pack.js'))
+                   ->prependFile($this->basePath('/js/core/jquery_plugins/jquery-toastmessage-plugin/javascript/jquery.toastmessage.js'))
+                   ->prependFile($this->basePath('/js/core/jquery_plugins/jquery.alerts-1.1/jquery.alerts.js'))
+                   ->prependFile($this->basePath('/js/core/jquery_ui/jquery-ui-1.9.2/js/jquery-ui-1.9.2.custom.min.js'))
+                   ->prependFile($this->basePath('/js/core/jquery_easy_ui_1.3.1/locale/easyui-lang-ru.js'))
+                   ->prependFile($this->basePath('/js/core/jquery_easy_ui_1.3.1/jquery.easyui.min.js'))
+                   ->prependFile($this->basePath('/js/ChameleonTheme/chameleon_theme.js'))
+                   ->prependFile($this->basePath('/js/core/zen_base.js'))
+                   ->prependFile($this->basePath('/js/core/jquery_plugins/jquery.form.js'))
+                   ->prependFile($this->basePath('/js/core/jquery/jquery-1.8.3.min.js'))
+                   ->prependFile($this->basePath('/js/core/modernizr.js'))
+                   ->appendScript('zen.chameleonTheme.init({baseUrl: "' . $this->basePath() . '"});');
+                   
+
+$this->headLink()->prependStylesheet($this->basePath('/js/core/jquery_plugins/fancybox/jquery.fancybox.css'))
+                 ->prependStylesheet($this->basePath('/js/core/jquery_plugins/fancybox/jquery.fancybox.css'))
+                 ->prependStylesheet($this->basePath('/js/core/jquery_plugins/jquery-toastmessage-plugin/resources/css/jquery.toastmessage.css'))
+                 ->prependStylesheet($this->basePath('/js/core/jquery_plugins/jquery.alerts-1.1/jquery.alerts.css'))
+                 ->prependStylesheet($this->basePath('/css/ChameleonTheme/main.css'))
+                 ->prependStylesheet($this->basePath('/js/core/jquery_ui/jquery-ui-1.9.2/css/smoothness/jquery-ui-1.9.2.custom.min.css'))
+                 ->prependStylesheet($this->basePath('/js/core/jquery_easy_ui_1.3.1/themes/metro/easyui.css'));
+          
+
+?>
+<?php 
+    if (isset($this->errors)) {
+        echo $this->partial('content_template/ChameleonTheme/errors.phtml', $this->errors);
+    }
+?>
+<div id="loading-msg" class="loading-msg"><?php echo $this->translate('Loading') ?></div>
+<div class="container">
+    <div class="header clearfix">	
+        <?php 
+        echo $this->partial('content_template/ChameleonTheme/breadcrumbs.phtml', array(
+            'parents' => $this->parents,
+            'page' => $this->page
+        ));        
+        echo $this->partial('content_template/ChameleonTheme/login_block.phtml', $this->user);             
+        ?>
+        <a href="<?php echo $this->url('admin') ?>">
+            <img id="logo" class="logo" src="<?php echo ROOT_URL_SEGMENT . '/img/core/pixel.gif'; ?>" style="background-color: #000" alt="Chameleon CMS" />
+        </a>
+    </div>	
+    <table class="main_content_table">
+        <tr>
+            <td class="main_content_table__l">				
+                <?php echo $this->executeMethod('ChameleonTheme\Method\AdminMainMenu', array(), 'content_template/ChameleonTheme/main_menu.phtml'); ?>
+            </td>
+            <td class="main_content_table__r">
+                <?php echo $this->partial('content_template/ChameleonTheme/content.phtml', $this->page); ?>
+            </td>
+        </tr>
+    </table>
+    <div class="footer">
+        <?php echo $this->partial('content_template/ChameleonTheme/page_info.phtml', $this->systemInfo); ?>
+    </div>
+</div>

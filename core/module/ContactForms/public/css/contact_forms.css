@@ -1,0 +1,127 @@
+.contact-forms__block {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px dotted #BBBBBB;
+}
+.contact-forms__block-l {
+    float: left;
+    width: 48%;
+    margin-right: 2%;
+}
+.contact-forms__block-r {
+    float: left;
+    width: 48%;
+    margin-right: 2%;
+}
+.contact-forms__block-l label {
+    display: block;
+    margin-bottom: 10px;
+}
+.contact-forms__block-l label > span {
+    display: block;
+}
+
+.contact-forms__block input[type=text],
+.contact-forms__block textarea {
+    width: 100%;
+}
+.contact-forms__block textarea {    
+    height: 300px;
+}
+
+.contact-forms__block-title {
+    border-bottom: 1px dotted #BBBBBB;
+    color: #1A10E5;
+    font: bold 1.05em Georgia;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+}
+.contact-forms__block-use-this {
+    margin-bottom: 10px;
+}
+.contact-forms__block .input-error {
+    background-color: #FFC2CD;
+}
+.contact-forms__block li {
+    color: red;
+}
+
+.tag-generator {
+    float: right;
+    width: 50%;
+}
+.tag-generator input[type="text"], .tag-generator textarea {
+    width: 100%;
+}
+.tag-generator__title {
+    border-bottom: 1px dotted #BBBBBB;
+    color: #960000;
+    font: bold 1.05em Georgia;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+}
+
+.tag-generator__item {
+    display: none;
+    border: 1px dotted #BBBBBB;
+    padding: 10px 15px;
+}
+.tag-generator__select-wrap {
+    margin-bottom: 15px;
+}
+
+
+
+.tag-generator__item-title {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px dotted #BBBBBB;
+    
+}
+
+.tag-generator__field-row {
+    margin-bottom: 15px;
+}
+.tag-generator__field-row label {
+    display: block;
+    margin-bottom: 7px;
+}
+.tag-generator__field-row-2c-item {
+    float: left;
+    width: 48%;
+    margin-right: 2%;
+}
+
+.tag-generator__item-res1 {
+    margin-bottom: 10px;
+}
+.tag-generator__item-res1 label {
+    display: block;
+    margin-bottom: 5px;
+}
+.tag-generator .tag-generator__item-res1 input,
+.tag-generator .tag-generator__item-res2 input {
+    width: 50%;
+    background-color: #CCC;
+}
+.tag-generator .tag-generator__item-body textarea {
+    height: 120px;
+}
+
+.tag-generator__item-res2 {
+    text-align: right;
+}
+.tag-generator__item-res2 label {
+    display: block;
+    margin-bottom: 5px;
+}
+.tag-generator__item-res2 input {
+    width: 50%;
+    background-color: #CCC;
+}
+.contact-forms__block label > span {
+    display: block;
+    margin-bottom: 5px;
+}

@@ -1,0 +1,145 @@
+<?php
+
+$this->headTitle()->setSeparator(' - ');
+$this->headTitle('Zen-CMS');
+$this->headTitle($this->page['title']);
+$this->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=utf-8');
+$this->headLink(array('rel' => 'icon', 'href' => ROOT_URL_SEGMENT . '/img/ChameleonTheme/favicon.ico'));  
+
+$this->headScript()->prependFile(ROOT_URL_SEGMENT . '/js/core/zen_base.js')->prependFile(ROOT_URL_SEGMENT . '/js/core/jquery/jquery-1.8.3.min.js');
+
+$this->headLink()->prependStylesheet(ROOT_URL_SEGMENT . '/css/FeTheme/main.css');
+?>
+
+<div class="container">
+    <div class="header clearfix">
+        <img class="header__logo" src="<?php echo $this->basePath('/img/FeTheme/logo.png') ?>" alt="" />
+        <div class="header__desc">МОДУЛЬНЫЕ<br />ДЫМОХОДНЫЕ<br />СИСТЕМЫ</div>
+        <div class="header__info">
+            <div class="header__info-pc"><a href="#">Личный кабинет</a></div>
+            <div class="header__info-current-reg">Республика Башкортостан</div>
+            <div class="header__info-change-reg"><a href="#">другой регион</a></div>
+            <div class="header__info-phone">8 347 <span class="header__info-phone-big">271-46-46</span></div>
+            <div class="header__info-search">
+                <div class="header__info-search-inside">
+                    <input type="text" />
+                </div>
+            </div>
+        </div>                
+    </div>
+    <div class="top-menu">
+        <ul class="top-menu__inside clearfix">
+            <li class="top-menu__item-first"><a href="#">О компании</a></li>
+            <li class="top-menu__item-act"><a href="#">Новости</a></li>
+            <li><a href="#">Каталог</a></li>
+            <li><a href="#">Дилеры</a></li>
+            <li><a href="#">Сервис</a></li>
+            <li><a href="#">Сертификаты</a></li>
+            <li class="top-menu__item-last"><a href="#">Контакты</a></li>
+        </ul>
+    </div>
+    <div class="top-slider">
+    </div>
+    <div class="body-item">
+        <div class="body-item__menu">
+            <div class="body-item__menu-inside clearfix">
+                <div class="body-item__menu-item body-item__menu-item-active">Каталог</div>
+            </div>
+        </div>
+        <div class="body-item__content clearfix">
+            <div class="content-l">
+                <div class="catalog clearfix">
+                    <div class="catalog__item">
+                        <img class="catalog__item-img" src="<?php echo $this->basePath('/img/FeTheme/catalog-item.png') ?>" alt="" />
+                        <div class="catalog__item-title">Одностенные дымоходы</div>
+                        <div class="catalog__item-body">
+                            <div><a href="#">Оголовники</a></div>
+                            <div><a href="#">Тройники</a></div>
+                            <div><a href="#">Углы</a></div>
+                        </div>
+                    </div>
+                    <div class="catalog__item">
+                        <img class="catalog__item-img" src="<?php echo $this->basePath('/img/FeTheme/catalog-item2.png') ?>" alt="" />
+                        <div class="catalog__item-title">Одностенные дымоходы</div>
+                        <div class="catalog__item-body">
+                            <div><a href="#">Оголовники</a></div>
+                            <div><a href="#">Тройники</a></div>
+                            <div><a href="#">Углы</a></div>
+                        </div>
+                    </div>
+                    <div class="catalog__item">
+                        <img class="catalog__item-img" src="<?php echo $this->basePath('/img/FeTheme/catalog-item3.png') ?>" alt="" />
+                        <div class="catalog__item-title">Трехстенные дымоходы</div>
+                        <div class="catalog__item-body">
+                            <div><a href="#">Оголовники</a></div>
+                            <div><a href="#">Тройники</a></div>
+                            <div><a href="#">Углы</a></div>
+                        </div>
+                    </div>
+                    <div class="catalog__item">
+                        <img class="catalog__item-img" src="<?php echo $this->basePath('/img/FeTheme/catalog-item4.png') ?>" alt="" />
+                        <div class="catalog__item-title">Четырехстенные дымоходы</div>
+                        <div class="catalog__item-body">
+                            <div><a href="#">Оголовники</a></div>
+                            <div><a href="#">Тройники</a></div>
+                            <div><a href="#">Углы</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-r">
+                <div class="online-cons">
+                    <div class="online-cons__inside">Онлайн консультант</div>
+                </div>
+                <div class="dilers-title">Дилеры вышего региона</div>
+                <div class="diler">ООО ТД "Сферра"</div>
+                <div class="diler">ООО "Экотайм"</div>
+                <div class="how_to_be_diler">
+                    <a href="#">Как стать дилером?</a>
+                </div>
+                <div class="order">
+                    <div class="order__inside">Оформить заказ</div>
+                </div>
+                <img src="<?php echo $this->basePath('/img/FeTheme/constructor.png') ?>" alt="" />
+            </div>
+        </div>
+    </div>
+    <div class="body-item clearfix">
+        <div class="body-item__menu">
+            <div class="body-item__menu-inside clearfix">
+                <div class="body-item__menu-item body-item__menu-item-active">Новости</div>
+                <div class="body-item__menu-items">События &nbsp; / &nbsp; Выставки &nbsp; / &nbsp; Корпоративная жизнь &nbsp; / &nbsp; Лица предприятия</div>
+            </div>
+        </div>
+        <div class="body-item__content clearfix">
+            <div class="content-l">
+                <div class="news clearfix">
+                    <div class="news__item">
+                        <div class="news__item-title">Скоро выйдет обновленный сайт</div>
+                        <div class="news__item-info">15.04.03 / Уфа / События</div>
+                        <img class="news__item-img" src="<?php echo $this->basePath('/img/FeTheme/news-item2.png') ?>" alt="" />
+                    </div>
+                    <div class="news__item">
+                        <div class="news__item-title">Дым без огня</div>
+                        <div class="news__item-info">15.04.03 / Уфа / События</div>
+                        <img class="news__item-img" src="<?php echo $this->basePath('/img/FeTheme/news-item.png') ?>" alt="" />
+                    </div>
+                    <div class="news__item">
+                        <div class="news__item-title">Пляшем от печки</div>
+                        <div class="news__item-info">15.04.03 / Уфа / События</div>
+                        <img class="news__item-img" src="<?php echo $this->basePath('/img/FeTheme/news-item3.png') ?>" alt="" />
+                    </div>
+                    <div class="news__item">
+                        <div class="news__item-title">Их дело - труба</div>
+                        <div class="news__item-info">15.04.03 / Уфа / События</div>
+                        <img class="news__item-img" src="<?php echo $this->basePath('/img/FeTheme/news-item4.png') ?>" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="content-r">
+                <img src="<?php echo $this->basePath('/img/FeTheme/right-banner.gif') ?>" alt="" style="margin-left: -15px;" />
+            </div>
+        </div>
+    </div>            
+</div>
+<div class="footer"></div>

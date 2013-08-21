@@ -1,0 +1,234 @@
+/* reset */
+
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/* reset */
+
+.clearfix:after {
+    content:"\0020";
+    display:block;
+    height:0;
+    clear:both;
+    visibility:hidden;
+    overflow:hidden;
+}
+.clearfix {
+    display:block;
+}
+.clear {
+    clear:both;
+}
+.left {
+    float:left;
+}
+.right {
+    float:right;
+}
+.hide {
+    display: none;
+}
+
+
+body {
+	background: none repeat scroll 0 0 #FFFFFF;
+    color: #464646;
+    font: 0.82em Arial,Helvetica,sans-serif;
+}
+
+a, .link {
+	color: #464646;
+	text-decoration: none;
+	outline: none;
+	cursor: pointer;
+}
+	a:hover,
+	a.active,
+	.link:hover,
+	.link.active {
+		color:#1A10E5;
+	}
+ 
+.container {
+	margin: 0 auto;
+    width: 1100px;
+    padding-top: 10px;
+}
+.logo {
+    margin-right: 200px;
+    width: 170px;
+    height: 116px;
+    background: url("../../img/Installer/logo.png") 0 0;
+}
+.header {
+    margin-bottom: 15px;
+}
+.steps {
+    margin: 0 auto 15px;
+    border: 1px dotted rgb(187, 187, 187);	
+    border-radius: 10px;
+}
+.steps__item {
+    float: left;
+    min-width: 12%;
+    padding: 10px;
+    text-align: center;
+}
+.steps__item-act {
+    font-weight: bold;
+    color: #960000;
+}
+
+.content__title {
+    text-align: center;
+    font-size: 1.4em;
+    color: #1A10E5;
+    margin-bottom: 15px;
+}
+
+
+.content__sub-title {
+    font-size: 1.3em;
+    margin-bottom: 50px;
+}
+
+
+.form-element__errors li {
+    display: block;
+    color: #FF2D2D;
+    margin-bottom: 5px;
+}
+    
+.form-3c .form-3c-element {  
+    margin-bottom: 25px;
+    font-size: 1.2em;
+}
+    .form-3c .form-3c-element a {
+        text-decoration: underline;
+    }
+.form-3c .form-3c-element__col-1,
+.form-3c .form-3c-element__col-2,
+.form-3c .form-3c-element__col-3 {
+    float: left;
+    width: 33%;
+}
+
+.form-3c input[type=text],
+.form-3c select {
+    width: 200px;
+}
+
+
+
+.content__msg {
+    
+}
+.content__msg-item {
+    padding: 10px;
+    border: 1px dotted rgb(187, 187, 187);	
+    background-color: #FFFC57;
+    margin-bottom: 15px;
+}
+
+.check-result {
+    padding: 10px;
+    border: 1px dotted rgb(187, 187, 187);	
+    margin-bottom: 15px;
+}
+
+.check-result__item {
+    padding: 10px;
+    border-bottom: 1px dotted rgb(187, 187, 187);	
+    line-height: 2em;
+    vertical-align: middle;
+    font-size: 1.2em;
+}
+.check-result__item-icon {
+    float: right;
+}
+
+.install-system-msg {
+    font-size: 1.2em;
+    margin-bottom: 15px;
+}
+
+.demo-sites__item {
+    float: left;
+    width: 25%;
+    text-align: center;
+}
+.demo-sites__item label {
+    display: block;
+    text-align: center;
+    margin-bottom: 5px;
+}
+.demo-sites__item input[type=radio] {
+    display: block;
+    width: 100%;
+    
+    margin-bottom: 5px;
+}
+.demo-sites__item img {
+    
+}
+
+.install-complete {
+    width: 250px;
+    height: 150px;
+    border: 1px dotted rgb(187, 187, 187);	
+    margin: 0 auto;
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+.install-complete__inside {
+    padding: 15px;
+}
+.install-complete a {
+    text-decoration: underline;
+}

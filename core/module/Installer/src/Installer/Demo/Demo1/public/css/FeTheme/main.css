@@ -1,0 +1,380 @@
+/* reset */
+
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/* reset */
+
+.clearfix:after {
+    content:"\0020";
+    display:block;
+    height:0;
+    clear:both;
+    visibility:hidden;
+    overflow:hidden;
+}
+.clearfix {
+    display:block;
+}
+.clear {
+    clear:both;
+}
+.left {
+    float:left;
+}
+.right {
+    float:right;
+}
+.hide {
+    display: none;
+}
+
+body {
+    background: url("../../img/FeTheme/bg.png") 50% 0 no-repeat;
+}
+
+@font-face {
+    font-family: Calibri; /* Имя шрифта */
+    src: url(../../fonts/FeTheme/CALIBRI.TTF); /* Путь к файлу со шрифтом */
+}
+@font-face {
+    font-family: Calibri; /* Имя шрифта */
+    font-weight: bold;
+    src: url(../../fonts/FeTheme/CALIBRIB.TTF); /* Путь к файлу со шрифтом */
+}
+@font-face {
+    font-family: Calibri; /* Имя шрифта */
+    font-style: italic;
+    src: url(../../fonts/FeTheme/CALIBRII.TTF); /* Путь к файлу со шрифтом */
+}
+@font-face {
+    font-family: MinionPro-Regular; /* Имя шрифта */
+    src: url(../../fonts/FeTheme/MinionPro-Regular.otf); /* Путь к файлу со шрифтом */
+}
+@font-face {
+    font-family: MyriadPro-Cond; /* Имя шрифта */
+    src: url(../../fonts/FeTheme/MyriadPro-Cond.otf); /* Путь к файлу со шрифтом */
+}
+
+.container {
+    margin: 0 auto 50px;
+    width: 984px;
+    font-family: Calibri;
+}
+.header {
+    margin-top: 54px;
+    position: relative;
+}
+    .header__logo {
+        float: left;
+        margin-left: 55px;
+    }
+    .header__desc {
+        float: left;
+        font-family: Calibri;
+        font-weight: bold;
+        font-size: 2.05em;
+        line-height: 1.2em;
+        margin-left: 48px;
+        margin-top: -2px;
+        letter-spacing: 1px;
+    }
+    .header__info {
+        background: url("../../img/FeTheme/2px50a.png") repeat;
+        padding: 5px 5px 5px 0;
+        border-radius: 5px;
+        font-size: 0.9em;      
+        position: absolute;
+        right: 23px;
+        top: -9px;
+    }
+    .header__info-pc {
+        text-align: right;
+        margin-bottom: 35px;
+        margin-right: 17px;
+        margin-top: 11px;
+    }
+        .header__info-pc a {
+            color: #980202;
+            font-weight: bold;
+        }
+        
+    .header__info-current-reg {
+        text-align: right;  
+        font-weight: bold;
+        margin-bottom: 5px;
+        margin-right: 17px;
+    }    
+    .header__info-change-reg {
+        text-align: right;  
+        margin-bottom: 17px;
+        margin-right: 17px;
+    }
+        .header__info-change-reg a {
+            color: #7f8e8f;
+        }
+    .header__info-phone {
+        color: #d51500;
+        font-size: 1.5em;
+        font-weight: bold;
+        text-align: right;
+        margin-bottom: 38px;
+        margin-right: 17px;
+    }    
+        .header__info-phone-big {
+            font-size: 1.7em;
+        }
+    .header__info-search {
+        float: right;
+    }    
+        .header__info-search-inside {
+            width: 240px;
+            height: 30px;
+            background-image: url("../../img/FeTheme/search-input.png");
+        }    
+            .header__info-search-inside input {
+                margin-left: 15px;
+                margin-top: 5px;
+                width: 170px;
+                border: none;
+            }
+    .top-menu {
+        margin-bottom: 36px;
+        margin-left: 41px;
+        margin-top: 27px;
+        font-size: 0.95em;
+    }        
+        .top-menu__inside {
+            background: url("../../img/FeTheme/menu_bg.png") repeat-x;
+            border-radius: 13px;
+            padding: 0 5px;
+            display: inline-block;
+        }
+            .top-menu__inside li {
+                font-size: 1.07em;
+                padding: 9px 13px 13px;
+                border-right: 1px inset #000;
+                float: left;
+            }
+            .top-menu__inside .top-menu__item-first {
+                padding-left: 15px;
+            }
+            .top-menu__inside .top-menu__item-last {
+                padding-right: 13px;
+                border-right: none;
+            }
+            .top-menu__item-act {
+                background: url("../../img/FeTheme/menu_bg_act.png") repeat-x;                
+            }            
+                .top-menu__inside li a {
+                    color: #000;
+                    text-decoration: none;
+                }
+                .top-menu__inside .top-menu__item-act a {
+                    color: #fff;
+                }
+               
+    .top-slider {
+        height: 233px;
+        background-color: #979797;
+        opacity: 0.7;
+        margin-bottom: 9px;
+    }            
+    
+.body-item {
+    background: url("../../img/FeTheme/body-line.png") no-repeat;
+ /*   padding-top: 56px;*/
+}    
+.body-item__menu {
+    margin-bottom: 61px;
+    margin-left: 64px;
+    padding-top: 15px;
+}
+    .body-item__menu-item {
+        float: left;
+        color: #cccaca;
+    }
+    .body-item__menu-items {
+        float: left;
+        color: red;
+        margin-left: 58px;
+        margin-top: -1px;
+        font-size: 1.2em;
+        letter-spacing: -1px;
+    }
+    .body-item__menu-item-active {        
+        font-size: 1.8em;
+        font-weight: bold;
+        color: red;
+   /*     background: url("../img/body-line.png") -20px; */
+  /*      padding: 5px 25px;
+        color: red;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        margin-right: 10px;*/
+    }
+    
+.body-item__content {
+}    
+    
+.content-l {
+    border-right: 1px solid #E8E8E8;
+    float: left;
+    padding-left: 3.5%;
+    width: 70.4%;
+}    
+.content-r {
+    float: right;
+    width: 23%;
+    padding-left: 3%;
+}
+.catalog__item {
+    float: left;
+    width: 47%;
+    margin-bottom: 70px;
+}
+    .catalog__item-img {
+        float: left;
+    }
+    .catalog__item-title {
+        font-size: 1.3em;
+        font-weight: bold;
+        margin-bottom: 8px;
+        margin-left: 150px;
+    }
+    .catalog__item-body {
+        margin-left: 150px;
+        font-size: 1.1em;
+    }
+    .catalog__item-body div {
+        margin-bottom: 4px;
+    }
+        .catalog__item-body a {
+            color: #980202;
+            text-decoration: none;
+        }
+        
+        
+.online-cons {
+    margin-bottom: 20px;
+}       
+    .online-cons__inside,
+    .order__inside {
+        line-height: 1.2em;
+        width: 187px;
+        height: 28px;
+        text-align: center;
+        padding-top: 9px;
+        background-image: url("../../img/FeTheme/order-btn.png");
+        color: #fff;
+    }
+        .online-cons__inside:hover,
+        .order__inside:hover {
+            background-position: 0 37px;
+        }
+.dilers-title {
+    color: #980202;
+    margin-bottom: 10px;
+}
+.diler {
+    margin-left: 15px;
+    font-size: 1.05em;
+    margin-bottom: 5px;
+    text-decoration: underline;
+}
+.how_to_be_diler {    
+    margin-left: 15px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+    .how_to_be_diler a {
+        color: #bbbbbb;
+    }
+
+.order {
+    margin-bottom: 30px;
+}
+
+.news {
+    margin-bottom: 20px;
+}
+.news__item {
+    float: left;
+    width: 50%;
+    margin-bottom: 15px;
+    height: 250px;
+}
+.news__item-title {
+    color: #980202;
+    text-decoration: underline;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    margin-bottom: 3px;
+    font-weight: bold;
+}
+.news__item-info {
+    color:#979797;
+    margin-bottom: 10px;
+}
+.footer {
+    height: 232px;
+    background-image: url("../../img/FeTheme/footer-bg.png");
+}
+
+
+/*
+@media screen and (min-width: 1280px) {
+    body {
+        background: url("../img/bg1240.png") 50% 0;
+    }
+    
+    .container {
+        width: 1240px;
+    }
+}*/

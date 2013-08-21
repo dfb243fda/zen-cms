@@ -1,0 +1,40 @@
+<div class="tag-generator">
+    <div class="tag-generator__title"><?php echo $this->translate('ContactForms:Tag generator title') ?></div>
+    <div class="tag-generator__select-wrap">
+        <select id="tag-generator__select">
+            <option value=""><?php echo $this->translate('ContactForms:Generate tag') ?></option>
+            <option value="text"><?php echo $this->translate('ContactForms:Tag text') ?></option>
+            <option value="textarea"><?php echo $this->translate('ContactForms:Tag textarea') ?></option>    
+            <option value="email"><?php echo $this->translate('ContactForms:Tag email') ?></option>
+            <option value="url"><?php echo $this->translate('ContactForms:Tag url') ?></option>
+
+            <option value="select"><?php echo $this->translate('ContactForms:Tag select') ?></option>
+            <option value="checkboxes"><?php echo $this->translate('ContactForms:Tag checkboxes') ?></option>
+            <option value="radio"><?php echo $this->translate('ContactForms:Tag radio') ?></option>
+
+            <option value="date"><?php echo $this->translate('ContactForms:Tag date') ?></option>            
+            <option value="time"><?php echo $this->translate('ContactForms:Tag time') ?></option>
+            <option value="datetime"><?php echo $this->translate('ContactForms:Tag datetime') ?></option>
+
+            <option value="file"><?php echo $this->translate('ContactForms:Tag file') ?></option>
+            <option value="captcha"><?php echo $this->translate('ContactForms:Tag captcha') ?></option>
+
+            <option value="submit"><?php echo $this->translate('ContactForms:Tag submit') ?></option>
+        </select>
+    </div>
+    <div class="tag-generator__items" id="tag-generator__items">
+        <?php echo $this->partial('content_template/ContactForms/tag_generator/text.phtml') ?>
+        <?php echo $this->partial('content_template/ContactForms/tag_generator/textarea.phtml') ?>
+        <?php echo $this->partial('content_template/ContactForms/tag_generator/email.phtml') ?>
+        <?php echo $this->partial('content_template/ContactForms/tag_generator/url.phtml') ?>
+        <?php echo $this->partial('content_template/ContactForms/tag_generator/select.phtml') ?>
+        <?php echo $this->partial('content_template/ContactForms/tag_generator/checkboxes.phtml') ?>
+        <?php echo $this->partial('content_template/ContactForms/tag_generator/radio.phtml') ?>
+        <?php echo $this->partial('content_template/ContactForms/tag_generator/date.phtml') ?>
+        <?php echo $this->partial('content_template/ContactForms/tag_generator/time.phtml') ?>
+        <?php echo $this->partial('content_template/ContactForms/tag_generator/datetime.phtml') ?>
+        <?php echo $this->partial('content_template/ContactForms/tag_generator/file.phtml') ?>
+        <?php echo $this->partial('content_template/ContactForms/tag_generator/captcha.phtml') ?>
+        <?php echo $this->partial('content_template/ContactForms/tag_generator/submit.phtml') ?>
+    </div>
+</div>

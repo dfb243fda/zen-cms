@@ -1,0 +1,134 @@
+<?php
+
+$sm = $this->getHelperPluginManager()->getServiceLocator();
+
+$this->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/Pages/pages.js');
+
+if ('edit' == $this->task) {
+    $args = array(
+        'pageId' => $this->pageId,
+        'sortContentUrl' => $this->url('direct', array(
+            'module' => 'Pages',
+            'method' => 'SortContent',
+        )),
+        'changePageTypeUrl' => $this->url('admin/EditPage', array(
+            'id' => $this->pageId,
+            'pageTypeId' => '--PAGE_TYPE--',
+        )), 
+        'changeObjectTypeUrl' => $this->url('admin/EditPage', array(
+            'id' => $this->pageId,
+            'pageTypeId' => '--PAGE_TYPE--',
+            'objectTypeId' => '--OBJECT_TYPE--',
+        )),
+        'updatePageContentUrl' => $this->url('direct', array(
+            'module' => 'Pages',
+            'method' => 'PageContent',
+            'param1' => '--PAGE--',
+            'param2' => '--TEMPLATE--',
+        )),
+        'deactivateContentUrl' => $this->url('direct', array(
+            'module' => 'Pages',
+            'method' => 'DeactivateContent',
+        )),
+        'activateContentUrl' => $this->url('direct', array(
+            'module' => 'Pages',
+            'method' => 'ActivateContent',
+        )),
+        'delContentUrl' => $this->url('direct', array(
+            'module' => 'Pages',
+            'method' => 'DeleteContent',
+        )),
+    );
+    
+    $this->inlineScript()->appendScript('zen.pages.initPagesEdit(' . json_encode($args) . ');');
+    
+} elseif ('add' == $this->task) {
+    if (isset($this->pageId)) {
+        $args = array(
+            'sortContentUrl' => $this->url('admin/method', array(
+                'module' => 'Pages',
+                'method' => 'SortContent',
+            )),
+            'changePageTypeUrl' => $this->url('admin/AddPage', array(
+                'pageId' => $this->pageId,
+                'pageTypeId' => '--PAGE_TYPE--',
+            )), 
+            'changeObjectTypeUrl' => $this->url('admin/AddPage', array(
+                'pageId' => $this->pageId,
+                'pageTypeId' => '--PAGE_TYPE--',
+                'objectTypeId' => '--OBJECT_TYPE--',
+            )),
+        );
+        
+        $this->inlineScript()->appendScript('zen.pages.initPagesEdit(' . json_encode($args) . ');');
+        
+    } elseif (isset($this->domainId)) {
+        $args = array(
+            'sortContentUrl' => $this->url('admin/method', array(
+                'module' => 'Pages',
+                'method' => 'SortContent',
+            )),
+            'changePageTypeUrl' => $this->url('admin/AddPage', array(
+                'domainId' => $this->domainId,
+                'pageTypeId' => '--PAGE_TYPE--',
+            )), 
+            'changeObjectTypeUrl' => $this->url('admin/AddPage', array(
+                'domainId' => $this->domainId,
+                'pageTypeId' => '--PAGE_TYPE--',
+                'objectTypeId' => '--OBJECT_TYPE--',
+            )),
+        );
+        
+        $this->inlineScript()->appendScript('zen.pages.initPagesEdit(' . json_encode($args) . ');');
+    }    
+}
+
+
+?>
+
+<div class="blocks blocks__page">
+    <?php
+    $factory = new Zend\Form\Factory($sm->get('FormElementManager'));
+    $formConfig = $this->pageFormConfig;
+   
+    $form = $factory->createForm($formConfig);     
+    $form->setAttribute('class', 'form-2c');
+    $form->setData($this->pageValues);
+    $form->prepare();
+    
+    if (isset($this->pageFormMsg)) {
+        $form->setMessages($this->pageFormMsg);
+    }
+    
+    echo $this->form()->openTag($form);
+    foreach ($form->getFieldsets() as $fieldset) :     
+        ?>
+        <div class="block">
+            <div class="block__title"><?php echo $fieldset->getLabel() ?></div>
+            <div class="block__body">
+                <?php           
+                foreach ($fieldset->getElements() as $el) :
+                    echo $this->formElementWrapper($el);
+                endforeach;
+                ?>
+            </div>
+        </div>
+        <?php
+    endforeach;
+    ?>
+    <div class="block__buttons block__buttons-left clearfix">
+        <dd><input type="submit" name="submit" id="submit" value="Сохранить"></dd>
+    </div>
+    <?php echo $this->form()->closeTag($form); ?>
+</div>    
+
+<?php
+if ('edit' == $this->task) :
+    ?>
+    <div id="markers-wrap">
+        <?php echo $this->executeMethod('Pages\Method\PageContent', array($this->pageId, $this->templateId)) ?>
+    </div>
+    <?php
+endif;
+?>
+    

@@ -1,0 +1,79 @@
+<?php
+
+$this->headLink()->appendStylesheet(ROOT_URL_SEGMENT . '/css/Rbac/permissions.css');
+
+$this->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/Rbac/permissions.js');
+
+$this->inlineScript()->appendScript('zen.rbac.initPermForm();');
+
+$countCols = count($this->roles) + 1;
+
+?>
+
+<div class="b-permission_list" id="b-permission_list">
+    <table class="b-permission_list__table">
+        <tr class="b-permission_list__table_col_names">
+            <td><?php echo $this->translate('Rbac:Privelege'); ?></td>
+            <?php
+            foreach ($this->roles as $roleName) :
+                ?>
+                <td><?php echo $roleName ?></td>
+                <?php
+            endforeach;
+            ?>
+        </tr>
+        <tr class="b-permission_list__spacer"><td colspan="<?php echo $countCols ?>"><br/></td></tr>
+        <?php
+        foreach ($this->permissions as $module) :
+            ?>
+            <tbody class="b-permission_list__perm_group">
+                <tr><th colspan="<?php echo $countCols ?>"><?php echo $this->translateI18n($module['name']) ?></th></tr>
+                <?php                    
+                foreach ($module['items'] as $resource=>$permissions) {
+                    $flag = true;
+                    if (isset($permissions[''])) {
+                        $flag = false;
+                        ?>
+                        <tr>
+                            <td><?php echo $permissions['']['name'] ?></td>
+                            <?php
+                            foreach ($this->roles as $roleId => $roleName) {
+                                $checked = '';
+                                if ($permissions['']['roles'][$roleId]) {
+                                    $checked = ' checked';  
+                                }
+                                ?>
+                                <td><label><input<?php echo $checked ?> type="checkbox" id="<?php echo $resource . '-' . $roleId; ?>" name="<?php echo $roleId . '::' . $resource . '::'; ?>" value="1" /></label></td>
+                                <?php
+                            }
+                            ?>
+                        </tr>    
+                        <?php
+                        unset($permissions['']);
+                    }
+                    foreach ($permissions as $permissionKey=>$permission) {
+                        ?>
+                        <tr>
+                            <td><?php echo $permission['name'] ?></td>
+                            <?php
+                            foreach ($this->roles as $roleId => $roleName) {
+                                $checked = '';
+                                if ($permission['roles'][$roleId]) {
+                                    $checked = ' checked';
+                                }
+                                ?>
+                                <td><label><input<?php echo $checked ?> type="checkbox" name="<?php echo $roleId . '::' . $resource . '::' . $permissionKey; ?>" value="1" /></label></td>
+                                <?php
+                            }
+                            ?>
+                        </tr>
+                        <?php
+                    }
+                }                    
+                ?>
+            </tbody>
+            <?php
+        endforeach;
+        ?>
+    </table>
+</div>
