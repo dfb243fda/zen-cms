@@ -7,6 +7,26 @@ use Pages\Model\Pages;
 
 class PagesList extends AbstractMethod
 {    
+    public function main()
+    {
+        $pagesTree = $this->getServiceLocator()->get('Pages\Service\PagesTree');
+        
+        $request = $this->getServiceLocator()->get('request');
+        
+        if ('get_data' == $this->params()->fromRoute('task')) {            
+            if (null !== $request->getPost('id')) {
+                $result = $pagesTree->getPages((int)$request->getPost('id'));
+            } else {
+                $result = $pagesTree->getDomains();
+            }
+        } else {
+            $result = $pagesTree->getWrapper();
+        }
+        return $result;
+    }
+    
+    
+    
     protected $rootServiceLocator;
     
     protected $translator;
@@ -15,28 +35,14 @@ class PagesList extends AbstractMethod
     
     protected $pagesModel;
     
-    public function init()
+  /*  public function init()
     {
         $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
         $this->translator = $this->rootServiceLocator->get('translator');
         $this->request = $this->rootServiceLocator->get('request');
         $this->pagesModel = new Pages($this->rootServiceLocator);
     }
-
-
-    public function main()
-    {
-        if ('get_data' == $this->params()->fromRoute('task')) {            
-            if (null !== $this->request->getPost('id')) {
-                $result = $this->getPages((int)$this->request->getPost('id'));
-            } else {
-                $result = $this->getDomains();
-            }
-        } else {
-            $result = $this->getWrapper();
-        }
-        return $result;
-    }
+*/
     
     protected function getWrapper()
     {

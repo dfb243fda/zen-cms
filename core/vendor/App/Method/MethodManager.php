@@ -4,15 +4,15 @@ namespace App\Method;
 
 use Zend\ServiceManager\AbstractPluginManager;
 
-//use Zend\ServiceManager\ConfigInterface;
-//use Zend\ServiceManager\ServiceLocatorInterface;
-//use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ConfigInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 class MethodManager extends AbstractPluginManager
 {
     protected $shareByDefault = false;
     
-/*    public function __construct(ConfigInterface $configuration = null)
+    public function __construct(ConfigInterface $configuration = null)
     {
         parent::__construct($configuration);
         // Pushing to bottom of stack to ensure this is done last
@@ -31,7 +31,7 @@ class MethodManager extends AbstractPluginManager
             $controller->setServiceLocator($parentLocator->get('Zend\ServiceManager\ServiceLocatorInterface'));
         }
     }
- */   
+    
      /**
      * Validate the plugin
      *

@@ -5,12 +5,10 @@ namespace ChameleonTheme\Method;
 use App\Method\AbstractMethod;
 
 class AdminMainMenu extends AbstractMethod
-{
-    protected $extKey = 'ChameleonTheme';
-        
+{        
     public function main()
     {        
-        $moduleManager = $this->serviceLocator->getServiceLocator()->get('moduleManager');
+        $moduleManager = $this->getServiceLocator()->get('moduleManager');
                 
         $blocks = $moduleManager->getMenuGroups();
         

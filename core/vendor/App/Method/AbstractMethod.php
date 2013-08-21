@@ -24,7 +24,7 @@ abstract class AbstractMethod implements MethodInterface, ServiceLocatorAwareInt
     public function getPluginManager()
     {
         if (!$this->plugins) {
-            $this->plugins = $this->serviceLocator->getServiceLocator()->get('ControllerPluginManager');
+            $this->plugins = $this->getServiceLocator()->get('ControllerPluginManager');
         }
         
         return $this->plugins;

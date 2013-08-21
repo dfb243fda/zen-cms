@@ -111,6 +111,8 @@ return array(
     
     'service_manager' => array(
         'invokables' => array(
+            'Pages\Service\PagesTree' => 'Pages\Service\PagesTree',
+            
             'Pages\Service\Page' => 'Pages\Service\Page',
         ),
     ),

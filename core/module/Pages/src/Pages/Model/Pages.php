@@ -43,76 +43,9 @@ class Pages
         $this->moduleManager = $sm->get('moduleManager');
     }
     
-    public function getPages()
-    {
-        $items = array();
-        
-        $pages = $this->db
-                ->query('
-                    SELECT p1.*,
-                        (SELECT count(p2.id) FROM ' . DB_PREF . 'pages p2 WHERE p2.parent_id = p1.id AND is_deleted=0) AS children_cnt,
-                        (SELECT o.name FROM ' . DB_PREF . 'objects o WHERE o.id=p1.object_id) AS name
-                    FROM ' . DB_PREF . 'pages p1
-                    WHERE p1.parent_id = ? AND p1.is_deleted=0
-                    ORDER BY p1.sorting
-                    ', array($parentId))
-                ->toArray();
-        
-        foreach ($pages as $row) {
-            if ($row['children_cnt'] > 0) {
-                $row['state'] = 'closed';
-            }
-            else {
-                $row['state'] = 'open';
-            }
-            $items[] = $row;
-        }
-        
-        return $items;
-    }
     
-    public function getDomains()
-    {
-        $items = array();
-        
-        $domains = $this->db->query('SELECT *, host AS name FROM ' . DB_PREF . $this->domainsTable, array())->toArray();
-        
-        foreach ($domains as $row) {                    
-            $pages = $this->db
-                    ->query('
-                        SELECT p1.*,
-                            (SELECT count(p2.id) FROM ' . DB_PREF . 'pages p2 WHERE p2.parent_id = p1.id AND is_deleted=0) AS children_cnt,
-                            (SELECT o.name FROM ' . DB_PREF . 'objects o WHERE o.id=p1.object_id) AS name
-                        FROM ' . DB_PREF . 'pages p1
-                        WHERE p1.parent_id = 0 AND p1.domain_id=? AND p1.is_deleted=0
-                        ORDER BY p1.sorting
-                        ', array($row['id']))
-                    ->toArray();
-            
-            if (empty($pages)) {
-                $row['state'] = 'open';
-            } else {
-                $row['state'] = 'closed';
-            }
-            
-            foreach ($pages as $row2) {
-                if ($row2['children_cnt'] > 0) {
-                    $row2['state'] = 'closed';
-                }
-                else {
-                    $row2['state'] = 'open';
-                }
-                
-                $row['children'][] = $row2;
-            }
-            
-            $row['domain_id'] = $row['id'];
-            $row['id'] = 'domain_' . $row['id'];
-            $items[] = $row;
-        }
-        
-        return $items;
-    }
+    
+    
     
     public function setDomainId($domainId)
     {
