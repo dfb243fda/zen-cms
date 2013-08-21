@@ -1,0 +1,33 @@
+[submodule "core/vendor/avalanche123/Imagine"]
+	path = core/vendor/avalanche123/Imagine
+	url = ../../avalanche123/Imagine.git
+[submodule "core/vendor/firephp-core"]
+	path = core/vendor/firephp-core
+	url = ../../firephp/firephp-core.git
+[submodule "core/vendor/leafo/lessphp"]
+	path = core/vendor/leafo/lessphp
+	url = ../../leafo/lessphp.git
+[submodule "core/vendor/leafo/scssphp"]
+	path = core/vendor/leafo/scssphp
+	url = ../../leafo/scssphp.git
+[submodule "core/vendor/meenie/javascript-packer"]
+	path = core/vendor/meenie/javascript-packer
+	url = ../../meenie/javascript-packer.git
+[submodule "core/vendor/meenie/munee"]
+	path = core/vendor/meenie/munee
+	url = ../../meenie/munee.git
+[submodule "core/vendor/minify"]
+	path = core/vendor/minify
+	url = https://code.google.com/p/minify/
+[submodule "core/vendor/nicolas-grekas/JSqueeze"]
+	path = core/vendor/nicolas-grekas/JSqueeze
+	url = ../../nicolas-grekas/JSqueeze.git
+[submodule "core/vendor/tedivm/JShrink"]
+	path = core/vendor/tedivm/JShrink
+	url = ../../tedivm/JShrink.git
+[submodule "core/vendor/ZF2"]
+	path = core/vendor/ZF2
+	url = ../../zendframework/zf2.git
+[submodule "core/vendor/ZfcBase"]
+	path = core/vendor/ZfcBase
+	url = ../../ZF-Commons/ZfcBase.git
