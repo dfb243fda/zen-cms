@@ -2,11 +2,14 @@
 
 namespace App\ObjectType;
 
+use Zend\ServiceManager\ServiceManagerAwareInterface;
+use Zend\ServiceManager\ServiceManager;
 use App\FieldsGroup\FieldsGroup;
 use Zend\Db\Sql\Sql;
-use Zend\Db\ResultSet\ResultSet;
+use Zend\Form\Form;
 
-class ObjectType
+
+class ObjectType implements ServiceManagerAwareInterface
 {
     protected $serviceManager;
     
@@ -38,30 +41,25 @@ class ObjectType
     
     protected $fieldGroups;
     
+    protected $initialized;
     
-    public function __construct($options)
-    {           
-        $this->setOptions($options);     
-        
-        if (null === $this->db) {
-            $this->db = $this->serviceManager->get('db');
+    public function setServiceManager(ServiceManager $serviceManager)
+    {
+        $this->serviceManager = $serviceManager;
+    }
+    
+    public function init()
+    {
+        if ($this->initialized) {
+            return;
         }
-        
-        if (null === $this->id) {
-            throw new \Exception('Type id is undefined');
-        }
+        $this->initialized = true;
         
         $this->translator = $this->serviceManager->get('translator');
         $this->objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
+        $this->db = $this->serviceManager->get('db');
         
-        $this->init();
-    }
-    
-    protected function init()
-    {
-        $statement = $this->db->query('select * from ' . DB_PREF . $this->objectTypesTable . ' where id = ' . $this->id);
-        $resultSet = new ResultSet();
-        $sqlRes = $resultSet->initialize($statement->execute())->toArray();
+        $sqlRes = $this->db->query('select * from ' . DB_PREF . $this->objectTypesTable . ' where id = ?', array($this->id))->toArray();
                 
         if (empty($sqlRes)) {
             throw new \Exception('There is no object type ' . $this->id);
@@ -147,19 +145,7 @@ class ObjectType
             'is_locked' => (int)$this->isLocked,
         );
     }
-    
-    public function setOptions(array $options)
-    {
-        foreach ($options as $key => $value) {
-            $method = 'set' . ucfirst($key);
-
-            if (method_exists($this, $method)) {
-                $this->$method($value);
-            }
-        }
-        return $this;
-    }
-    
+        
     public function getId()
     {
         return $this->id;
@@ -168,12 +154,6 @@ class ObjectType
     public function setId($typeId)
     {
         $this->id = $typeId;        
-        return $this;
-    }
-
-    public function setServiceManager($sm)
-    {
-        $this->serviceManager = $sm;
         return $this;
     }
 
@@ -353,95 +333,15 @@ class ObjectType
         return $this->fieldGroups;
     }
     
-    public function getAppFormConfig($additionalBaseFormConfig = array(), $onlyVisible = false)
-    {               
-        $baseFormConfig = array(
-            'fieldsets' => array(
-                'common' => array(
-                    'spec' => array(
-                        'name' => 'common',
-                        'options' => array(
-                            'label' => $this->translator->translate('App:ObjectType:Common params fields group'),
-                        ),
-                        'elements' => array(
-                            'name' => array(
-                                'spec' => array(
-                                    'name' => 'name',
-                                    'options' => array(
-                                        'label' => $this->translator->translate('App:ObjectType:Name field'),
-                                        'required' => true,
-                                    ),
-                                    'attributes' => array(
-                                        'type' => 'text',
-                                    ),
-                                ),
-                            ),
-                        ),                        
-                    ),
-                ),
-            ),
-            'input_filter' => array(),
-        );    
+    public function getForm()
+    {
+        $form = $this->serviceManager->get('App\ObjectType\Form');
         
-        if (isset($additionalBaseFormConfig['fieldsets'])) {
-            foreach ($additionalBaseFormConfig['fieldsets'] as $k=>$v) {
-                if (isset($baseFormConfig['fieldsets'][$k])) {
-                    $baseFormConfig['fieldsets'][$k]['spec']['elements'] = array_merge($baseFormConfig['fieldsets'][$k]['spec']['elements'], $v['spec']['elements']);                    
-                } else {
-                    $baseFormConfig['fieldsets'][$k] = $v;
-                }
-            }
-        }        
-        if (!empty($additionalBaseFormConfig['input_filter'])) {
-            $baseFormConfig['input_filter'] = array_merge_recursive($baseFormConfig['input_filter'], $additionalBaseFormConfig['input_filter']);
-        }        
+        $form->setObjectType($this)->create();      
         
-        $fieldGroups = $this->getFieldGroups();
-                
-        foreach ($fieldGroups as $k=>$v) {
-            $fields = $v->getFields();
-            
-            if (isset($baseFormConfig['fieldsets'][$v->getName()])) {
-                $formElements = $baseFormConfig['fieldsets'][$v->getName()]['spec']['elements'];
-            } else {
-                $baseFormConfig['fieldsets'][$v->getName()] = array(
-                    'spec' => array(
-                        'name' => $v->getName(),
-                        'options' => array(
-                            'label' => $this->translator->translateI18n($v->getTitle()),
-                        ),
-                        'elements' => array(
-                            
-                        ),
-                    ),
-                );
-                $formElements = array();
-            }
-            
-            $inputFilter = array();
-            foreach ($fields as $k2=>$v2) {
-                if ($onlyVisible && !$v2->getIsVisible()) {
-                    continue;
-                }
-                
-                $formElements['field_' . $k2] = $v2->getAppFormElementConfig();
-                if (isset($formElements['field_' . $k2]['input_filter'])) {
-                    $inputFilter['field_' . $k2] = $formElements['field_' . $k2]['input_filter'];
-                    unset($formElements['field_' . $k2]['input_filter']);
-                }
-            }
-            
-            if (!empty($inputFilter)) {
-                if (!isset($baseFormConfig['input_filter'][$v->getName()])) {
-                    $baseFormConfig['input_filter'][$v->getName()]['type'] = 'Zend\InputFilter\InputFilter';
-                }
-                $baseFormConfig['input_filter'][$v->getName()] = array_merge($baseFormConfig['input_filter'][$v->getName()], $inputFilter);
-            }
-            
-            $baseFormConfig['fieldsets'][$v->getName()]['spec']['elements'] = $formElements;
-        }
-        
-        return $baseFormConfig;
+        return $form;
     }
+    
+    
     
 }

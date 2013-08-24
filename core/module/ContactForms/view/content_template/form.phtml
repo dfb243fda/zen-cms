@@ -1,6 +1,6 @@
 <?php
 $this->headLink()->appendStylesheet($this->basePath('/css/ContactForms/contact_forms.css'));    
-$this->headScript()->appendFile($this->basePath('/js/ContactForms/contact_forms.js'));
+$this->inlineScript()->appendFile($this->basePath('/js/ContactForms/contact_forms.js'));
 $this->inlineScript()->appendScript('zen.contact_forms.initContactFormEditing();');
 ?>
 <div class="contact-forms">

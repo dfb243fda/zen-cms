@@ -68,7 +68,7 @@ class PagesTree implements ServiceManagerAwareInterface
         return $result;
     }
     
-    protected function getPages($parentId)
+    public function getPages($parentId)
     {
         $result = array();
         
@@ -100,7 +100,7 @@ class PagesTree implements ServiceManagerAwareInterface
         return $result;
     }
     
-    protected function getPagesData()
+    protected function getPagesData($parentId)
     {
         $items = array();
         

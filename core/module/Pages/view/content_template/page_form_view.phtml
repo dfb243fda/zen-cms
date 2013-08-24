@@ -1,7 +1,5 @@
 <?php
 
-$sm = $this->getHelperPluginManager()->getServiceLocator();
-
 $this->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/Pages/pages.js');
 
 if ('edit' == $this->task) {
@@ -88,17 +86,9 @@ if ('edit' == $this->task) {
 
 <div class="blocks blocks__page">
     <?php
-    $factory = new Zend\Form\Factory($sm->get('FormElementManager'));
-    $formConfig = $this->pageFormConfig;
-   
-    $form = $factory->createForm($formConfig);     
-    $form->setAttribute('class', 'form-2c');
-    $form->setData($this->pageValues);
-    $form->prepare();
     
-    if (isset($this->pageFormMsg)) {
-        $form->setMessages($this->pageFormMsg);
-    }
+    $form = $this->form;
+    $form->setAttribute('class', 'form-2c')->prepare();
     
     echo $this->form()->openTag($form);
     foreach ($form->getFieldsets() as $fieldset) :     

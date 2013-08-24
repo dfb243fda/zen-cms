@@ -2,7 +2,6 @@
 
 namespace App\ObjectTypesCollection;
 
-use App\ObjectType\ObjectType;
 use Zend\Db\Sql\Sql;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
@@ -10,11 +9,7 @@ use Zend\ServiceManager\ServiceManager;
 class ObjectTypesCollection implements ServiceManagerAwareInterface
 {    
     protected $serviceManager;
-    
-    protected $db;
-    
-    protected $translator;    
-    
+            
     protected $types = array();
     
     protected $objectTypesTable = 'object_types';
@@ -33,29 +28,14 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
     
     protected $allTypes;
         
-    protected $initialized = false;
     
-    
-    protected function init()
-    {
-        if (!$this->initialized) {
-            $this->initialized = true;
-            
-            $this->db = $this->serviceManager->get('db');
-            $this->translator = $this->serviceManager->get('translator');
-        }
-    }
-    
-
     public function setServiceManager(ServiceManager $serviceManager)
     {
         $this->serviceManager = $serviceManager;
     }
     
     public function getType($typeId)
-    {
-        $this->init();
-        
+    {        
         if (!is_numeric($typeId)) {
             $typeId = $this->getTypeIdByGUID($typeId);
             if (null === $typeId) {
@@ -64,10 +44,9 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
         }
         
         if (!isset($this->types[$typeId])) {
-            $objectType = new ObjectType(array(
-                'serviceManager' => $this->serviceManager,
-                'id' => $typeId,
-            ));
+            $objectType = $this->serviceManager->get('App\ObjectType\ObjectType');
+            $objectType->setId($typeId)->init();
+            
             $this->types[$typeId] = $objectType;
         }        
         
@@ -75,9 +54,7 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
     }
     
     public function getTypeByGuid($guid)
-    {
-        $this->init();
-        
+    {        
         $id = $this->getTypeIdByGuid($guid);  
         if (null === $id) {
             return null;
@@ -88,9 +65,9 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
     
     public function getTypeIdByGuid($guid)
     {
-        $this->init();
+        $db = $this->serviceManager->get('db');
         
-        $sqlRes = $this->db->query('select id from ' . DB_PREF . $this->objectTypesTable . ' where guid = ? limit 1', array($guid))->toArray();
+        $sqlRes = $db->query('select id from ' . DB_PREF . $this->objectTypesTable . ' where guid = ? limit 1', array($guid))->toArray();
         
         if (empty($sqlRes)) {
             return null;
@@ -101,9 +78,9 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
     
     public function addType($parentId, $name, $isLocked = false)
     {
-        $this->init();
+        $db = $this->serviceManager->get('db');
         
-        $sql = new Sql($this->db);        
+        $sql = new Sql($db);        
         $insert = $sql->insert(DB_PREF . $this->objectTypesTable);        
         $insert->values(array(
             'parent_id' => (int)$parentId,
@@ -111,13 +88,13 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
             'is_locked' => (int)$isLocked,
         ));        
         $sql->prepareStatementForSqlObject($insert)->execute();  
+                
+        $objectTypeId = $db->getDriver()->getLastGeneratedValue();
         
-        $objectTypeId = $this->db->getDriver()->getLastGeneratedValue();
-        
-        $sqlRes = $this->db->query('select * from ' . DB_PREF . $this->objectFieldGroupsTable . ' where object_type_id = ?', array($parentId))->toArray();
+        $sqlRes = $db->query('select * from ' . DB_PREF . $this->objectFieldGroupsTable . ' where object_type_id = ?', array($parentId))->toArray();
         
         foreach ($sqlRes as $row) {
-            $sql = new Sql($this->db);        
+            $sql = new Sql($db);        
             $insert = $sql->insert(DB_PREF . $this->objectFieldGroupsTable);        
             $insert->values(array(
                 'name' => $row['name'],
@@ -128,9 +105,9 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
             ));        
             $sql->prepareStatementForSqlObject($insert)->execute();  
                         
-            $fieldGroupId = $this->db->getDriver()->getLastGeneratedValue();
+            $fieldGroupId = $db->getDriver()->getLastGeneratedValue();
             
-            $this->db->query('INSERT INTO ' . DB_PREF . $this->fieldsController . ' 
+            $db->query('INSERT INTO ' . DB_PREF . $this->fieldsController . ' 
                 (sorting, field_id, group_id) 
                 SELECT sorting, field_id, ? 
                     FROM ' . DB_PREF . $this->fieldsController . '
@@ -157,13 +134,13 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
         }
         
         $objectType->save();
-        
+                        
         return $objectTypeId;
     }
     
     public function delType($typeId)
-    {
-        $this->init();
+    {        
+        $db = $this->serviceManager->get('db');
         
         $result = array();
         
@@ -185,7 +162,7 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
         $descendantTypeIds = $this->getDescendantTypeIds($typeId);
         
         foreach ($descendantTypeIds as $id) {
-            $sql = new Sql($this->db);
+            $sql = new Sql($db);
             $delete = $sql->delete(DB_PREF . $this->objectsTable)->where('type_id = ' . (int)$id);        
             $sql->prepareStatementForSqlObject($delete)->execute();
             
@@ -213,7 +190,7 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
         
     public function getParentTypeId($typeId)
     {        
-        $this->init();
+        $db = $this->serviceManager->get('db');
         
         if (isset($this->types[$typeId])) {
             if (false === $this->types[$typeId]) {
@@ -221,7 +198,7 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
             }
             return $this->getType($typeId)->getParentId();
         }
-        $sqlRes = $this->db->query('select parent_id from ' . DB_PREF . $this->objectTypesTable . ' where id = ? limit 1', array($typeId))->toArray();
+        $sqlRes = $db->query('select parent_id from ' . DB_PREF . $this->objectTypesTable . ' where id = ? limit 1', array($typeId))->toArray();
                 
         if (empty($sqlRes)) {
             return false;
@@ -233,12 +210,11 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
     
     public function getChildrenTypeIds($parentId)
     {                
-        $this->init();
+        $db = $this->serviceManager->get('db');
         
         $query = 'SELECT id FROM ' . DB_PREF . $this->objectTypesTable . ' WHERE parent_id = ?';
 
-        $resultSet = $this->db->query($query, array($parentId));
-        $sqlRes = $resultSet->toArray();
+        $sqlRes = $db->query($query, array($parentId))->toArray();
 
         $ids = array();
         foreach ($sqlRes as $row) {
@@ -248,9 +224,7 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
     }
     
     public function getDescendantTypeIds($parentId)
-    {
-        $this->init();
-        
+    {        
         $ids = $this->getChildrenTypeIds($parentId);
         
         foreach ($ids as $id) {
@@ -264,7 +238,8 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
     
     public function getGuidesList($parentId = null)
     {
-        $this->init();
+        $db = $this->serviceManager->get('db');
+        $translator = $this->serviceManager->get('translator');
         
         $query = 'select * from ' . DB_PREF . $this->objectTypesTable . ' where is_guidable = 1';
         
@@ -272,11 +247,11 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
             $query .= ' and parent_id = ' . (int)$parentId;
         }
         
-        $sqlRes = $this->db->query($query, array());
+        $sqlRes = $db->query($query, array());
         
         $guides = array();
         foreach ($sqlRes as $row) {
-            $guides[$row['id']] = $this->translator->translateI18n($row['name']);
+            $guides[$row['id']] = $translator->translateI18n($row['name']);
         }
         
         return $guides;
@@ -284,7 +259,8 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
     
     public function getGuidesData($parentId = null)
     {
-        $this->init();
+        $db = $this->serviceManager->get('db');
+        $translator = $this->serviceManager->get('translator');
         
         $query = 'select * from ' . DB_PREF . $this->objectTypesTable . ' where is_guidable = 1';
         
@@ -292,11 +268,11 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
             $query .= ' and parent_id = ' . (int)$parentId;
         }
         
-        $sqlRes = $this->db->query($query, array());
+        $sqlRes = $db->query($query, array())->toArray();
         
         $guides = array();
         foreach ($sqlRes as $row) {
-            $row['name'] = $this->translator->translateI18n($row['name']);
+            $row['name'] = $translator->translateI18n($row['name']);
             $guides[$row['id']] = $row;
         }
         
@@ -305,13 +281,14 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
     
     public function getTypesListByPageTypeId($pageTypeId)
     {
-        $this->init();
+        $db = $this->serviceManager->get('db');
+        $translator = $this->serviceManager->get('translator');
         
-        $sqlRes = $this->db->query('select id, name from ' . DB_PREF . $this->objectTypesTable . ' where page_type_id = ?', array($pageTypeId))->toArray();
+        $sqlRes = $db->query('select id, name from ' . DB_PREF . $this->objectTypesTable . ' where page_type_id = ?', array($pageTypeId))->toArray();
         
         $types = array();        
         foreach ($sqlRes as $row) {
-            $types[$row['id']] = $this->translator->translateI18n($row['name']);
+            $types[$row['id']] = $translator->translateI18n($row['name']);
         }
         
         return $types;
@@ -319,14 +296,15 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
     
     public function getTypesListByPageContentTypeId($pageContentTypeId)
     {
-        $this->init();
+        $db = $this->serviceManager->get('db');
+        $translator = $this->serviceManager->get('translator');
         
-        $sqlRes = $this->db->query('select id, name from ' . DB_PREF . $this->objectTypesTable . ' where page_content_type_id = ?', array($pageContentTypeId))->toArray();
+        $sqlRes = $db->query('select id, name from ' . DB_PREF . $this->objectTypesTable . ' where page_content_type_id = ?', array($pageContentTypeId))->toArray();
         
         $types = array();
         
         foreach ($sqlRes as $row) {
-            $types[$row['id']] = $this->translator->translateI18n($row['name']);
+            $types[$row['id']] = $translator->translateI18n($row['name']);
         }
         
         return $types;
@@ -334,17 +312,17 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
     
     public function getChildrenTypesList($parentId)
     {      
-        $this->init();
+        $db = $this->serviceManager->get('db');
+        $translator = $this->serviceManager->get('translator');
         
         if (!isset($this->childrenTypes[$parentId])) {
-            $sqlRes = $this->db
-                ->query('SELECT t1.*, (SELECT count(t2.id) FROM ' . DB_PREF . $this->objectTypesTable . ' t2 WHERE t2.parent_id = t1.id) AS children_cnt
+            $sqlRes = $db->query('SELECT t1.*, (SELECT count(t2.id) FROM ' . DB_PREF . $this->objectTypesTable . ' t2 WHERE t2.parent_id = t1.id) AS children_cnt
                         FROM ' . DB_PREF . $this->objectTypesTable . ' t1
                         WHERE t1.parent_id = ?', array($parentId))->toArray();
             
             $this->childrenTypes[$parentId] = array();
             foreach ($sqlRes as $row) {
-                $row['name'] = $this->translator->translateI18n($row['name']);
+                $row['name'] = $translator->translateI18n($row['name']);
                 $this->childrenTypes[$parentId][$row['id']] = $row;
             }
         }
@@ -353,17 +331,17 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
     
     public function getAllTypesList()
     {
-        $this->init();
+        $db = $this->serviceManager->get('db');
+        $translator = $this->serviceManager->get('translator');
         
         if (null === $this->allTypes) {
-            $sqlRes = $this->db
-                ->query('SELECT t1.*, (SELECT count(t2.id) FROM ' . DB_PREF . $this->objectTypesTable . ' t2 WHERE t2.parent_id = t1.id) AS children_cnt
+            $sqlRes = $db->query('SELECT t1.*, (SELECT count(t2.id) FROM ' . DB_PREF . $this->objectTypesTable . ' t2 WHERE t2.parent_id = t1.id) AS children_cnt
                         FROM ' . DB_PREF . $this->objectTypesTable . ' t1', array())
                 ->toArray();
             
             $this->allTypes = array();
             foreach ($sqlRes as $row) {
-                $row['name'] = $this->translator->translateI18n($row['name']);
+                $row['name'] = $translator->translateI18n($row['name']);
                 $this->allTypes[$row['id']] = $row;
             }
         }

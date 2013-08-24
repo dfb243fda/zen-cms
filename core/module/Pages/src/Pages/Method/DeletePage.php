@@ -6,36 +6,21 @@ use App\Method\AbstractMethod;
 
 class DeletePage extends AbstractMethod
 {    
-    protected $rootServiceLocator;
-    
-    protected $translator;
-    
-    protected $pagesModel;
-    
-    protected $request;
-    
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->pagesModel = new \Pages\Model\Pages($this->rootServiceLocator);
-        $this->request = $this->rootServiceLocator->get('request');
-    }
-
-
     public function main()
     {
         $result = array(
             'success' => false,
         );
-        
-        if (null === $this->request->getPost('id')) {
+                
+        if (null === $this->params()->fromPost('id')) {
             $result['errMsg'] = 'Не передан параметр id';
             return $result;
         }
-        $pageId = (int)$this->request->getPost('id');
+        $pageId = (int)$this->params()->fromPost('id');
         
-        if ($this->pagesModel->deletePage($pageId)) {
+        $pagesCollection = $this->serviceLocator->get('Pages\Collection\Pages');
+        
+        if ($pagesCollection->deletePage($pageId)) {
             $result['success'] = true;
             $result['msg'] = 'Страница успешно удалена';
         } else {

@@ -2,7 +2,7 @@
 
 $sm = $this->getHelperPluginManager()->getServiceLocator();
 
-$this->headScript()->appendFile(ROOT_URL_SEGMENT . '/js/ObjectTypes/object_types.js');
+$this->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/ObjectTypes/object_types.js');
 
 $args = array(
     'addFieldGroupUrl' => $this->url('admin/method', array(
@@ -46,8 +46,8 @@ $this->inlineScript()->appendScript('zen.objectTypes.init(' . json_encode($args)
 ?>
 
 
-<div class="group-block__item clearfix hide" id="field-example">
-    <div class="group-block__item-block hide">
+<div class="group-block__item clearfix hidden" id="field-example">
+    <div class="group-block__item-block hidden">
         <div class="group-block__item-c1"></div>
         <div class="group-block__item-c1"></div>
         <div class="group-block__item-c1"></div>
@@ -120,14 +120,14 @@ $this->inlineScript()->appendScript('zen.objectTypes.init(' . json_encode($args)
 </div>
 
 
-<div class="block hide" id="block-example">
-    <div class="icons hide">
+<div class="block hidden" id="block-example">
+    <div class="icons hidden">
         <img onclick="zen.objectTypes.showEditGroupForm(this)" title="Редактировать" alt="Редактировать" src="<?php echo $this->basePath('/img/core/pixel.gif') ?>" class="icons__item icons__item-edit" alt="" />
         <img onclick="zen.objectTypes.delGroup(this)" title="Удалить" alt="Удалить" src="<?php echo $this->basePath('/img/core/pixel.gif') ?>" class="icons__item icons__item-del" alt="" />
     </div>
     <div class="block__title">Новая группа [  ]</div>
     <div class="block__body">
-        <div class="group-block hide">
+        <div class="group-block hidden">
             <div class="block-btn"><div class="btn__wrap btn__wrap-add" onclick="zen.objectTypes.showAddFieldForm(this)"><div class="btn">Добавить поле</div></div></div>
             <div class="group-block__list"></div>
         </div>                                
@@ -264,7 +264,7 @@ $this->inlineScript()->appendScript('zen.objectTypes.init(' . json_encode($args)
                                     ?>
                                 </div>
                             </div>
-                            <div class="group-block__item-edit hide">
+                            <div class="group-block__item-edit hidden">
                                 <?php
 
                                 $factory = new Zend\Form\Factory($sm->get('FormElementManager'));
@@ -326,7 +326,7 @@ $this->inlineScript()->appendScript('zen.objectTypes.init(' . json_encode($args)
                     ?>   
                     </div>
                 </div>                                
-                <div class="group-edit-block hide">
+                <div class="group-edit-block hidden">
                     <?php
 
                     

@@ -13,14 +13,7 @@ class FileManager
     protected $createGroup = false;
     
     public function __construct($options)
-    {   
-        if ($options instanceof Zend_Config) {
-            $options = $options->toArray();
-        }
-        elseif (!is_array($options)) {
-            throw new Zend_Exception('Invalid options provided; must be location of config file, a config object, or an array');
-        }
-        
+    {  
         $this->setOptions($options);    
     }
     

@@ -1,6 +1,6 @@
 <?php
 
-namespace Pages\Entity;
+namespace Pages\AbstractMetod;
 
 use App\Method\AbstractMethod;
 

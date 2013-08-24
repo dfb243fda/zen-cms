@@ -13,7 +13,7 @@ class EditObjectType extends AbstractMethod
     
     public function init()
     {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
+        $this->rootServiceLocator = $this->getServiceLocator();
         $this->translator = $this->rootServiceLocator->get('translator');
         $this->db = $this->rootServiceLocator->get('db');
         $this->objectTypesCollection = $this->rootServiceLocator->get('objectTypesCollection');

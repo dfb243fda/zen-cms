@@ -3,39 +3,23 @@
 namespace Pages\Method;
 
 use App\Method\AbstractMethod;
-use Zend\Validator\AbstractValidator;
 
 class AddPage extends AbstractMethod
 {
-    protected $rootServiceLocator;
-    
-    protected $translator;
-    
-    protected $pagesModel;
-    
-    protected $request;
-    
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->pagesModel = new \Pages\Model\Pages($this->rootServiceLocator);
-        $this->request = $this->rootServiceLocator->get('request');
-        
-        AbstractValidator::setDefaultTranslator($this->rootServiceLocator->get('translator'));
-    }
-
-
     public function main()
     {
+        $pagesCollection = $this->serviceLocator->get('Pages\Collection\Pages');
+        
+        $request = $this->serviceLocator->get('request');
+        
         $result = array();   
         
         if ($this->params()->fromRoute('domainId')) {
             $domainId = (int)$this->params()->fromRoute('domainId');
-            $this->pagesModel->setDomainId($domainId);
+            $pagesCollection->setDomainId($domainId);
         } elseif ($this->params()->fromRoute('pageId')) {
             $parentId = (int)$this->params()->fromRoute('pageId');
-            $this->pagesModel->setParentPageId($parentId);
+            $pagesCollection->setParentPageId($parentId);
         } else {
             $result['errMsg'] = array('Не переданы все необходимые параметры');
             return $result;
@@ -43,51 +27,47 @@ class AddPage extends AbstractMethod
         
         if (null !== $this->params()->fromRoute('objectTypeId')) {
             $objectTypeId = (int)$this->params()->fromRoute('objectTypeId');
-            $this->pagesModel->setObjectTypeId($objectTypeId);
+            $pagesCollection->setObjectTypeId($objectTypeId);
         }
         if (null !== $this->params()->fromRoute('pageTypeId')) {  
             $pageTypeId = (int)$this->params()->fromRoute('pageTypeId');
-            $this->pagesModel->setPageTypeid($pageTypeId);
+            $pagesCollection->setPageTypeId($pageTypeId);
         }
         
-        
-        $form = $this->pagesModel->getPageForm();
-        
-        $pageFormConfig = $form['formConfig'];
-        $pageValues = $form['formValues'];
-        
-        $pageFormMsg = array();
-        
-        if ($this->request->isPost()) {
-            $tmp = $this->pagesModel->addPage($this->request->getPost());
-            if ($tmp['success']) {
-                if (!$this->request->isXmlHttpRequest()) {
-                    $this->flashMessenger()->addSuccessMessage('Страница успешно добавлена');
-                    $this->redirect()->toRoute('admin/method',array(
-                        'module' => 'Pages',
-                        'method' => 'EditPage',
-                        'id' => $tmp['pageId'],
-                    ));
+        $form = $pagesCollection->getForm();
+                
+        if ($request->isPost()) {
+            $form->setData($request->getPost());
+            
+            if ($form->isValid()) {
+                if ($pageId = $pagesCollection->addPage($form->getData())) {
+                    if (!$request->isXmlHttpRequest()) {
+                        $this->flashMessenger()->addSuccessMessage('Страница успешно создана');
+                        $this->redirect()->toRoute('admin/method',array(
+                            'module' => 'Pages',
+                            'method' => 'EditPage',
+                            'id' => $pageId,
+                        ));
+                    }
+                    
+                    return array(
+                        'success' => true,
+                        'msg' => 'Страница успешно создана',
+                    );    
+                } else {
+                    $result['success'] = false;
+                    $result['errMsg'] = 'При создании страницы произошли ошибки';
                 }
-
-                return array(
-                    'success' => true,
-                    'msg' => 'Страница успешно добавлена',
-                );         
             } else {
                 $result['success'] = false;
-                $pageFormMsg = $tmp['form']->getMessages();
-                $pageValues = $tmp['form']->getData();
             }
         }
-        
+                
         $result['contentTemplate'] = array(
             'name' => 'content_template/Pages/page_form_view.phtml',
             'data' => array(
                 'task' => 'add',
-                'pageFormConfig' => $pageFormConfig,
-                'pageValues' => $pageValues,
-                'pageFormMsg' => $pageFormMsg,
+                'form' => $form,           
             ),
         );
         
@@ -104,6 +84,8 @@ class AddPage extends AbstractMethod
             $result['errMsg'] = $this->flashMessenger()->getErrorMessages();
         }
         
-        return $result;
+        return $result;   
+        
     }
+    
 }

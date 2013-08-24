@@ -23,7 +23,7 @@ zen.objectTypes = zen.objectTypes || {};
             this.initParams = initParams;
             $('#btn-add-fields-group').click(function() {
                 var $block = $('#block-example').clone();
-                $block.removeClass('hide').removeAttr('id').appendTo('#groups-wrap');
+                $block.removeClass('hidden').removeAttr('id').appendTo('#groups-wrap');
                 $block.find('form').ajaxForm({
                     url: initParams['addFieldGroupUrl'],
                     success: function(data) {
@@ -40,9 +40,9 @@ zen.objectTypes = zen.objectTypes || {};
 
                         if (data.page.success) {
                             $block.find('.block__title').html(data.page.title + ' [ ' + data.page.name + ' ]');
-                            $block.find('.group-block').removeClass('hide');
-                            $block.find('.group-edit-block').addClass('hide');
-                            $block.find('.icons').removeClass('hide');
+                            $block.find('.group-block').removeClass('hidden');
+                            $block.find('.group-edit-block').addClass('hidden');
+                            $block.find('.icons').removeClass('hidden');
                             $block.attr('data-group-id', data.page.groupId);
 
                             $block.find('form button[name=cancel]').attr('onclick', 'zen.chameleonTheme.objectTypes.cancelGroupEditing(this)');
@@ -59,8 +59,8 @@ zen.objectTypes = zen.objectTypes || {};
 
                                     if (data.page.success) {
                                         $block.find('.block__title').html(data.page.title + ' [ ' + data.page.name + ' ]');
-                                        $block.find('.group-block').removeClass('hide');
-                                        $block.find('.group-edit-block').addClass('hide');
+                                        $block.find('.group-block').removeClass('hidden');
+                                        $block.find('.group-edit-block').addClass('hidden');
                                     }                            
                                 }
                             });
@@ -152,8 +152,8 @@ zen.objectTypes = zen.objectTypes || {};
 
                         if (data.page.success) {
                             $block.find('.block__title').html(data.page.title + ' [ ' + data.page.name + ' ]');
-                            $block.find('.group-block').removeClass('hide');
-                            $block.find('.group-edit-block').addClass('hide');
+                            $block.find('.group-block').removeClass('hidden');
+                            $block.find('.group-edit-block').addClass('hidden');
                         }                            
                     }
                 });
@@ -184,8 +184,8 @@ zen.objectTypes = zen.objectTypes || {};
                             col.eq(0).html(data.page.title);
                             col.eq(1).html('[ ' + data.page.name + ' ]');
                             col.eq(2).html(data.page.fieldTypeName);
-                            $blockItem.find('.group-block__item-block').removeClass('hide');
-                            $blockItem.find('.group-block__item-edit').addClass('hide');
+                            $blockItem.find('.group-block__item-block').removeClass('hidden');
+                            $blockItem.find('.group-block__item-edit').addClass('hidden');
                         }                            
                     }
                 });
@@ -220,8 +220,8 @@ zen.objectTypes = zen.objectTypes || {};
         },
         showEditGroupForm: function(obj) {
             var $block = $(obj).closest('.block');
-            $block.find('.group-block').addClass('hide');
-            $block.find('.group-edit-block').removeClass('hide');
+            $block.find('.group-block').addClass('hidden');
+            $block.find('.group-edit-block').removeClass('hidden');
         },
         delGroup: function(obj) {
             var $block = $(obj).closest('.block');
@@ -265,13 +265,13 @@ zen.objectTypes = zen.objectTypes || {};
 
         cancelGroupEditing: function(obj) {
             var $block = $(obj).closest('.block');
-            $block.find('.group-block').removeClass('hide');
-            $block.find('.group-edit-block').addClass('hide');
+            $block.find('.group-block').removeClass('hidden');
+            $block.find('.group-edit-block').addClass('hidden');
         },
         showEditFieldForm: function(obj) {
             var $blockItem = $(obj).closest('.group-block__item');
-            $blockItem.find('.group-block__item-block').addClass('hide');
-            $blockItem.find('.group-block__item-edit').removeClass('hide');
+            $blockItem.find('.group-block__item-block').addClass('hidden');
+            $blockItem.find('.group-block__item-edit').removeClass('hidden');
         },
 
         cancelFieldAdding: function(obj) {
@@ -282,15 +282,15 @@ zen.objectTypes = zen.objectTypes || {};
         cancelFieldEditing: function(obj) {
             var $blockItem = $(obj).closest('.group-block__item');
 
-            $blockItem.find('.group-block__item-block').removeClass('hide');
-            $blockItem.find('.group-block__item-edit').addClass('hide');
+            $blockItem.find('.group-block__item-block').removeClass('hidden');
+            $blockItem.find('.group-block__item-edit').addClass('hidden');
         },
 
         showAddFieldForm: function(obj) {
             var me = this,
             $groupBlock = $(obj).closest('.group-block'),                               
             groupId = $(obj).closest('.block').attr('data-group-id'),   
-            $fieldExampleBlock = $('#field-example').clone().removeClass('hide').removeAttr('id'),
+            $fieldExampleBlock = $('#field-example').clone().removeClass('hidden').removeAttr('id'),
             $blockItem = $fieldExampleBlock;
 
             $fieldExampleBlock.appendTo($groupBlock.find('.group-block__list'));
@@ -314,8 +314,8 @@ zen.objectTypes = zen.objectTypes || {};
                         col.eq(0).html(data.page.title);
                         col.eq(1).html('[ ' + data.page.name + ' ]');
                         col.eq(2).html(data.page.fieldTypeName);
-                        $blockItem.find('.group-block__item-block').removeClass('hide');
-                        $blockItem.find('.group-block__item-edit').addClass('hide');
+                        $blockItem.find('.group-block__item-block').removeClass('hidden');
+                        $blockItem.find('.group-block__item-edit').addClass('hidden');
                         $blockItem.attr('data-field-id', data.page.id);
                         $blockItem.attr('data-group-id', groupId);
 
@@ -340,8 +340,8 @@ zen.objectTypes = zen.objectTypes || {};
                                     col.eq(0).html(data.page.title);
                                     col.eq(1).html('[ ' + data.page.name + ' ]');
                                     col.eq(2).html(data.page.fieldTypeName);
-                                    $blockItem.find('.group-block__item-block').removeClass('hide');
-                                    $blockItem.find('.group-block__item-edit').addClass('hide');
+                                    $blockItem.find('.group-block__item-block').removeClass('hidden');
+                                    $blockItem.find('.group-block__item-edit').addClass('hidden');
                                 }                            
                             }
                         });

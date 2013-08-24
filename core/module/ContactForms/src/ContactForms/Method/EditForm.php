@@ -17,7 +17,7 @@ class EditForm extends AbstractMethod
     
     public function init()
     {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
+        $this->rootServiceLocator = $this->getServiceLocator();
         
         $this->formsModel = new FormsModel($this->rootServiceLocator);
         

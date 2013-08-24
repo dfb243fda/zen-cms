@@ -3,6 +3,7 @@
 namespace App\Field;
 
 use Zend\Db\Sql\Sql;
+use Zend\Form\Element;
 
 class Field
 {
@@ -192,45 +193,49 @@ class Field
         return $this->fieldTypesCollection->getFieldType($this->fieldData['field_type_id'])->getIsMultiple();
     }
     
-    public function getAppFormElementConfig()
-    {
-        $result = array(
+    /**
+     * @return \Zend\Form\Element
+     */
+    public function getZendFormElement()
+    {        
+        $name = 'field_' . $this->getId();
+        
+        $spec = array(
    //         'type' => 'Zend\Form\Element\\' . ucfirst($this->getFieldTypeName()),
+            'name' => $name,
             'type' => $this->getFieldTypeName(),
-            'name' => 'field_' . $this->getId(),
             'options' => array(
                 'label' => $this->translator->translateI18n($this->getTitle()),
             ),
         );
         
         if ($this->getFieldTypeIsMultiple()) {
-            $result['attributes'] = array(
+            $spec['attributes'] = array(
                 'multiple' => true,
             );
         } else {
-            $result['options']['empty_option'] = '';
+            $spec['options']['empty_option'] = '';
         }   
         
         
         if (null !== $this->getGuideId()) { 
             $sqlRes = $this->db->query('select * from ' . DB_PREF . 'objects where type_id = ?', array($this->getGuideId()));
             
-            $result['options']['value_options'] = array();
+            $spec['options']['value_options'] = array();
             foreach ($sqlRes as $row) {
-                $result['options']['value_options'][$row['id']] = $this->translator->translateI18n($row['name']);
+                $spec['options']['value_options'][$row['id']] = $this->translator->translateI18n($row['name']);
             }
         }
 
         if ($this->getTip()) {
-            $result['options']['description'] = $this->translator->translateI18n($this->getTip());
+            $spec['options']['description'] = $this->translator->translateI18n($this->getTip());
         }        
+                
+        $formFactory = new \Zend\Form\Factory($this->serviceManager->get('formElementManager'));
+                
+        $element = $formFactory->create($spec);
         
-        return array(
-            'spec' => $result,
-            'input_filter' => array(
-                'required' => (bool)$this->getIsRequired(),
-            ),
-        );
+        return $element;
     }
     
     public function moveFieldAfter($fieldBeforeId, $currentGroupId, $targetGroupId)

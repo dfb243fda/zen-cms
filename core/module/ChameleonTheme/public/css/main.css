@@ -1153,12 +1153,24 @@ strong {
     background: #FBEC88;
 }
 
+.form-element__errors {
+    margin: 0;
+    padding-left: 2px;
+    padding: 0;
+}
 .form-element__errors li {
     display: block;
     color: #FF2D2D;
     margin-bottom: 5px;
 }
 
+.form-element__has_errors > label > span {
+    color: #960000;
+}
+.form-element.form-element__has_errors input[type=text],
+.form-element__textarea.form-element__has_errors textarea {
+    background-color: #FFA8A8;
+}
 
 .form-1c .form-element {
     display: block;

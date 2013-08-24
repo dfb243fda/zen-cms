@@ -15,7 +15,7 @@ class Permissions extends AbstractMethod
     
     public function init()
     {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
+        $this->rootServiceLocator = $this->getServiceLocator();
         $this->permissionsModel = new PermissionsModel($this->rootServiceLocator);
         $this->request = $this->rootServiceLocator->get('request');
     }

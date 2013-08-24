@@ -12,7 +12,7 @@ class ModulesList extends AbstractMethod
     
     public function init()
     {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
+        $this->rootServiceLocator = $this->getServiceLocator();
         $this->moduleManager = $this->rootServiceLocator->get('ModuleManager');
         $this->translator = $this->rootServiceLocator->get('translator');
     }

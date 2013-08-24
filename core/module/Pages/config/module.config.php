@@ -112,9 +112,24 @@ return array(
     'service_manager' => array(
         'invokables' => array(
             'Pages\Service\PagesTree' => 'Pages\Service\PagesTree',
+            'Pages\Entity\Page' => 'Pages\Entity\Page',
+            'Pages\Entity\Content' => 'Pages\Entity\Content',
+            'Pages\FormFactory\Page' => 'Pages\FormFactory\Page',
+            'Pages\Form\PageBase' => 'Pages\Form\PageBase',
+            'Pages\Collection\Pages' => 'Pages\Collection\Pages',
+            'Pages\Service\DomainsTree' => 'Pages\Service\DomainsTree',
             
             'Pages\Service\Page' => 'Pages\Service\Page',
         ),
+    ),
+    
+    'shared' => array(
+        'Pages\Entity\Page' => false,
+        'Pages\Entity\Content' => false,
+        'Pages\FormFactory\Page' => false,
+        'Pages\Form\PageBase' => false,
+        'Pages\Collection\Pages' => false,
+        'Pages\Service\DomainsTree' => false,
     ),
     
     'dynamic_config' => array(

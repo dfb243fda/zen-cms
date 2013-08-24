@@ -10,7 +10,7 @@ class ObjectTypesList extends AbstractMethod
     
     public function init()
     {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
+        $this->rootServiceLocator = $this->getServiceLocator();
         $this->translator = $this->rootServiceLocator->get('translator');
     }
 

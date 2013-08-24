@@ -18,7 +18,7 @@ class EditField extends AbstractMethod
     
     public function init()
     {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
+        $this->rootServiceLocator = $this->getServiceLocator();
         $this->translator = $this->rootServiceLocator->get('translator');
         $this->request = $this->rootServiceLocator->get('request');
         $this->objectTypesModel = new ObjectTypesModel($this->rootServiceLocator);
