@@ -13,12 +13,12 @@ class PageContent extends AbstractMethod
             throw new \Exception('Wrong parameters transferred');
         }
         
-        $contentEntity = $this->serviceLocator->get('Pages\Entity\Content');
+        $pageContent = $this->serviceLocator->get('Pages\Service\PageContent');
         
-        $contentEntity->setPageId($pageId)
+        $pageContent->setPageId($pageId)
                       ->setTemplateId($templateId);
         
-        $markers = $contentEntity->getMarkers();
+        $markers = $pageContent->getMarkers();
         
         $data = array(
             'markers' => $markers,

@@ -11,6 +11,7 @@ class EditPage extends AbstractMethod
         $pageEntity = $this->serviceLocator->get('Pages\Entity\Page');
         
         $request = $this->serviceLocator->get('request');
+        $translator = $this->serviceLocator->get('translator');
         
         $result = array();   
         
@@ -34,7 +35,11 @@ class EditPage extends AbstractMethod
         $form = $pageEntity->getForm();
                 
         if ($request->isPost()) {
-            $form->setData($request->getPost());
+            $data = $request->getPost()->toArray();
+            if (empty($data['common']['name'])) {
+                $data['common']['name'] = $translator->translate('Pages:(Page without name)');
+            }
+            $form->setData($data);
             
             if ($form->isValid()) {
                 if ($pageEntity->editPage($form->getData())) {

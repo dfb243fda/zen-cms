@@ -5,7 +5,7 @@ namespace Pages\FormFactory;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
 
-class Page implements ServiceManagerAwareInterface
+class Content implements ServiceManagerAwareInterface
 {
     /**
      * @var ServiceManager
@@ -14,17 +14,13 @@ class Page implements ServiceManagerAwareInterface
     
     protected $objectTypeId;
     
-    protected $pageTypeId;
+    protected $contentTypeId;
     
-    protected $pageId;
+    protected $contentId;
     
-    protected $pagesTable = 'pages';
+    protected $contentData;
     
-    protected $pageData;
-    
-    protected $domainId;
-    
-    protected $parentPageId;
+    protected $contentTable = 'pages_content';
     
     /**
      * Set service manager
@@ -42,50 +38,40 @@ class Page implements ServiceManagerAwareInterface
         return $this;
     }
     
-    public function setPageTypeid($typeId)
+    public function setContentTypeid($typeId)
     {
-        $this->pageTypeId = $typeId;
+        $this->contentTypeId = $typeId;
         return $this;
     }
     
-    public function setPageId($pageId)
+    public function setContentId($contentId)
     {
-        $this->pageId = $pageId;
+        $this->contentId = $contentId;
         return $this;
     }
     
-    public function getPageData()
+    public function getContentData()
     {
-        return $this->pageData;
-    }
-    
-    public function setDomainId($domainId)
-    {
-        $this->domainId = $domainId;
-        return $this;
-    }
-    
-    public function setParentPageId($parentPageId)
-    {
-        $this->parentPageId = $parentPageId;
-        return $this;
+        return $this->contentData;
     }
     
     public function getForm()
     {
-        $pageId = $this->pageId;
-        $pageTypeId = $this->pageTypeId;
+        $contentId = $this->contentId;
+        $contentTypeId = $this->contentTypeId;
         $objectTypeId = $this->objectTypeId;
         
         $db = $this->serviceManager->get('db');
         $objectsCollection = $this->serviceManager->get('objectsCollection');
         $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
         $objectPropertyCollection = $this->serviceManager->get('objectPropertyCollection');
+        $fieldsCollection = $this->serviceManager->get('fieldsCollection');
+        $moduleManager = $this->serviceManager->get('moduleManager');
         
-        if (null === $this->pageId) {            
-            $form = $this->serviceManager->get('Pages\Form\PageBase');  
+        if (null === $this->contentId) {            
+            $form = $this->serviceManager->get('Pages\Form\ContentBase');  
             
-            $form->setPageTypeId($pageTypeId)->create();
+            $form->setContentTypeId($contentTypeId)->create();
             
             if (null === $objectTypeId) {
                 $valueOptions = $form->get('common')->get('object_type_id')->getValueOptions();
@@ -101,36 +87,21 @@ class Page implements ServiceManagerAwareInterface
                 $this->mergeForms($form, $objectType->getForm());
             }  
             
-            $pageData = array();
-            $pageData['page_type_id'] = $pageTypeId;
-            $pageData['object_type_id'] = $objectTypeId;
-            $pageData['is_active'] = '1';     
-            $pageData['access'] = array(-2);
+            $contentData = array();
+            $contentData['page_content_type_id'] = $contentTypeId;
+            $contentData['object_type_id'] = $objectTypeId;
+            $contentData['is_active'] = '1';     
+            $contentData['access'] = array(-2);
             
-            if (null !== $this->parentPageId) {
-                $sqlRes = $db->query('select lang_id from ' . DB_PREF . 'pages where id = ?', array($this->parentPageId))->toArray();
-                if (!empty($sqlRes)) {
-                    $pageData['lang_id'] = $sqlRes[0]['lang_id'];
-                } else {
-                    throw new \Exception('Page ' . $this->parentPageId . ' does not found');
-                }
-            } elseif (null !== $this->domainId) {                
-                $sqlRes = $db->query('select default_lang_id from ' . DB_PREF . 'domains where id = ?', array($this->domainId))->toArray();
-                if (!empty($sqlRes)) {
-                    $pageData['lang_id'] = $sqlRes[0]['default_lang_id'];
-                }
-            } else {
-                throw new \Exception('Parent page and domain does not defined');
-            }
                         
-            $this->pageData = $pageData;
+            $this->contentData = $contentData;
             
             foreach ($form->getFieldsets() as $fieldset) {
                 foreach ($fieldset->getElements() as $element) {
                     $elementName = $element->getName();
                                         
-                    if (isset($pageData[$elementName])) {
-                        $element->setValue($pageData[$elementName]);
+                    if (isset($contentData[$elementName])) {
+                        $element->setValue($contentData[$elementName]);
                     }
                 }
             }            
@@ -138,31 +109,31 @@ class Page implements ServiceManagerAwareInterface
             
             $sqlRes = $db->query('
                 select * 
-                from ' . DB_PREF . $this->pagesTable . ' 
-                where id = ?', array($pageId))->toArray();
+                from ' . DB_PREF . $this->contentTable . ' 
+                where id = ?', array($contentId))->toArray();
             
             if (empty($sqlRes)) {
-                throw new \Exception('page ' . $pageId . ' not found');
+                throw new \Exception('content ' . $contentId . ' not found');
             }
             
-            $pageData = $sqlRes[0];
+            $contentData = $sqlRes[0];
             
-            if (null === $pageTypeId) {
-                $pageTypeId = $pageData['page_type_id'];
-                $this->setPageTypeId($pageTypeId);
+            if (null === $contentTypeId) {
+                $contentTypeId = $contentData['page_content_type_id'];
+                $this->setContentTypeId($contentTypeId);
             }
                         
             $objectId = $sqlRes[0]['object_id'];
             $object = $objectsCollection->getObject($objectId);
-            
-            if ($pageTypeId == $pageData['page_type_id'] && null === $objectTypeId) {
+                        
+            if ($contentTypeId == $contentData['page_content_type_id'] && null === $objectTypeId) {                
                 $objectTypeId = $object->getTypeId();
                 $this->setObjectTypeId($objectTypeId);
-            }              
+            }               
             
-            $form = $this->serviceManager->get('Pages\Form\PageBase');  
+            $form = $this->serviceManager->get('Pages\Form\ContentBase');  
             
-            $form->setPageTypeId($pageTypeId)->create();        
+            $form->setContentTypeId($contentTypeId)->create(); 
             
             if (null === $objectTypeId) {
                 $valueOptions = $form->get('common')->get('object_type_id')->getValueOptions();
@@ -172,31 +143,41 @@ class Page implements ServiceManagerAwareInterface
                     $objectTypeId = key($valueOptions);
                     $this->setObjectTypeId($objectTypeId);
                 }
-            }
+            }            
             
             if (null !== $objectTypeId) {
                 $objectType = $objectTypesCollection->getType($objectTypeId);       
                 $this->mergeForms($form, $objectType->getForm());
             }     
             
-            $pageData['name'] = $object->getName();
-            $pageData['page_type_id'] = $pageTypeId;
-            $pageData['object_type_id'] = $objectTypeId;
-            $pageData['access'] = explode(',', $pageData['access']);
+            $contentData['name'] = $object->getName();
+            $contentData['page_content_type_id'] = $contentTypeId;
+            $contentData['object_type_id'] = $objectTypeId;
+            $contentData['access'] = explode(',', $contentData['access']);
             
-            $this->pageData = $pageData;
+            $this->contentData = $contentData;
             
             foreach ($form->getFieldsets() as $fieldset) {
                 foreach ($fieldset->getElements() as $element) {
                     $elementName = $element->getName();
                     
-                    if ('field_' == substr($elementName, 0, 6)) {
-                        $fieldId = substr($elementName, 6);
-                        $property = $objectPropertyCollection->getProperty($objectId, $fieldId); 
-                        $element->setValue($property->getValue());
+                    if ('field_' == substr($elementName, 0, 6)) {                        
+                        $fieldId = substr($elementName, 6);                        
+                        $field = $fieldsCollection->getField($fieldId);
+                        
+                        if ($moduleManager->isModuleActive('Comments') && 
+                            $field->isExists() && 
+                            $field->getName() == 'allow_comments'
+                            ) {                            
+                            $commentsService = $this->serviceManager->get('Comments\Service\Comments');
+                            $element->setValue($commentsService->isAllowedComments($objectId));                            
+                        } else {
+                            $property = $objectPropertyCollection->getProperty($objectId, $fieldId); 
+                            $element->setValue($property->getValue());
+                        }    
                     } else {
-                        if (isset($pageData[$elementName])) {
-                            $element->setValue($pageData[$elementName]);
+                        if (isset($contentData[$elementName])) {
+                            $element->setValue($contentData[$elementName]);
                         }
                     }      
                 }

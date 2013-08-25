@@ -3,7 +3,7 @@
 namespace Pages\Service;
 
 use Zend\Http\Response;
-use Pages\Entity\FeContentMethodInterface;
+use Pages\AbstractMethod\FeContentMethodInterface;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
 
@@ -333,7 +333,7 @@ class Page implements ServiceManagerAwareInterface
                 $instance = $this->serviceManager->get('methodManager')->get($pageContentTypes[$row['page_content_type_id']]['service']);
 
                 if (!$instance instanceof FeContentMethodInterface) {
-                    throw new \Exception(get_class($instance) . ' does not implements \Pages\Entity\FeContentMethodInterface');
+                    throw new \Exception(get_class($instance) . ' does not implements \Pages\AbstractMethod\FeContentMethodInterface');
                 }
 
                 $instance->init();

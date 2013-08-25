@@ -6,95 +6,86 @@ use App\Method\AbstractMethod;
 
 class AddContent extends AbstractMethod
 {
-    protected $rootServiceLocator;
-    
-    protected $translator;
-    
-    protected $contentModel;
-    
-    protected $request;
-    
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->contentModel = new \Pages\Model\PagesContent($this->rootServiceLocator);
-        $this->request = $this->rootServiceLocator->get('request');
-    }
-
-
     public function main()
     {
-        $result = array();   
+        $contentCollection = $this->serviceLocator->get('Pages\Collection\Content');
+        
+        $request = $this->serviceLocator->get('request');
+        $translator = $this->serviceLocator->get('translator');
+        
+        $result = array();  
         
         if (null === $this->params()->fromRoute('markerId')) {
             $result['errMsg'] = array('Не переданы все необходимые параметры');
             return $result;
         }
         $markerId = (int)$this->params()->fromRoute('markerId');
-        $this->contentModel->setMarkerId($markerId);
-            
+        $contentCollection->setMarkerId($markerId);
+        
         if (null === $this->params()->fromRoute('beforeContentId')) {
             $result['errMsg'] = array('Не переданы все необходимые параметры');
             return $result;
         }
         $beforeContentId = (int)$this->params()->fromRoute('beforeContentId');
+        $contentCollection->setBeforeContentId($beforeContentId);
         
         if (null === $this->params()->fromRoute('pageId')) {
             $result['errMsg'] = 'Не переданы все необходимые параметры';
             return $result;
         }
         $pageId = (int)$this->params()->fromRoute('pageId');
-        $this->contentModel->setPageId($pageId);
+        $contentCollection->setPageId($pageId);
         
         if (null !== $this->params()->fromRoute('objectTypeId')) {
             $objectTypeId = (int)$this->params()->fromRoute('objectTypeId');
-            $this->contentModel->setObjectTypeId($objectTypeId);
+            $contentCollection->setObjectTypeId($objectTypeId);
         }
         if (null !== $this->params()->fromRoute('pageContentTypeId')) {  
-            $pageContentTypeId = (int)$this->params()->fromRoute('pageContentTypeId');
-            $this->contentModel->setPageContentTypeid($pageContentTypeId);
+            $contentTypeId = (int)$this->params()->fromRoute('pageContentTypeId');
+            $contentCollection->setContentTypeid($contentTypeId);
         }
         
-        $form = $this->contentModel->getPageContentForm();
-        
-        $contentFormConfig = $form['formConfig'];
-        $contentValues     = $form['formValues'];
-        $contentFormMsg    = array();
-        
-        if ($this->request->isPost()) {
-            $tmp = $this->contentModel->addContent($beforeContentId, $this->request->getPost());
-            if ($tmp['success']) {
-                if (!$this->request->isXmlHttpRequest()) {
-                    $this->flashMessenger()->addSuccessMessage('Содержимое успешно добавлено');
-                    $this->redirect()->toRoute('admin/method',array(
-                        'module' => 'Pages',
-                        'method' => 'EditContent',
-                        'id'     => $tmp['contentId'],
-                    ));
-                }
+        $form = $contentCollection->getForm();
+             
+        if ($request->isPost()) {
+            $data = $request->getPost()->toArray();
+            if (empty($data['common']['name'])) {
+                $data['common']['name'] = $translator->translate('Pages:(Page content without name)');
+            }
+            $form->setData($data);
+            
+            if ($form->isValid()) {
+                if ($contentId = $contentCollection->addContent($form->getData())) {
+                    if (!$request->isXmlHttpRequest()) {
+                        $this->flashMessenger()->addSuccessMessage('Содержимое успешно добавлено');
+                        $this->redirect()->toRoute('admin/method',array(
+                            'module' => 'Pages',
+                            'method' => 'EditContent',
+                            'id'     => $contentId,
+                        ));
+                    }
 
-                return array(
-                    'success' => true,
-                    'msg' => 'Содержимое успешно добавлено',
-                );         
+                    return array(
+                        'success' => true,
+                        'msg' => 'Содержимое успешно добавлено',
+                    );         
+                } else {
+                    $result['success'] = false;
+                    $result['errMsg'] = 'При обновлении содержимого произошли ошибки';
+                }
             } else {
                 $result['success'] = false;
-                $contentFormMsg = $tmp['form']->getMessages();
-                $contentValues = $tmp['form']->getData();
-            }
-        }
+            }            
+        }        
         
         $result['contentTemplate'] = array(
             'name' => 'content_template/Pages/content_form_view.phtml',
             'data' => array(
-                'task'              => 'add',
-                'contentFormConfig' => $contentFormConfig,
-                'contentValues'     => $contentValues,
-                'markerId'          => $markerId,
-                'beforeContentId'   => $beforeContentId,
-                'pageId'            => $pageId,
-                'contentFormMsg'    => $contentFormMsg,
+                'task'            => 'add',
+                'form'            => $form,
+                'markerId'        => $markerId,
+                'beforeContentId' => $beforeContentId,
+                'pageId'          => $pageId,
             ),
         );
         
@@ -104,9 +95,9 @@ class AddContent extends AbstractMethod
         if ($this->flashMessenger()->hasErrorMessages()) {
             $result['errMsg'] = $this->flashMessenger()->getErrorMessages();
         }
-        
+                
         $result['breadcrumbPrevLink'] = array(
-            'title' => $this->translator->translate('Edit page method'),
+            'title' => $translator->translate('Edit page method'),
             'link' => $this->url()->fromRoute('admin/method', array(
                 'module' => 'Pages',
                 'method' => 'EditPage',

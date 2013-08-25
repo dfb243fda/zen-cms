@@ -1,6 +1,6 @@
 <?php
 
-namespace Pages\Entity;
+namespace Pages\Collection;
 
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
@@ -13,11 +13,19 @@ class Content implements ServiceManagerAwareInterface
      */
     protected $serviceManager;
     
-    protected $contentTypeId;
+    protected $markerId;
+    
+    protected $beforeContentId;
+    
+    protected $pageId;
     
     protected $objectTypeId;
     
-    protected $contentId;
+    protected $contentTypeId;
+    
+    protected $markersTable = 'template_markers';
+    
+    protected $pagesTable = 'pages';
     
     protected $contentTable = 'pages_content';
     
@@ -31,9 +39,21 @@ class Content implements ServiceManagerAwareInterface
         $this->serviceManager = $serviceManager;
     }
     
-    public function setContentTypeId($contentTypeId)
+    public function setMarkerId($markerId)
     {
-        $this->contentTypeId = $contentTypeId;
+        $this->markerId = $markerId;
+        return $this;
+    }
+    
+    public function setBeforeContentId($beforeContentId)
+    {
+        $this->beforeContentId = $beforeContentId;
+        return $this;
+    }
+    
+    public function setPageId($pageId)
+    {
+        $this->pageId = $pageId;
         return $this;
     }
     
@@ -43,9 +63,9 @@ class Content implements ServiceManagerAwareInterface
         return $this;
     }
     
-    public function setContentId($contentId)
+    public function setContentTypeid($contentTypeId)
     {
-        $this->contentId = $contentId;
+        $this->contentTypeId = $contentTypeId;
         return $this;
     }
     
@@ -54,28 +74,38 @@ class Content implements ServiceManagerAwareInterface
         $this->formFactory = $formFactory = $this->serviceManager->get('Pages\FormFactory\Content');
         
         $formFactory->setContentTypeId($this->contentTypeId)
-                    ->setObjectTypeId($this->objectTypeId)
-                    ->setContentId($this->contentId);
+                    ->setObjectTypeId($this->objectTypeId);
         
         $form = $formFactory->getForm();
         
         return $form;
     }
     
-    public function getContentData()
+    public function addContent($data)
     {
-        return $this->formFactory->getContentData();
-    }
-    
-    public function editContent($data)
-    {
-        $contentId = $this->contentId;
+        $markerId = $this->markerId;  
+        $pageId = $this->pageId;
+        $beforeContentId = $this->beforeContentId;
         
         $objectsCollection = $this->serviceManager->get('objectsCollection');
         $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
         $objectPropertyCollection = $this->serviceManager->get('objectPropertyCollection');
         $db = $this->serviceManager->get('db');
         $moduleManager = $this->serviceManager->get('moduleManager');
+        
+        if (null === $markerId || null === $pageId) {
+            throw new \Exception('wrong parameterss transferred');
+        } else {
+            $sqlRes = $db->query('select id from ' . DB_PREF . $this->markersTable . ' where id = ?', array($markerId))->toArray();
+            if (empty($sqlRes)) {
+                throw new \Exception('marker ' . $markerId . ' does not found');
+            }    
+            
+            $sqlRes = $db->query('select id from ' . DB_PREF . $this->pagesTable . ' where id = ?', array($pageId))->toArray();
+            if (empty($sqlRes)) {
+                throw new \Exception('page ' . $pageId . ' does not found');
+            }   
+        }
         
         $insertFields = array(); //значения для свойств объектов (такблица object и т.д.)
         $insertBase = array(); // значения для таблицы pages
@@ -93,24 +123,28 @@ class Content implements ServiceManagerAwareInterface
             }
         }
 
-        $tmp = $this->getContentData();
-        $objectId = $tmp['object_id'];
-
+        $objectId = $objectsCollection->addObject($insertBase['name'], $insertBase['object_type_id']);
         $objectTypeId = $insertBase['object_type_id'];
-
-        $object = $objectsCollection->getObject($objectId);            
-        $object->setName($insertBase['name'])->setTypeId($objectTypeId)->save();
-
 
         unset($insertBase['name']);
         unset($insertBase['object_type_id']);
         
-        
-        $sql = new Sql($db);
-        
-        $update = $sql->update(DB_PREF . 'pages_content')->set($insertBase)->where('id = ' . (int)$contentId);
-        $sql->prepareStatementForSqlObject($update)->execute();    
+        $insertBase['page_id'] = $pageId;
+        $insertBase['marker'] = $markerId;            
+        $insertBase['object_id'] = $objectId;
+        $insertBase['is_deleted'] = 0;
 
+        $sql = new Sql($db);
+        $insert = $sql->insert(DB_PREF . $this->contentTable)->values($insertBase);
+        $sql->prepareStatementForSqlObject($insert)->execute();    
+
+        $contentId = $db->getDriver()->getLastGeneratedValue();
+
+        $contentEntity = $this->serviceManager->get('Pages\Entity\Content');
+        
+        $contentEntity->setContentId($contentId)->sortContent($beforeContentId, $markerId);
+        
+        
         $objectType = $objectTypesCollection->getType($objectTypeId); 
         $tmpFieldGroups = $objectType->getFieldGroups();
         foreach ($tmpFieldGroups as $k=>$v) {
@@ -137,69 +171,22 @@ class Content implements ServiceManagerAwareInterface
             }
         }
 
-        return true;
+        return $contentId;
     }
     
-    public function sortContent($beforeContentId, $markerId)
+    public function deleteContent($contentId)
     {
         $db = $this->serviceManager->get('db');
         
-        if (0 == $beforeContentId) {
-            $contentSorting = 0;
-        } else {
-            $sqlRes = $db->query('select sorting from ' . DB_PREF . $this->contentTable . ' where id = ?', array($beforeContentId))->toArray();
-
-            if (empty($sqlRes)) {
-                return;
-            }
-            $contentSorting = $sqlRes[0]['sorting'] + 1;
-        }
-
-        $db->query('UPDATE ' . DB_PREF . $this->contentTable . '
-            SET sorting = (sorting + 1)
-            WHERE marker = ? AND sorting >= ?', array($markerId, $contentSorting));
-
-        $db->query('update ' . DB_PREF . $this->contentTable . '
-            set sorting = ?, marker = ?
-            where id = ?
-        ', array($contentSorting, $markerId, $this->contentId));
-    }
-    
-    public function deactivateContent()
-    {
-        $db = $this->serviceManager->get('db');
-        
-        $sqlRes = $db->query('select is_active from ' . DB_PREF . $this->contentTable . ' where id = ? and is_deleted = 0', array($this->contentId))->toArray();
-                        
-        if (empty($sqlRes)) {
+        $sqlRes = $db->query('select count(id) as cnt from ' . DB_PREF . $this->contentTable . ' where id = ? and is_deleted = 0', array($contentId))->toArray();
+            
+        if ($sqlRes[0]['cnt'] == 0) {
             return false;
         } else {
-            if (!$sqlRes[0]['is_active']) {
-                return true;
-            } else {
-                $db->query('update ' . DB_PREF . $this->contentTable . ' set is_active = 0 where id = ?', array($this->contentId));
+            $db->query('update ' . DB_PREF . $this->contentTable . ' set is_deleted = 1 where id = ?', array($contentId));
 
-                return true;
-            }
-        }    
-    }
-    
-    public function activateContent()
-    {
-        $db = $this->serviceManager->get('db');
-        
-        $sqlRes = $db->query('select is_active from ' . DB_PREF . $this->contentTable . ' where id = ? and is_deleted = 0', array($this->contentId))->toArray();
-                        
-        if (empty($sqlRes)) {
-            return false;
-        } else {
-            if ($sqlRes[0]['is_active']) {
-                return true;
-            } else {
-                $db->query('update ' . DB_PREF . $this->contentTable . ' set is_active = 1 where id = ?', array($this->contentId));
-
-                return true;
-            }
+            return true;
         }      
     }
+    
 }

@@ -11,6 +11,7 @@ class AddPage extends AbstractMethod
         $pagesCollection = $this->serviceLocator->get('Pages\Collection\Pages');
         
         $request = $this->serviceLocator->get('request');
+        $translator = $this->serviceLocator->get('translator');
         
         $result = array();   
         
@@ -37,7 +38,11 @@ class AddPage extends AbstractMethod
         $form = $pagesCollection->getForm();
                 
         if ($request->isPost()) {
-            $form->setData($request->getPost());
+            $data = $request->getPost()->toArray();
+            if (empty($data['common']['name'])) {
+                $data['common']['name'] = $translator->translate('Pages:(Page without name)');
+            }
+            $form->setData($data);
             
             if ($form->isValid()) {
                 if ($pageId = $pagesCollection->addPage($form->getData())) {

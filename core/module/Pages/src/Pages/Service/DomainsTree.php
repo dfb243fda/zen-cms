@@ -29,49 +29,6 @@ class DomainsTree implements ServiceManagerAwareInterface
         $this->serviceManager = $serviceManager;
     }
     
-    public function getWrapper()
-    {        
-        $result = array();
-        
-        $this->serviceManager->get('viewHelperManager')->get('InlineScript')->appendFile(ROOT_URL_SEGMENT . '/js/Pages/pages.js');
-        
-        $urlPlugin = $this->serviceManager->get('ControllerPluginManager')->get('url');
-        
-        $translator = $this->serviceManager->get('translator');
-        
-        $result['contentTemplate'] = array(
-            'name' => 'content_template/' . CURRENT_THEME . '/tree_grid.phtml',
-            'data' => array(
-                'createBtn' => array(
-                    'text' => 'Добавить домен',
-                    'link' => $urlPlugin->fromRoute('admin/method', array(
-                        'module' => 'Pages',
-                        'method' => 'AddDomain',
-                    )),
-                ),
-                'url' => $urlPlugin->fromRoute('admin/DomainsList', array(
-                    'task'   => 'get_data',
-                )),  
-                'columns' => array(
-                    array(
-                        array(                        
-                            'title' => $translator->translate('Pages:Domain field'),
-                            'field' => 'name',
-                            'width' => '200',
-                        ),
-                        array(                        
-                            'title' => '',
-                            'field' => 'icons',
-                            'width' => '200',
-                        )
-                    )                    
-                ),
-            ),            
-        );
-        
-        return $result;
-    }
-    
     public function getDomains()
     {
         $result = array();

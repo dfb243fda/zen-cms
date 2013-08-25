@@ -2,7 +2,7 @@
 
 namespace StandardPageContentTypes\Method;
 
-use Pages\Entity\FeContentMethodInterface;
+use Pages\AbstractMethod\FeContentMethodInterface;
 
 class SimpleText implements FeContentMethodInterface
 {        

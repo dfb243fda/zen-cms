@@ -13,7 +13,11 @@ class DomainsList extends AbstractMethod
         if ('get_data' == $this->params()->fromRoute('task')) {   
             $result = $domainsTree->getDomains();
         } else {
-            $result = $domainsTree->getWrapper();
+            $result = array(
+                'contentTemplate' => array(
+                    'name' => 'content_template/Pages/domains_tree.phtml',
+                ),
+            );
         }
         return $result;
     }

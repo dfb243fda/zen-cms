@@ -2,7 +2,7 @@
 
 namespace StandardPageTypes\Method;
 
-use Pages\Entity\FePageMethod;
+use Pages\AbstractMethod\FePageMethod;
 use App\Utility\GeneralUtility;
 
 class PageLink extends FePageMethod

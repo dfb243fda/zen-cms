@@ -2,7 +2,7 @@
 
 namespace StandardPageTypes\Method;
 
-use Pages\Entity\FePageMethod;
+use Pages\AbstractMethod\FePageMethod;
 
 class StandardPage extends FePageMethod
 {         

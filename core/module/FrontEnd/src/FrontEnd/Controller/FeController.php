@@ -5,7 +5,6 @@ namespace FrontEnd\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
-use Pages\Service\PageType;
 use Zend\Stdlib\ResponseInterface as Response;
 
 class FeController extends AbstractActionController
@@ -82,9 +81,8 @@ class FeController extends AbstractActionController
         $resultArray['page'] = $page->getPageData();
         
         if (isset($resultArray['page']['page_type_id'])) {
-            $pageType = new PageType($this->serviceLocator, $resultArray['page']['page_type_id']);
-        
-            $pageType->prepareResult($resultArray);
+            $pageType = $this->serviceLocator->get('Pages\Entity\PageType');            
+            $pageType->setPageTypeId($resultArray['page']['page_type_id'])->prepareResult($resultArray);
         }        
         
         $profiler = $this->getServiceLocator()->get('db')->getProfiler();

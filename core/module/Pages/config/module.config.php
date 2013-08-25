@@ -118,6 +118,14 @@ return array(
             'Pages\Form\PageBase' => 'Pages\Form\PageBase',
             'Pages\Collection\Pages' => 'Pages\Collection\Pages',
             'Pages\Service\DomainsTree' => 'Pages\Service\DomainsTree',
+            'Pages\Entity\Domain' => 'Pages\Entity\Domain',
+            'Pages\Form\Domain' => 'Pages\Form\Domain',
+            'Pages\Collection\Domains' => 'Pages\Collection\Domains',
+            'Pages\Service\PageContent' => 'Pages\Service\PageContent',
+            'Pages\FormFactory\Content' => 'Pages\FormFactory\Content',
+            'Pages\Form\ContentBase' => 'Pages\Form\ContentBase',
+            'Pages\Collection\Content' => 'Pages\Collection\Content',
+            'Pages\Entity\PageType' => 'Pages\Entity\PageType',
             
             'Pages\Service\Page' => 'Pages\Service\Page',
         ),
@@ -130,6 +138,13 @@ return array(
         'Pages\Form\PageBase' => false,
         'Pages\Collection\Pages' => false,
         'Pages\Service\DomainsTree' => false,
+        'Pages\Entity\Domain' => false,
+        'Pages\Form\Domain' => false,
+        'Pages\Collection\Domains' => false,
+        'Pages\Service\PageContent' => false,
+        'Pages\Form\ContentBase' => false,
+        'Pages\Collection\Content' => false,
+        'Pages\Entity\PageType' => false,
     ),
     
     'dynamic_config' => array(

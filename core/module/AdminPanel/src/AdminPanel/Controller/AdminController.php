@@ -284,9 +284,10 @@ class AdminController extends AbstractActionController
                 
                 if (isset($resultArray['page']['contentTemplate'])) {                    
                     $contentViewModel = new ViewModel();
-                    $contentViewModel->setTemplate($resultArray['page']['contentTemplate']['name']);
-                    $contentViewModel->setVariables($resultArray['page']['contentTemplate']['data']);
-                    
+                    $contentViewModel->setTemplate($resultArray['page']['contentTemplate']['name']);                    
+                    if (isset($resultArray['page']['contentTemplate']['data'])) {
+                        $contentViewModel->setVariables($resultArray['page']['contentTemplate']['data']);
+                    }                    
                     $resultArray['page']['content'] = $viewRender->render($contentViewModel);
                     unset($resultArray['page']['contentTemplate']);
                 }
@@ -346,7 +347,9 @@ class AdminController extends AbstractActionController
                 if (isset($resultArray['page']['contentTemplate'])) {                    
                     $contentViewModel = new ViewModel();
                     $contentViewModel->setTemplate($resultArray['page']['contentTemplate']['name']);
-                    $contentViewModel->setVariables($resultArray['page']['contentTemplate']['data']);
+                    if (isset($resultArray['page']['contentTemplate']['data'])) {
+                        $contentViewModel->setVariables($resultArray['page']['contentTemplate']['data']);
+                    } 
                     
                     $resultArray['page']['content'] = $viewRender->render($contentViewModel);
                     unset($resultArray['page']['contentTemplate']);

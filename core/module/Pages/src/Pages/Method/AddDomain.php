@@ -3,61 +3,52 @@
 namespace Pages\Method;
 
 use App\Method\AbstractMethod;
-use Pages\Model\Domains;
 
 class AddDomain extends AbstractMethod
 {
-    protected $rootServiceLocator;
-    
-    protected $domainsModel;
-    
-    protected $request;
-    
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->domainsModel = new Domains($this->rootServiceLocator);        
-        $this->request = $this->rootServiceLocator->get('request');
-    }
-
     public function main()
     {
+        $domainsCollection = $this->serviceLocator->get('Pages\Collection\Domains');
+        $request = $this->serviceLocator->get('request');
+        
         $result = array();
                        
-        $form = $this->domainsModel->getForm();        
-        $formConfig = $form['formConfig'];
-        $formValues = $form['formValues'];
-        $formMessages = array();
+        $form = $domainsCollection->getForm();   
         
-        if ($this->request->isPost()) {
-            $tmp = $this->domainsModel->add($this->request->getPost());
-            if ($tmp['success']) {
-                if (!$this->request->isXmlHttpRequest()) {
-                    $this->flashMessenger()->addSuccessMessage('Домен успешно обновлен');
-                    $this->redirect()->toRoute('admin/method', array(
-                        'module' => 'Pages',
-                        'method' => 'EditDomain',
-                        'id'     => $tmp['domainId'],
-                    ));
-                }
+        if ($request->isPost()) {
+            $form->setData($request->getPost());
+            
+            if ($form->isValid()) {
+                if ($domainId = $domainsCollection->addDomain($form->getData())) {
+                    if (!$request->isXmlHttpRequest()) {
+                        $this->flashMessenger()->addSuccessMessage('Домен успешно добавлен');
+                        $this->redirect()->toRoute('admin/method', array(
+                            'module' => 'Pages',
+                            'method' => 'EditDomain',
+                            'id'     => $domainId,
+                        ));
+                    }
 
-                return array(
-                    'success' => true,
-                    'msg' => 'Домен успешно добавлен',
-                );         
+                    return array(
+                        'success' => true,
+                        'msg' => 'Домен успешно добавлен',
+                    );         
+                } else {
+                    return array(
+                        'success' => false,
+                        'msg' => 'При добавлении домена произошли ошибки',
+                    ); 
+                }
             } else {
                 $result['success'] = false;
-                $formMessages = $tmp['form']->getMessages();
-                $formValues = $tmp['form']->getData();
             }
+            
         }
         
         $result['contentTemplate'] = array(
             'name' => 'content_template/Pages/domain_form_view.phtml',
             'data' => array(
-                'formConfig' => $formConfig,
-                'formValues' => $formValues,
-                'formMsg' => $formMessages,
+                'form' => $form,
             ),
         );
         

@@ -17,7 +17,11 @@ class PagesList extends AbstractMethod
                 $result = $pagesTree->getDomains();
             }
         } else {
-            $result = $pagesTree->getWrapper();
+            $result = array(
+                'contentTemplate' => array(
+                    'name' => 'content_template/Pages/pages_tree.phtml',
+                ),
+            );
         }
         return $result;
     }

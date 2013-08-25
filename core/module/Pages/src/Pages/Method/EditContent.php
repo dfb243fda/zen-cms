@@ -6,29 +6,18 @@ use App\Method\AbstractMethod;
 
 class EditContent extends AbstractMethod
 {
-    protected $rootServiceLocator;
-    
-    protected $translator;
-    
-    protected $contentModel;
-    
-    protected $request;
-    
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->contentModel = new \Pages\Model\PagesContent($this->rootServiceLocator);
-        $this->request = $this->rootServiceLocator->get('request');
-    }
-
-
     public function main()
     {
+        $contentEntity = $this->serviceLocator->get('Pages\Entity\Content');
+        
+        $request = $this->serviceLocator->get('request');
+        $translator = $this->serviceLocator->get('translator');
+        
         $result = array();   
         
         if ($this->params()->fromRoute('id')) {
             $contentId = (int)$this->params()->fromRoute('id');
+            $contentEntity->setContentId($contentId);
         } else {
             $result['errMsg'] = array('Не переданы все необходимые параметры');
             return $result;
@@ -36,53 +25,52 @@ class EditContent extends AbstractMethod
         
         if (null !== $this->params()->fromRoute('objectTypeId')) {
             $objectTypeId = (int)$this->params()->fromRoute('objectTypeId');
-            $this->contentModel->setObjectTypeId($objectTypeId);
+            $contentEntity->setObjectTypeId($objectTypeId);
         }
         if (null !== $this->params()->fromRoute('pageContentTypeId')) {  
             $pageContentTypeId = (int)$this->params()->fromRoute('pageContentTypeId');
-            $this->contentModel->setPageContentTypeid($pageContentTypeId);
-        }
+            $contentEntity->setContentTypeid($pageContentTypeId);
+        }        
         
+        $form = $contentEntity->getForm();
         
-        $form = $this->contentModel->getPageContentForm($contentId);
-        
-        $contentFormConfig = $form['formConfig'];
-        $contentValues = $form['formValues'];
-        
-        $contentFormMsg = array();
-        
-        if ($this->request->isPost()) {
-            $tmp = $this->contentModel->editContent($contentId, $this->request->getPost());
-            if ($tmp['success']) {
-                if (!$this->request->isXmlHttpRequest()) {
-                    $this->flashMessenger()->addSuccessMessage('Содержимое успешно обновлено');
-                    $this->redirect()->toRoute('admin/method',array(
-                        'module' => 'Pages',
-                        'method' => 'EditContent',
-                        'id'     => $contentId,
-                    ));
-                }
+        if ($request->isPost()) {
+            $data = $request->getPost()->toArray();
+            if (empty($data['common']['name'])) {
+                $data['common']['name'] = $translator->translate('Pages:(Page content without name)');
+            }
+            $form->setData($data);
+            
+            if ($form->isValid()) {
+                if ($contentEntity->editContent($form->getData())) {
+                    if (!$request->isXmlHttpRequest()) {
+                        $this->flashMessenger()->addSuccessMessage('Содержимое успешно обновлено');
+                        $this->redirect()->toRoute('admin/method',array(
+                            'module' => 'Pages',
+                            'method' => 'EditContent',
+                            'id'     => $contentId,
+                        ));
+                    }
 
-                return array(
-                    'success' => true,
-                    'msg' => 'Содержимое успешно обновлено',
-                );         
+                    return array(
+                        'success' => true,
+                        'msg' => 'Содержимое успешно обновлено',
+                    );         
+                } else {
+                    $result['success'] = false;
+                    $result['errMsg'] = 'При обновлении содержимого произошли ошибки';
+                }
             } else {
                 $result['success'] = false;
-                $contentFormMsg = $tmp['form']->getMessages();
-                $contentValues = $tmp['form']->getData();
-            }
-        }
-        
+            }            
+        }        
         
         $result['contentTemplate'] = array(
             'name' => 'content_template/Pages/content_form_view.phtml',
             'data' => array(
                 'task' => 'edit',
-                'contentFormConfig' => $contentFormConfig,
-                'contentValues'     => $contentValues,
-                'contentId'         => $contentId,
-                'contentFormMsg'    => $contentFormMsg,
+                'form' => $form,
+                'contentId' => $contentId,
             ),
         );
         
@@ -93,11 +81,11 @@ class EditContent extends AbstractMethod
             $result['errMsg'] = $this->flashMessenger()->getErrorMessages();
         }
         
-        $tmp = $this->contentModel->getPageContentData();
+        $tmp = $contentEntity->getContentData();
         $pageId = $tmp['page_id'];
         
         $result['breadcrumbPrevLink'] = array(
-            'title' => $this->translator->translate('Edit page method'),
+            'title' => $translator->translate('Edit page method'),
             'link' => $this->url()->fromRoute('admin/method', array(
                 'module' => 'Pages',
                 'method' => 'EditPage',
@@ -106,5 +94,5 @@ class EditContent extends AbstractMethod
         );
         
         return $result;
-    }
+    }    
 }

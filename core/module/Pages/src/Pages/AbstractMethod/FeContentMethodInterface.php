@@ -1,6 +1,6 @@
 <?php
 
-namespace Pages\AbstractMetod;
+namespace Pages\AbstractMethod;
 
 use App\Method\MethodInterface;
 

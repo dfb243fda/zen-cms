@@ -3,25 +3,14 @@
 namespace Pages\Method;
 
 use App\Method\AbstractMethod;
-use Pages\Model\Domains;
 
 class EditDomain extends AbstractMethod
 {
-    protected $rootServiceLocator;
-        
-    protected $domainsModel;
-    
-    protected $request;
-    
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->domainsModel = new Domains($this->rootServiceLocator);        
-        $this->request = $this->rootServiceLocator->get('request');
-    }
-
     public function main()
     {
+        $domainEntity = $this->serviceLocator->get('Pages\Entity\Domain');
+        $request = $this->serviceLocator->get('request');
+        
         $result = array();
         
         if (null === $this->params()->fromRoute('id')) {
@@ -30,37 +19,38 @@ class EditDomain extends AbstractMethod
         } 
         
         $domainId = (int)$this->params()->fromRoute('id');
-                       
-        $form = $this->domainsModel->getForm($domainId);        
-        $formConfig = $form['formConfig'];
-        $formValues = $form['formValues'];
-        $formMessages = array();
         
-        if ($this->request->isPost()) {
-            $tmp = $this->domainsModel->edit($domainId, $this->request->getPost());
-            if ($tmp['success']) {
-                if (!$this->request->isXmlHttpRequest()) {
-                    $this->flashMessenger()->addSuccessMessage('Домен успешно обновлен');
-                    $this->redirect()->refresh();
+        $domainEntity->setDomainId($domainId);
+        
+        $form = $domainEntity->getForm();        
+        
+        if ($request->isPost()) {
+            $form->setData($request->getPost());
+            
+            if ($form->isValid()) {
+                if ($domainEntity->editDomain($form->getData())) {
+                    if (!$request->isXmlHttpRequest()) {
+                        $this->flashMessenger()->addSuccessMessage('Домен успешно обновлен');
+                        $this->redirect()->refresh();
+                    }
+                    
+                    return array(
+                        'success' => true,
+                        'msg' => 'Домен успешно обновлен',
+                    );    
+                } else {
+                    $result['success'] = false;
+                    $result['errMsg'] = 'При обновлении домена произошли ошибки';
                 }
-
-                return array(
-                    'success' => true,
-                    'msg' => 'Домен успешно обновлен',
-                );         
             } else {
                 $result['success'] = false;
-                $formMessages = $tmp['form']->getMessages();
-                $formValues = $tmp['form']->getData();
             }
-        }
+        }        
         
         $result['contentTemplate'] = array(
             'name' => 'content_template/Pages/domain_form_view.phtml',
             'data' => array(
-                'formConfig' => $formConfig,
-                'formValues' => $formValues,
-                'formMsg' => $formMessages,
+                'form' => $form,           
             ),
         );
         
@@ -71,6 +61,6 @@ class EditDomain extends AbstractMethod
             $result['errMsg'] = $this->flashMessenger()->getErrorMessages();
         }
         
-        return $result;  
+        return $result;      
     }
 }

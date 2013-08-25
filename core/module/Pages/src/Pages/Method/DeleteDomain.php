@@ -3,35 +3,23 @@
 namespace Pages\Method;
 
 use App\Method\AbstractMethod;
-use Pages\Model\Domains;
 
 class DeleteDomain extends AbstractMethod
 {
-    protected $rootServiceLocator;
-    
-    protected $domainsModel;
-    
-    protected $request;
-    
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->domainsModel = new Domains($this->rootServiceLocator);        
-        $this->request = $this->rootServiceLocator->get('request');
-    }
-
     public function main()
     {
+        $domainsCollection = $this->serviceLocator->get('Pages\Collection\Domains');
+        
         $result = array();
         
-        $domainId = $this->request->getPost('id');
+        $domainId = $this->params()->fromPost('id');
         if (null === $domainId) {
             $result['errMsg'] = 'Не переданы все необходимые параметры';
             return $result;
         }
         $domainId = (int)$domainId;
         
-        if ($this->domainsModel->delete($domainId)) {
+        if ($domainsCollection->deleteDomain($domainId)) {
             $result['success'] = true;
             $result['msg'] = 'Домен успешно удален';
         } else {
@@ -39,6 +27,6 @@ class DeleteDomain extends AbstractMethod
             $result['errMsg'] = 'Не удалось удалить домен';
         }
         
-        return $result;      
+        return $result; 
     }
 }
