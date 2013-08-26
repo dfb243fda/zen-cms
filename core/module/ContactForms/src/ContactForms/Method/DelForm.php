@@ -3,41 +3,25 @@
 namespace ContactForms\Method;
 
 use App\Method\AbstractMethod;
-use ContactForms\Model\Forms as FormsModel;
 
 class DelForm extends AbstractMethod
-{
-    protected $rootServiceLocator;
-    
-    protected $formsModel;
-    
-    protected $db;
-    
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        
-        $this->formsModel = new FormsModel($this->rootServiceLocator);
-        
-        $this->db = $this->rootServiceLocator->get('db');
-        
-        $this->request = $this->rootServiceLocator->get('request');
-    }
-    
+{    
     public function main()
     {
+        $formsCollection = $this->serviceLocator->get('ContactForms\Collection\ContactForms');
+        
         $result = array(
             'success' => false,
         );
         
-        $formId = $this->request->getPost('id');
+        $formId = $this->params()->fromPost('id');
         if (null === $formId) {
             $result['errMsg'] = 'Не переданы все необходимые параметры';
             return $result;
         }
         $formId = (int)$formId;
         
-        if ($this->formsModel->delContactForm($formId)) {
+        if ($formsCollection->delContactForm($formId)) {
             $result['success'] = true;
             $result['msg'] = 'Форма успешно удалена';
         } else {

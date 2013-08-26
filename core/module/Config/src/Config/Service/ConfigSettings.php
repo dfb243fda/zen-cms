@@ -1,28 +1,24 @@
 <?php
 
-namespace Config\Model;
+namespace Config\Service;
 
-use Zend\Validator\AbstractValidator;
-use Zend\Form\Factory;
+use Zend\ServiceManager\ServiceManagerAwareInterface;
+use Zend\ServiceManager\ServiceManager;
 
-class Config
+class ConfigSettings implements ServiceManagerAwareInterface
 {
     protected $serviceManager;
     
     protected $currentTab;
     
-    protected $translator;
-    
-    protected $configManager;
-    
-    public function __construct($sm)
+    /**
+     * Set service manager
+     *
+     * @param ServiceManager $serviceManager
+     */
+    public function setServiceManager(ServiceManager $serviceManager)
     {
-        $this->serviceManager = $sm;
-        
-        $this->translator = $this->serviceManager->get('translator');
-        $this->configManager = $this->serviceManager->get('configManager');
-        
-        AbstractValidator::setDefaultTranslator($this->translator);
+        $this->serviceManager = $serviceManager;
     }
     
     public function setCurrentTab($currentTab)
@@ -31,16 +27,19 @@ class Config
         return $this;
     }
     
-    public function init()
+    public function getTabs()
     {
+        $translator = $this->serviceManager->get('translator');
         $config = $this->serviceManager->get('config');
+        $moduleManager = $this->serviceManager->get('moduleManager');
+        
         if (isset($config['dynamic_config'])) {
             $dynamicConfig = $config['dynamic_config'];
         } else {
             $dynamicConfig = array();
         }
         
-        $modules = $this->serviceManager->get('moduleManager')->getActiveModules();
+        $modules = $moduleManager->getActiveModules();
         
         foreach ($modules as $moduleKey => $moduleConfig) {
             $className = $moduleKey . '\Module';
@@ -54,7 +53,7 @@ class Config
         $tabs = array();
         foreach ($dynamicConfig['tabs'] as $k=>$v) {
             $tabs[$k] = $v;
-            $tabs[$k]['title'] = $this->translator->translateI18n($v['title']);
+            $tabs[$k]['title'] = $translator->translateI18n($v['title']);
             
             $urlPlugin = $this->serviceManager->get('ControllerPluginManager')->get('url');
             
@@ -71,7 +70,7 @@ class Config
         
         if (null === $this->currentTab) {
             reset($tabs);
-            $currentTab = key($tabs);
+            $currentTab = $this->currentTab = key($tabs);
         } else {
             $currentTab = (string)$this->currentTab;
             if (!isset($tabs[$k])) {
@@ -80,66 +79,28 @@ class Config
         }
         $tabs[$currentTab]['active'] = true;
         
-        if (isset($dynamicConfig['form'][$currentTab])) {
-            $formConfig = $dynamicConfig['form'][$currentTab];
-        } else {
-            $formConfig = array();
-        }
-        
-        $factory = new Factory($this->serviceManager->get('FormElementManager'));
-        
-        $form = $factory->createForm($formConfig);
-        $form->prepare();
-        
-        $formValues = array();
-        
-        foreach ($form->getFieldsets() as $fieldset) {
-            foreach ($fieldset->getElements() as $k=>$element) {
-                $formValues[$fieldset->getName()][$k] = $this->configManager->get($fieldset->getName(), $k);
-            }
-        }  
-        
-        $this->tabs = $tabs;
-        $this->zendForm = $form;
-        $this->formConfig = $formConfig;
-        $this->formValues = $formValues;
-    }
-    
-    public function getTabs()
-    {
-        return $this->tabs;
-    }
+        return $tabs;
+    }    
     
     public function getForm()
     {
-        return array(
-            'formConfig' => $this->formConfig,
-            'formValues' => $this->formValues,
-        );
+        $formFactory = $this->serviceManager->get('Config\FormFactory\Config');
+        
+        $form = $formFactory->setTab($this->currentTab)->getForm();
+        
+        return $form;
     }
     
     public function edit($data)
-    {
-        $form = $this->zendForm;
-        
-        $form->setData($data);
-        
-        if ($form->isValid()) { 
-            $data = $form->getData();
-                
-            foreach ($data as $k=>$v) {
-                foreach ($v as $k2=>$v2) {
-                    $this->configManager->set($k, $k2, $v2);
-                }
+    {            
+        $configManager = $this->serviceManager->get('configManager');
+        foreach ($data as $k=>$v) {
+            foreach ($v as $k2=>$v2) {
+                $configManager->set($k, $k2, $v2);
             }
-            
-            $result['success'] = true; 
-        } else {
-            $result['success'] = false;            
         }
-        $result['form'] = $form;
-        
-        return $result;  
+
+        return true;
     }
     
     protected function mergeOptions(array $array1, $array2 = null)
@@ -156,5 +117,6 @@ class Config
             }
         }
         return $array1;
-    }
+    }   
+    
 }

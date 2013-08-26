@@ -5,15 +5,8 @@ $this->inlineScript()->appendScript('zen.contact_forms.initContactFormEditing();
 ?>
 <div class="contact-forms">
     <?php
-        $sm = $this->getHelperPluginManager()->getServiceLocator();
-        $factory = new Zend\Form\Factory($sm->get('FormElementManager'));
-        $form = $factory->createForm($this->formConfig);
-        $form->setData($this->formValues);
+        $form = $this->form;
         $form->prepare();
-
-        if (!empty($this->formMsg)) {
-            $form->setMessages($this->formMsg);
-        }        
     ?>
     <?php echo $this->partial('content_template/ContactForms/tag_generator.phtml'); ?>
     <?php echo $this->form()->openTag($form) ?>

@@ -54,6 +54,20 @@ return array(
             ),
         ),
     ),    
+    'service_manager' => array(
+        'invokables' => array(
+            'ContactForms\Service\FormsList' => 'ContactForms\Service\FormsList',
+            'ContactForms\Entity\ContactForm' => 'ContactForms\Entity\ContactForm',
+            'ContactForms\Form\ContactForm' => 'ContactForms\Form\ContactForm',
+            'ContactForms\Collection\ContactForms' => 'ContactForms\Collection\ContactForms',
+        ),
+        'shared' => array(
+            'ContactForms\Service\FormsList' => false,
+            'ContactForms\Entity\ContactForm' => false,
+            'ContactForms\Form\ContactForm' => false,
+            'ContactForms\Collection\ContactForms' => false,
+        ),
+    ),
     'translator' => array(
         'translation_file_patterns' => array(
             array(

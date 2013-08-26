@@ -34,6 +34,8 @@ class PageBase extends Form implements ServiceManagerAwareInterface
     
     public function create()
     {    
+        $this->getFormFactory()->setFormElementManager($this->serviceManager->get('FormElementManager'));
+        
         $pageTypeId = $this->pageTypeId;
         
         $translator = $this->serviceManager->get('translator');
@@ -101,9 +103,7 @@ class PageBase extends Form implements ServiceManagerAwareInterface
         foreach ($sqlRes as $row) {
             $objectTypesMultiOptions[$row['id']] = $translator->translateI18n($row['name']);
         }        
-                
-        $this->getFormFactory()->setFormElementManager($this->serviceManager->get('FormElementManager'));
-        
+                        
         $this->add(array(
             'name' => 'common',
             'type' => 'fieldset',

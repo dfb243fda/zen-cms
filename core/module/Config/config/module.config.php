@@ -28,7 +28,14 @@ return array(
     ),
     'service_manager' => array(
         'invokables' => array(
+            'Config\Service\ConfigSettings' => 'Config\Service\ConfigSettings',
+            'Config\FormFactory\Config' => 'Config\FormFactory\Config',
+            
             'configManager' => 'Config\Service\ConfigManager',
+        ),
+        'shared' => array(
+            'Config\Service\ConfigSettings' => false,
+            'Config\FormFactory\Config' => false,
         ),
     ),
     'menu_groups' => array(

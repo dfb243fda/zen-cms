@@ -1,0 +1,32 @@
+<?php
+
+$this->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/ContactForms/contact_forms.js');
+
+$data = array(
+    'createBtn' => array(
+        'text' => $this->translate('Contact forms create form'),
+        'link' => $this->url('admin/method', array(
+            'module' => 'ContactForms',
+            'method' => 'AddForm',
+        )),
+    ),
+    'url' => $this->url('admin/FormsList', array(
+        'task'   => 'get_data',
+    )),  
+    'columns' => array(
+        array(
+            array(                        
+                'title' => $this->translate('ContactForms:Name field'),
+                'field' => 'name',
+                'width' => '200',
+            ),
+            array(                        
+                'title' => '',
+                'field' => 'icons',
+                'width' => '200',
+            )
+        )                    
+    ),
+);
+
+echo $this->partial('content_template/' . CURRENT_THEME . '/tree_grid.phtml', $data);

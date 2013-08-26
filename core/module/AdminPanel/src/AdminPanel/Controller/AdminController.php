@@ -21,9 +21,7 @@ class AdminController extends AbstractActionController
     protected $moduleManager;
     
     protected $config;
-    
-//    protected $publicResources;
-    
+        
     protected $viewManager;
             
     protected function init()
@@ -34,7 +32,6 @@ class AdminController extends AbstractActionController
         $this->configManager = $this->serviceLocator->get('configManager');
         $this->moduleManager = $this->serviceLocator->get('moduleManager');           
         $this->config = $this->serviceLocator->get('config');
- //       $this->publicResources = $this->serviceLocator->get('publicResources');
         $this->viewManager = $this->serviceLocator->get('viewManager');   
     }
     
@@ -318,14 +315,6 @@ class AdminController extends AbstractActionController
                 $eventManager->trigger('prepare_public_resources', $this, array($resultArray));
                 
                 $resultArray = array_merge($resultArray, $this->getViewResources($this->serviceLocator->get('viewHelperManager')));
-
-                
-                
-//                $publicResources = $this->publicResources->getResources();
-
-//                $resultArray['page'] = array_merge($resultArray['page'], $publicResources);
-
-                //$this->getViewHelper('HeadScript')
                 
                 $result = json_encode($resultArray);
 
@@ -358,14 +347,7 @@ class AdminController extends AbstractActionController
                 $eventManager->trigger('prepare_public_resources', $this, array($resultArray));
                 
                 $resultArray = array_merge($resultArray, $this->getViewResources($this->serviceLocator->get('viewHelperManager')));
-                
-//print_r($viewRender->headScript()->getContainer()->getValue()); 
-//                $publicResources = $this->publicResources->getResources();
-
-//                $resultArray['page'] = array_merge($resultArray['page'], $publicResources);
-
-                //$this->getViewHelper('HeadScript')
-                
+                                
                 $result = json_encode($resultArray);
                  
                 break;
@@ -383,10 +365,6 @@ class AdminController extends AbstractActionController
                 $eventManager->trigger('prepare_public_resources', $this, array($resultArray));
                 
                 $resultArray = array_merge($resultArray, $this->getViewResources($this->serviceLocator->get('viewHelperManager')));
-
-//                $publicResources = $this->publicResources->getResources();
-
-//                $resultArray['page'] = array_merge($resultArray['page'], $publicResources);
                 
                 try {
                     $xml = \Array2XML::createXML('result', $resultArray);
@@ -414,10 +392,6 @@ class AdminController extends AbstractActionController
                 
                 $resultArray = array_merge($resultArray, $this->getViewResources($this->serviceLocator->get('viewHelperManager')));
 
-//                $publicResources = $this->publicResources->getResources();
-
-//                $resultArray['page'] = array_merge($resultArray['page'], $publicResources);
-
                 $result = '<pre>' . var_export($resultArray, true) . '</pre>';
                 
                 break;
@@ -435,9 +409,6 @@ class AdminController extends AbstractActionController
                 $eventManager->trigger('prepare_public_resources', $this, array($resultArray));
 
                 $resultArray = array_merge($resultArray, $this->getViewResources($this->serviceLocator->get('viewHelperManager')));
-//                $publicResources = $this->publicResources->getResources();
-
-  //              $resultArray['page'] = array_merge($resultArray['page'], $publicResources);
 
                 $result = '<pre>' . print_r($resultArray, true) . '</pre>';
                 
