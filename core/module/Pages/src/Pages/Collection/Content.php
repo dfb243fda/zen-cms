@@ -71,7 +71,7 @@ class Content implements ServiceManagerAwareInterface
     
     public function getForm()
     {
-        $this->formFactory = $formFactory = $this->serviceManager->get('Pages\FormFactory\Content');
+        $formFactory = $this->serviceManager->get('Pages\FormFactory\Content');
         
         $formFactory->setContentTypeId($this->contentTypeId)
                     ->setObjectTypeId($this->objectTypeId);

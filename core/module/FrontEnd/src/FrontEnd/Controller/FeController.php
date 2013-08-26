@@ -76,7 +76,7 @@ class FeController extends AbstractActionController
         
         $resultArray['root_url'] = ROOT_URL;
         
-        $page = $this->serviceLocator->get('Pages\Service\Page');
+        $page = $this->serviceLocator->get('Pages\Entity\Page');
         
         $resultArray['page'] = $page->getPageData();
         

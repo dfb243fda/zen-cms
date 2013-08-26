@@ -81,7 +81,7 @@ class EditContent extends AbstractMethod
             $result['errMsg'] = $this->flashMessenger()->getErrorMessages();
         }
         
-        $tmp = $contentEntity->getContentData();
+        $tmp = $contentEntity->getContentFormData();
         $pageId = $tmp['page_id'];
         
         $result['breadcrumbPrevLink'] = array(

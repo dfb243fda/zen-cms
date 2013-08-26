@@ -17,8 +17,6 @@ class Pages implements ServiceManagerAwareInterface
     
     protected $parentPageId;
     
-    protected $formFactory;
-    
     protected $objectTypeId;
     
     protected $pageTypeId;
@@ -65,7 +63,7 @@ class Pages implements ServiceManagerAwareInterface
     
     public function getForm()
     {                
-        $this->formFactory = $formFactory = $this->serviceManager->get('Pages\FormFactory\Page');
+        $formFactory = $this->serviceManager->get('Pages\FormFactory\Page');
         
         $formFactory->setPageTypeId($this->pageTypeId)
                     ->setObjectTypeId($this->objectTypeId)
@@ -75,11 +73,6 @@ class Pages implements ServiceManagerAwareInterface
         $form = $formFactory->getForm();
         
         return $form;
-    }
-    
-    public function getPageData()
-    {
-        return $this->formFactory->getPageData();
     }
     
     public function addPage($data)

@@ -21,6 +21,8 @@ class Content implements ServiceManagerAwareInterface
     
     protected $contentTable = 'pages_content';
     
+    protected $formFactory;
+    
     /**
      * Set service manager
      *
@@ -62,8 +64,12 @@ class Content implements ServiceManagerAwareInterface
         return $form;
     }
     
-    public function getContentData()
+    public function getContentFormData()
     {
+        if (null === $this->formFactory) {
+            throw new \Exception('form does not created yet, youy can create it with getForm() method');
+        }
+        
         return $this->formFactory->getContentData();
     }
     
@@ -77,7 +83,7 @@ class Content implements ServiceManagerAwareInterface
         $db = $this->serviceManager->get('db');
         $moduleManager = $this->serviceManager->get('moduleManager');
         
-        $insertFields = array(); //значения для свойств объектов (такблица object и т.д.)
+        $insertFields = array(); //значения для свойств объектов (таблица object и т.д.)
         $insertBase = array(); // значения для таблицы pages
 
         foreach ($data as $groupKey=>$groupData) {
@@ -93,7 +99,7 @@ class Content implements ServiceManagerAwareInterface
             }
         }
 
-        $tmp = $this->getContentData();
+        $tmp = $this->getContentFormData();
         $objectId = $tmp['object_id'];
 
         $objectTypeId = $insertBase['object_type_id'];
