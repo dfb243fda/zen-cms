@@ -36,7 +36,7 @@ class FormAceEditor extends FormTextarea
         $content            = (string) $element->getValue();
         $escapeHtml         = $this->getEscapeHtmlHelper();
 
-        $this->getView()->headScript()->appendFile(ROOT_URL_SEGMENT . '/js/core/code_editor/ace/build/src-min-noconflict/ace.js'); 
+        $this->getView()->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/core/code_editor/ace/build/src-min-noconflict/ace.js'); 
         
         if (isset($options['theme'])) {
             $theme = $options['theme'];

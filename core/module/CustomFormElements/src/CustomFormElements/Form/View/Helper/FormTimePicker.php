@@ -32,8 +32,8 @@ class FormTimePicker extends FormText
         
         $escape     = $this->getEscapeHtmlHelper();
         
-        $this->getView()->headScript()->appendFile(ROOT_URL_SEGMENT . '/js/core/jquery_plugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js');
-        $this->getView()->headScript()->appendFile(ROOT_URL_SEGMENT . '/js/core/jquery_plugins/jquery-ui-timepicker-addon/language/ru_RU.js');
+        $this->getView()->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/core/jquery_plugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js');
+        $this->getView()->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/core/jquery_plugins/jquery-ui-timepicker-addon/language/ru_RU.js');
         $this->getView()->inlineScript()->appendScript('$(\'#'.$escape($id).'\').timepicker('.json_encode($jsAttributes).');');
         
         return sprintf(

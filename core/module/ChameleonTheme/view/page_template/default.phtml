@@ -16,6 +16,8 @@ $sm = $this->getHelperPluginManager()->getServiceLocator();
 
 //$layout = $this->layout();
 
+$this->headScript()->prependFile($this->basePath('/js/core/modernizr.js'));
+
 $this->inlineScript()->prependFile($this->basePath('/js/core/jquery_plugins/fancybox/jquery.fancybox.pack.js'))
                    ->prependFile($this->basePath('/js/core/jquery_plugins/jquery-toastmessage-plugin/javascript/jquery.toastmessage.js'))
                    ->prependFile($this->basePath('/js/core/jquery_plugins/jquery.alerts-1.1/jquery.alerts.js'))
@@ -25,16 +27,15 @@ $this->inlineScript()->prependFile($this->basePath('/js/core/jquery_plugins/fanc
                    ->prependFile($this->basePath('/js/ChameleonTheme/chameleon_theme.js'))
                    ->prependFile($this->basePath('/js/core/zen_base.js'))
                    ->prependFile($this->basePath('/js/core/jquery_plugins/jquery.form.js'))
-                   ->prependFile($this->basePath('/js/core/jquery/jquery-1.8.3.min.js'))
-                   ->prependFile($this->basePath('/js/core/modernizr.js'))
+                   ->prependFile($this->basePath('/js/core/jquery/jquery-1.8.3.min.js'))                   
                    ->appendScript('zen.chameleonTheme.init({baseUrl: "' . $this->basePath() . '"});');
                    
 
 $this->headLink()->prependStylesheet($this->basePath('/js/core/jquery_plugins/fancybox/jquery.fancybox.css'))
-                 ->prependStylesheet($this->basePath('/js/core/jquery_plugins/fancybox/jquery.fancybox.css'))
                  ->prependStylesheet($this->basePath('/js/core/jquery_plugins/jquery-toastmessage-plugin/resources/css/jquery.toastmessage.css'))
                  ->prependStylesheet($this->basePath('/js/core/jquery_plugins/jquery.alerts-1.1/jquery.alerts.css'))
                  ->prependStylesheet($this->basePath('/css/ChameleonTheme/main.css'))
+                 ->prependStylesheet($this->basePath('/css/core/normalize.css'))
                  ->prependStylesheet($this->basePath('/js/core/jquery_ui/jquery-ui-1.9.2/css/smoothness/jquery-ui-1.9.2.custom.min.css'))
                  ->prependStylesheet($this->basePath('/js/core/jquery_easy_ui_1.3.1/themes/metro/easyui.css'));
           

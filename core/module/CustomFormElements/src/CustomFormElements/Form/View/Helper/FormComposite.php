@@ -90,7 +90,7 @@ class FormComposite extends FormInput
         
         $values = $element->getValue();
                 
-        $this->getView()->headScript()->appendFile(ROOT_URL_SEGMENT . '/js/CustomFormElements/composite.js');
+        $this->getView()->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/CustomFormElements/composite.js');
         
         $html = '';
             

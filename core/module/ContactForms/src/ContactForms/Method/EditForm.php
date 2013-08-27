@@ -16,9 +16,9 @@ class EditForm extends AbstractMethod
      
         $contactFormEntity = $this->serviceLocator->get('ContactForms\Entity\ContactForm');
         
-        $contactFormEntity->setFormId($formId);
+        $contactFormEntity->setFormId($formId)->init();
         
-        $form = $contactFormEntity->getForm();
+        $form = $contactFormEntity->getAdminForm();
    
         $prg = $this->prg();
         

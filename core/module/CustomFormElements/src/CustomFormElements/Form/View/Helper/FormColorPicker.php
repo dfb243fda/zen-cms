@@ -54,7 +54,7 @@ class FormColorPicker extends FormText
         
         $escape     = $this->getEscapeHtmlHelper();
         
-        $this->getView()->headScript()->appendFile(ROOT_URL_SEGMENT . '/js/CustomFormElements/colorpicker/js/colorpicker.js');
+        $this->getView()->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/CustomFormElements/colorpicker/js/colorpicker.js');
         $this->getView()->inlineScript()->appendScript('$(\'#'.$escape($id).'\').ColorPicker('.$jsAttributesStr.').bind(\'keyup\', function(){
 	$(this).ColorPickerSetColor(this.value);
 });');

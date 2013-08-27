@@ -20,6 +20,8 @@ class ContactForm implements ServiceManagerAwareInterface
     
     protected $tableName = 'contact_forms';
     
+    protected $data;
+    
     /**
      * Set service manager
      *
@@ -30,24 +32,36 @@ class ContactForm implements ServiceManagerAwareInterface
         $this->serviceManager = $serviceManager;
     }
     
+    public function init()
+    {
+        if ($this->data) {
+            return;
+        }
+        
+        $db = $this->serviceManager->get('db');
+        $sqlRes = $db->query('select * from ' . DB_PREF . $this->tableName . ' where id = ?', array($this->formId))->toArray();
+        if (empty($sqlRes)) {
+            throw new \Exception('Form ' . $this->formId . ' does not found');
+        }
+        $this->data = $sqlRes[0];
+    }
+    
     public function setFormId($formId)
     {
         $this->formId = $formId;
         return $this;
     }
     
-    public function getForm()
+    public function getFormId()
     {
-        $db = $this->serviceManager->get('db');
-        $form = $this->serviceManager->get('ContactForms\Form\ContactForm');
-        
+        return $this->formId;
+    }
+    
+    public function getAdminForm()
+    {        
+        $form = $this->serviceManager->get('ContactForms\Form\ContactForm');        
         $form->init();
         
-        $sqlRes = $db->query('select * from ' . DB_PREF . $this->tableName . ' where id = ?', array($this->formId))->toArray();
-        
-        if (empty($sqlRes)) {
-            throw new \Exception('Form ' . $this->formId . ' does not found');
-        }
         $form->setData($sqlRes[0]);
         
         return $form;
@@ -60,5 +74,22 @@ class ContactForm implements ServiceManagerAwareInterface
         $update = $sql->update()->table(DB_PREF . $this->tableName)->set($data)->where('id = ' . (int)$this->formId);
         
         $sql->prepareStatementForSqlObject($update)->execute();  
+    }
+    
+    public function getContactForm()
+    {
+        exit('dd');
+    }
+    
+    public function getData()
+    {
+        return $this->data;
+    }
+    
+    public function getContactFormHtml()
+    {
+        $formParser = $this->serviceManager->get('ContactForms\Parser\ContactForm');
+        
+        return $formParser->setFormEntity($this)->getHtml();
     }
 }

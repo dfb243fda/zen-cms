@@ -35,7 +35,7 @@ class FormCkEditor extends FormTextarea
         $content            = (string) $element->getValue();
         $escapeHtml         = $this->getEscapeHtmlHelper();
 
-        $this->getView()->headScript()->appendFile(ROOT_URL_SEGMENT . '/js/core/wysiwyg/ckeditor_4.0.1/ckeditor.js'); 
+        $this->getView()->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/core/wysiwyg/ckeditor_4.0.1/ckeditor.js'); 
         
         $this->getView()->inlineScript()->appendScript('
             var ck_instance = CKEDITOR.instances[\''.$escapeHtml($attributes['id']).'\'];

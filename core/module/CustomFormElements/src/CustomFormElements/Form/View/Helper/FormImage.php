@@ -49,7 +49,7 @@ class FormImage extends FormText
         );
 		
         $this->getView()->headLink()->appendStylesheet(ROOT_URL_SEGMENT . '/js/core/file_manager/elfinder-2.0-rc1/css/elfinder.min.css');
-        $this->getView()->headScript()->appendFile(ROOT_URL_SEGMENT . '/js/core/file_manager/elfinder-2.0-rc1/js/elfinder.min.js');
+        $this->getView()->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/core/file_manager/elfinder-2.0-rc1/js/elfinder.min.js');
         $this->getView()->inlineScript()->appendScript('
             $(\'#icon-' . $escape($id) . '\').fancybox({
                 content : \'<div id="fancybox-' . $escape($id) . '"></div>\',

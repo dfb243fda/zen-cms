@@ -1,5 +1,19 @@
 <?php
 
+$this->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/core/jquery_plugins/jquery.form.js')
+                     ->appendFile(ROOT_URL_SEGMENT . '/js/ContactForms/fe_contact_forms.js')
+                     ->appendFile(ROOT_URL_SEGMENT . '/js/core/jquery_plugins/jquery-toastmessage-plugin/javascript/jquery.toastmessage.js');
+
+$contactFormsDirectUrl = $this->url('direct', array(
+    'module' => 'ContactForms',
+    'method' => 'SingleForm',
+    'param1' => $this->formId,
+));
+
+$this->inlineScript()->appendScript('zen.fe_contact_forms.init("' . 'contact-form-' . $this->formId . '", "' . $contactFormsDirectUrl . '");');
+
+$this->headLink()->appendStylesheet(ROOT_URL_SEGMENT . '/js/core/jquery_plugins/jquery-toastmessage-plugin/resources/css/jquery.toastmessage.css');
+
 if ($this->msg) {
     echo '<div class="contact-forms__msg">' . $this->msg . '</div>';
 }
@@ -7,4 +21,8 @@ if ($this->errMsg) {
     echo '<div class="contact-forms__err-msg">' . $this->errMsg . '</div>';
 }
 
-echo $this->form_html;
+?>
+<form method="post" id="contact-form-<?php echo $this->formId ?>" enctype="multipart/form-data">
+    <input type="hidden" name="contact-form-id" value="<?php echo $this->formId ?>" />
+    <?php echo $this->formHtml ?>
+</form>

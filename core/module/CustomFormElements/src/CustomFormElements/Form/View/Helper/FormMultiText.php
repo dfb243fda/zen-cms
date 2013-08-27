@@ -60,7 +60,7 @@ class FormMultiText extends FormInput
 
         $values = $element->getValue();
                 
-        $this->getView()->headScript()->appendFile(ROOT_URL_SEGMENT . '/js/CustomFormElements/multitext.js');
+        $this->getView()->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/CustomFormElements/multitext.js');
         
         $html = '';
         

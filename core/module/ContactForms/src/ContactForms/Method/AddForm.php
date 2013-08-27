@@ -11,7 +11,7 @@ class AddForm extends AbstractMethod
     {     
         $contactFormsCollection = $this->serviceLocator->get('ContactForms\Collection\ContactForms');
                 
-        $form = $contactFormsCollection->getForm();
+        $form = $contactFormsCollection->getAdminForm();
    
         $prg = $this->prg();
         

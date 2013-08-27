@@ -25,7 +25,35 @@ class ContactForms implements ServiceManagerAwareInterface
         $this->serviceManager = $serviceManager;
     }
     
-    public function getForm()
+    /**
+     * return \ContactForms\Entity\Form
+     */
+    public function getFormEntity($formId)
+    {
+        $formEntity = $this->serviceManager->get('ContactForms\Entity\ContactForm');
+        $formEntity->setFormId($formId)->init();
+        return $formEntity;
+    }
+    
+    /**
+     * return \ContactForms\Entity\Form|null
+     */
+    public function getFormEntityByObjectId($objectId)
+    {
+        $db = $this->serviceManager->get('db');
+        
+        $sqlRes = $db->query('select id from ' . DB_PREF . $this->tableName . ' where object_id = ? limit 1', array($objectId))->toArray();
+        
+        if (empty($sqlRes)) {
+            return null;
+        }
+        return $this->getFormEntity($sqlRes[0]['id']);
+    }
+    
+    /**
+     * @return \Zend\Form\Form
+     */
+    public function getAdminForm()
     {
         $form = $this->serviceManager->get('ContactForms\Form\ContactForm');        
         $form->init();        
@@ -138,5 +166,5 @@ class ContactForms implements ServiceManagerAwareInterface
 Это сообщение отправлено с сайта ' . $siteName . ' ' . ROOT_URL . '
 
             ');
-    }
+    }   
 }
