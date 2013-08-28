@@ -1,43 +1,47 @@
 <?php
 
-namespace ContactForms\Model;
+namespace ContactForms\Mailer;
 
-use Zend\Db\Sql\Sql;
+use Zend\ServiceManager\ServiceManagerAwareInterface;
+use Zend\ServiceManager\ServiceManager;
 use Zend\Mail\Message;
 use Zend\Mime\Message as MimeMessage;
 use Zend\Mime\Part as MimePart;
 use Zend\Mail\Transport\Sendmail as SendmailTransport;
 
-class Forms
-{
-    protected $translator;
-    
-    protected $tableName = 'contact_forms';
-    
+class ContactForm implements ServiceManagerAwareInterface
+{    
     protected $messagesTableName = 'contact_forms_msg';
     
     protected $serviceManager;
     
-    public function __construct($sm)
+    /**
+     * @var \ContactForms\Entity\ContactForm
+     */
+    protected $formEntity;
+    
+    /**
+     * Set service manager
+     *
+     * @param ServiceManager $serviceManager
+     */
+    public function setServiceManager(ServiceManager $serviceManager)
     {
-        $this->serviceManager = $sm;
-        
-        $this->translator = $sm->get('translator');
-        
-        $this->tableName = DB_PREF . $this->tableName;
-        $this->messagesTableName = DB_PREF . $this->messagesTableName;
-        $this->request = $sm->get('request');
-        
-        $this->db = $sm->get('db');
+        $this->serviceManager = $serviceManager;
     }
-        
-    public function sendMessages($formId, $data, $zendForm)
+    
+    public function setFormEntity($formEntity)
     {
-        $sqlRes = $this->db->query('select * from ' . $this->tableName . ' where object_id = ?', array($formId))->toArray();
-        
-        if (empty($sqlRes)) {
-            return false;
-        }
+        $this->formEntity = $formEntity;
+        return $this;
+    }
+    
+    public function sendMessages($msgData)
+    {        
+        $formEntityData = $this->formEntity->getData();
+        $zendForm = $this->formEntity->getContactForm();
+        $request = $this->serviceManager->get('request');
+        $db = $this->serviceManager->get('db');
         
         $configManager = $this->serviceManager->get('configManager');
         $date = new \DateTime();
@@ -50,9 +54,9 @@ class Forms
         $success = true;
                 
         $replaceArr = array();
-        foreach ($data as $k=>$v) {
+        foreach ($msgData as $k=>$v) {
             if (is_array($v)) {
-                if (null === ($file = $this->request->getFiles($k))) {
+                if (null === ($file = $request->getFiles($k))) {
                     $v = implode(', ', $v);
                 } else {
                     if (isset($v['error']) && $v['error'] == UPLOAD_ERR_OK) {                        
@@ -91,10 +95,10 @@ class Forms
         
         $now = time();
         
-        $recipient = str_replace(array_keys($replaceArr), array_values($replaceArr), $sqlRes[0]['recipient']);
-        $sender = str_replace(array_keys($replaceArr), array_values($replaceArr), $sqlRes[0]['sender']);
-        $subject = str_replace(array_keys($replaceArr), array_values($replaceArr), $sqlRes[0]['subject']);
-        $messageStr = str_replace(array_keys($replaceArr), array_values($replaceArr), $sqlRes[0]['mail_template']);
+        $recipient = str_replace(array_keys($replaceArr), array_values($replaceArr), $formEntityData['recipient']);
+        $sender = str_replace(array_keys($replaceArr), array_values($replaceArr), $formEntityData['sender']);
+        $subject = str_replace(array_keys($replaceArr), array_values($replaceArr), $formEntityData['subject']);
+        $messageStr = str_replace(array_keys($replaceArr), array_values($replaceArr), $formEntityData['mail_template']);
         $status = 0;
         $createdTime = $now;
         
@@ -138,20 +142,20 @@ class Forms
         }
         $attachmentsStr = implode(',', $tmp);
         
-        $this->db->query('
-            insert into ' . $this->messagesTableName . '
+        $db->query('
+            insert into ' . DB_PREF . $this->messagesTableName . '
                 (recipient, sender, subject, message, status, created_time, attachments)
             values (?, ?, ?, ?, ?, ?, ?)                
         ', array($recipient, $sender, $subject, $messageStr, $status, $createdTime, $attachmentsStr));
         
-        if (!$sqlRes[0]['use_recipient2']) {
+        if (!$formEntityData['use_recipient2']) {
             return $success;
         }
         
-        $recipient = str_replace(array_keys($replaceArr), array_values($replaceArr), $sqlRes[0]['recipient2']);
-        $sender = str_replace(array_keys($replaceArr), array_values($replaceArr), $sqlRes[0]['sender2']);
-        $subject = str_replace(array_keys($replaceArr), array_values($replaceArr), $sqlRes[0]['subject2']);
-        $messageStr = str_replace(array_keys($replaceArr), array_values($replaceArr), $sqlRes[0]['mail_template2']);
+        $recipient = str_replace(array_keys($replaceArr), array_values($replaceArr), $formEntityData['recipient2']);
+        $sender = str_replace(array_keys($replaceArr), array_values($replaceArr), $formEntityData['sender2']);
+        $subject = str_replace(array_keys($replaceArr), array_values($replaceArr), $formEntityData['subject2']);
+        $messageStr = str_replace(array_keys($replaceArr), array_values($replaceArr), $formEntityData['mail_template2']);
         $status = 0;
         $createdTime = $now;
         
@@ -186,8 +190,8 @@ class Forms
         $transport = new SendmailTransport();
         $transport->send($message);
         
-        $sqlRes = $this->db->query('
-            insert into ' . $this->messagesTableName . '
+        $sqlRes = $db->query('
+            insert into ' . DB_PREF . $this->messagesTableName . '
                 (recipient, sender, subject, message, status, created_time, attachments)
             values (?, ?, ?, ?, ?, ?, ?)                
         ', array($recipient, $sender, $subject, $messageStr, $status, $createdTime, $attachmentsStr));

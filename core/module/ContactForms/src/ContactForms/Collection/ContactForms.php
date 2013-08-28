@@ -30,6 +30,14 @@ class ContactForms implements ServiceManagerAwareInterface
      */
     public function getFormEntity($formId)
     {
+        $db = $this->serviceManager->get('db');
+        
+        $sqlRes = $db->query('select id from ' . DB_PREF . $this->tableName . ' where id = ? limit 1', array($formId))->toArray();
+        
+        if (empty($sqlRes)) {
+            return null;
+        }
+        
         $formEntity = $this->serviceManager->get('ContactForms\Entity\ContactForm');
         $formEntity->setFormId($formId)->init();
         return $formEntity;
@@ -47,7 +55,11 @@ class ContactForms implements ServiceManagerAwareInterface
         if (empty($sqlRes)) {
             return null;
         }
-        return $this->getFormEntity($sqlRes[0]['id']);
+        $formId = $sqlRes[0]['id'];
+        
+        $formEntity = $this->serviceManager->get('ContactForms\Entity\ContactForm');
+        $formEntity->setFormId($formId)->init();
+        return $formEntity;
     }
     
     /**
@@ -65,10 +77,22 @@ class ContactForms implements ServiceManagerAwareInterface
     public function delContactForm($formId)
     {
         $db = $this->serviceManager->get('db');
-        $db->query('
+        
+        $sqlRes = $db->query('select object_id from ' . DB_PREF . $this->tableName . ' where id = ?', array($formId))->toArray();
+        
+        if (!empty($sqlRes)) {
+            $objectId = $sqlRes[0]['object_id'];
+            
+            $db->query('
                 delete from ' . DB_PREF . $this->tableName . '
                 where id = ?
             ', array($formId));
+            
+            $objectsCollection = $this->serviceManager->get('objectsCollection');
+            
+            $objectsCollection->delObject($objectId, false);
+        }
+        
         
         return true;
     }

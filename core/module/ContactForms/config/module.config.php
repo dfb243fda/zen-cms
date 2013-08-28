@@ -60,14 +60,16 @@ return array(
             'ContactForms\Entity\ContactForm' => 'ContactForms\Entity\ContactForm',
             'ContactForms\Form\ContactForm' => 'ContactForms\Form\ContactForm',
             'ContactForms\Collection\ContactForms' => 'ContactForms\Collection\ContactForms',
-            'ContactForms\Parser\ContactForm' => 'ContactForms\Parser\ContactForm',
+            'ContactForms\Parser\HtmlTemplate' => 'ContactForms\Parser\HtmlTemplate',
+            'ContactForms\Mailer\ContactForm' => 'ContactForms\Mailer\ContactForm',
         ),
         'shared' => array(
             'ContactForms\Service\FormsList' => false,
             'ContactForms\Entity\ContactForm' => false,
             'ContactForms\Form\ContactForm' => false,
             'ContactForms\Collection\ContactForms' => false,
-            'ContactForms\Parser\ContactForm' => false,
+            'ContactForms\Parser\HtmlTemplate' => false,
+            'ContactForms\Mailer\ContactForm' => false,
         ),
     ),
     'translator' => array(

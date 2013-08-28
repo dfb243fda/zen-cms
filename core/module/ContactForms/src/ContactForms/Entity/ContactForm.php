@@ -22,6 +22,8 @@ class ContactForm implements ServiceManagerAwareInterface
     
     protected $data;
     
+    protected $formParser;
+    
     /**
      * Set service manager
      *
@@ -62,7 +64,7 @@ class ContactForm implements ServiceManagerAwareInterface
         $form = $this->serviceManager->get('ContactForms\Form\ContactForm');        
         $form->init();
         
-        $form->setData($sqlRes[0]);
+        $form->setData($this->data);
         
         return $form;
     }
@@ -78,7 +80,20 @@ class ContactForm implements ServiceManagerAwareInterface
     
     public function getContactForm()
     {
-        exit('dd');
+        if (!$this->formParser) {
+            $this->formParser = $this->serviceManager->get('ContactForms\Parser\HtmlTemplate');
+            $this->formParser->setTemplate($this->data['template'])->init();
+        }        
+        return $this->formParser->getForm();
+    }
+    
+    public function getContactFormHtml()
+    {
+        if (!$this->formParser) {
+            $this->formParser = $this->serviceManager->get('ContactForms\Parser\HtmlTemplate');
+            $this->formParser->setTemplate($this->data['template'])->init();
+        }           
+        return $this->formParser->getHtml();
     }
     
     public function getData()
@@ -86,10 +101,9 @@ class ContactForm implements ServiceManagerAwareInterface
         return $this->data;
     }
     
-    public function getContactFormHtml()
+    public function sendMessages($data)
     {
-        $formParser = $this->serviceManager->get('ContactForms\Parser\ContactForm');
-        
-        return $formParser->setFormEntity($this)->getHtml();
+        $mailer = $this->serviceManager->get('ContactForms\Mailer\ContactForm');
+        return $mailer->setFormEntity($this)->sendMessages($data);
     }
 }

@@ -1,27 +1,45 @@
 <?php
 
-namespace ContactForms\Form;
+namespace ContactForms\Parser;
 
+use Zend\ServiceManager\ServiceManagerAwareInterface;
+use Zend\ServiceManager\ServiceManager;
 use Zend\Form\Element;
-use App\Utility\GeneralUtility;
 
-class Form
+class HtmlTemplate implements ServiceManagerAwareInterface
 {
-    protected $serviceManager;
-    
-    protected $template;    
+    /**
+     * @var ServiceManager
+     */
+    protected $serviceManager;    
+        
+    protected $availableTags;
     
     protected $viewHelperManager;
     
-    protected $zendForm = array();
+    protected $form;
     
     protected $inputFilters = array();
     
-    public function __construct($options)
+    /**
+     * Set service manager
+     *
+     * @param ServiceManager $serviceManager
+     */
+    public function setServiceManager(ServiceManager $serviceManager)
     {
-        $this->serviceManager = $options['serviceManager'];
-        
-        $this->template = $options['template'];
+        $this->serviceManager = $serviceManager;
+    }
+    
+    public function setTemplate($template)
+    {
+        $this->template = $template;
+        return $this;
+    }
+    
+    public function init()
+    {
+        $template = $this->template;
         
         $this->availableTags = array(
             'text'       => array(
@@ -81,28 +99,39 @@ class Form
         $this->viewHelperManager = $this->serviceManager->get('viewHelperManager');
         
         $factory = new \Zend\Form\Factory($this->serviceManager->get('formElementManager'));
-        $this->zendForm = $factory->createForm(array());
+        $this->form = $factory->createForm(array());
         
-        $this->template = $this->do_shortcode($this->template);
-        
+        $this->template = $this->do_shortcode($template);
         
         foreach ($this->inputFilters as $name=>$filter) {
             if (isset($filter['required'])) {
                 $required = $filter['required'];
-                $this->zendForm->getInputFilter()->get($name)->setRequired($required)->setAllowEmpty(!$required);
+                $this->form->getInputFilter()->get($name)->setRequired($required)->setAllowEmpty(!$required);
             }
             if (isset($filter['validators'])) {
                 foreach ($filter['validators'] as $k=>$v) {
-                    $this->zendForm->getInputFilter()->get($name)->getValidatorChain()->attachByName($k, $v);
+                    $this->form->getInputFilter()->get($name)->getValidatorChain()->attachByName($k, $v);
                 }                
             }
         }
-              
+        
+        return $this;
     }
     
-    public function getZendForm()
+    public function getHtml()
+    {        
+        $template = $this->template;
+        foreach ($this->form->getElements() as $element) {
+            $html = $this->viewHelperManager->get('formRow')->render($element);
+            $template = str_replace('###' . $element->getName() . '###', $html, $template);
+        }        
+        
+        return $template;        
+    }
+    
+    public function getForm()
     {
-        return $this->zendForm;
+        return $this->form;
     }
     
     public function get_shortcode_regex()
@@ -169,18 +198,6 @@ class Form
         }
     }
     
-    public function getHtml()
-    {        
-        $template = $this->template;
-        
-        foreach ($this->zendForm->getElements() as $element) {
-            $html = $this->viewHelperManager->get('formRow')->render($element);
-            $template = str_replace('###' . $element->getName() . '###', $html, $template);
-        }        
-        
-        return $template;
-    }
-    
     protected function getTagAttributesFromArray($tag, $data)
     {
         $attr = array();
@@ -245,7 +262,7 @@ class Form
                 }
             }
                 
-            $this->zendForm->add($element);
+            $this->form->add($element);
             return '###' . $element->getName() . '###';
 //            return $this->viewHelperManager->get('formElement')->render($element);
         }
@@ -295,7 +312,7 @@ class Form
                 $element->setValueOptions($valueOptions);
             }
             
-            $this->zendForm->add($element);
+            $this->form->add($element);
             return '###' . $element->getName() . '###';
                 
 //            return $this->viewHelperManager->get('formElement')->render($element);
@@ -320,7 +337,7 @@ class Form
                 $element->setValueOptions($valueOptions);
             }
                 
-            $this->zendForm->add($element);
+            $this->form->add($element);
             return '###' . $element->getName() . '###';
             
 //            return $this->viewHelperManager->get('formElement')->render($element);
@@ -345,7 +362,7 @@ class Form
                 $element->setValueOptions($valueOptions);
             }
             
-            $this->zendForm->add($element);
+            $this->form->add($element);
             return '###' . $element->getName() . '###';
                 
 //            return $this->viewHelperManager->get('formElement')->render($element);
@@ -381,7 +398,7 @@ class Form
                 }
             }
                 
-            $this->zendForm->add($element);
+            $this->form->add($element);
             return '###' . $element->getName() . '###';
 //            return $this->viewHelperManager->get('formElement')->render($element);
         }
@@ -416,7 +433,7 @@ class Form
                 }
             }
                 
-            $this->zendForm->add($element);
+            $this->form->add($element);
             return '###' . $element->getName() . '###';
 //            return $this->viewHelperManager->get('formElement')->render($element);
         }
@@ -451,7 +468,7 @@ class Form
                 }
             }
                 
-            $this->zendForm->add($element);
+            $this->form->add($element);
             return '###' . $element->getName() . '###';
 //            return $this->viewHelperManager->get('formElement')->render($element);
         }
@@ -477,7 +494,7 @@ class Form
                 $this->inputFilters[$element->getName()]['validators']['FileExtension'] = array('extension' => $attr['ext']);
             }
            
-            $this->zendForm->add($element);
+            $this->form->add($element);
             return '###' . $element->getName() . '###';
 //            return $this->viewHelperManager->get('formElement')->render($element);
         }
@@ -499,7 +516,7 @@ class Form
             
             $this->inputFilters[$element->getName()] = true;
                 
-            $this->zendForm->add($element);
+            $this->form->add($element);
             return '###' . $element->getName() . '###';
 //            return $this->viewHelperManager->get('formElement')->render($element);
         }
@@ -515,7 +532,7 @@ class Form
             $element = new Element\Submit('submit', $options);            
             $element->setAttribute('value', $value);
             
-            $this->zendForm->add($element);
+            $this->form->add($element);
             return '###' . $element->getName() . '###';
 //            return $this->viewHelperManager->get('formElement')->render($element);
         }
