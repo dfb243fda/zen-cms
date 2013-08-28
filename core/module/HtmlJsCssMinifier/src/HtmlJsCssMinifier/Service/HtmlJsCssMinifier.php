@@ -1,11 +1,11 @@
 <?php
 
-namespace HtmlJsCssOptimizer\Service;
+namespace HtmlJsCssMinifier\Service;
 
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
 
-class HtmlJsCssOptimizer implements ServiceManagerAwareInterface
+class HtmlJsCssMinifier implements ServiceManagerAwareInterface
 {
     /**
      * @var type Zend\ServiceManager\ServiceManager
@@ -142,7 +142,7 @@ class HtmlJsCssOptimizer implements ServiceManagerAwareInterface
                 $controllerPluginManager = $this->serviceManager->get('ControllerPluginManager');
                 
                 
-                $tmp->href = $controllerPluginManager->get('url')->fromRoute('munee', array(), array(
+                $tmp->href = $controllerPluginManager->get('url')->fromRoute('minify', array(), array(
                     'query' => array(
                         'files' => implode(',', $v['items']),
                         'minify' => $minify ? 'true' : 'false',
@@ -274,7 +274,7 @@ class HtmlJsCssOptimizer implements ServiceManagerAwareInterface
                 $controllerPluginManager = $this->serviceManager->get('ControllerPluginManager');
                 
                 
-                $tmp->attributes['src'] = $controllerPluginManager->get('url')->fromRoute('munee', array(), array(
+                $tmp->attributes['src'] = $controllerPluginManager->get('url')->fromRoute('minify', array(), array(
                     'query' => array(
                         'files' => implode(',', $v['items']),
                         'minify' => $minify ? 'true' : 'false',

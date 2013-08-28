@@ -1,6 +1,6 @@
 <?php
 
-namespace HtmlJsCssOptimizer;
+namespace HtmlJsCssMinifier;
 
 /**
  * Module class required for module to be initialized in ZF2 application
@@ -35,14 +35,14 @@ class Module
     {
         $configManager = $sm->get('configManager');
         
-        if (!$configManager->has('HtmlJsCssOptimizer', 'minifyHtml')) {
-            $configManager->set('HtmlJsCssOptimizer', 'minifyHtml', true);
+        if (!$configManager->has('HtmlJsCssMinifier', 'minifyHtml')) {
+            $configManager->set('HtmlJsCssMinifier', 'minifyHtml', true);
         }
-        if (!$configManager->has('HtmlJsCssOptimizer', 'minifyJs')) {
-            $configManager->set('HtmlJsCssOptimizer', 'minifyJs', true);
+        if (!$configManager->has('HtmlJsCssMinifier', 'minifyJs')) {
+            $configManager->set('HtmlJsCssMinifier', 'minifyJs', true);
         }
-        if (!$configManager->has('HtmlJsCssOptimizer', 'minifyCss')) {
-            $configManager->set('HtmlJsCssOptimizer', 'minifyCss', true);
+        if (!$configManager->has('HtmlJsCssMinifier', 'minifyCss')) {
+            $configManager->set('HtmlJsCssMinifier', 'minifyCss', true);
         }        
     }
     
@@ -53,20 +53,20 @@ class Module
         $locator = $app->getServiceManager();
         $eventManager = $app->getEventManager();
         
-        $htmlJsCssOptimizerService = $locator->get('HtmlJsCssOptimizer\Service\HtmlJsCssOptimizer');
+        $htmlJsCssOptimizerService = $locator->get('HtmlJsCssMinifier\Service\HtmlJsCssMinifier');
         $configManager = $locator->get('configManager');
                 
         $eventManager->attach('prepare_public_resources', function($e) use ($htmlJsCssOptimizerService, $configManager) {  
-            $htmlJsCssOptimizerService->prepareHeadLink($configManager->get('HtmlJsCssOptimizer', 'minifyCss'));
-            $htmlJsCssOptimizerService->prepareHeadScript($configManager->get('HtmlJsCssOptimizer', 'minifyJs'));
-            $htmlJsCssOptimizerService->prepareInlineScript($configManager->get('HtmlJsCssOptimizer', 'minifyJs'));
+            $htmlJsCssOptimizerService->prepareHeadLink($configManager->get('HtmlJsCssMinifier', 'minifyCss'));
+            $htmlJsCssOptimizerService->prepareHeadScript($configManager->get('HtmlJsCssMinifier', 'minifyJs'));
+            $htmlJsCssOptimizerService->prepareInlineScript($configManager->get('HtmlJsCssMinifier', 'minifyJs'));
         });
         
         $eventManager->attach('prepare_output.post', function($e) use ($htmlJsCssOptimizerService, $configManager, $locator) {               
             $params = $e->getParams();   
             
             if ('html' == $params['format']) {      
-                if ($configManager->get('HtmlJsCssOptimizer', 'minifyHtml')) {
+                if ($configManager->get('HtmlJsCssMinifier', 'minifyHtml')) {
                     $options = array(
                         'minifyCss' => true,
                         'minifyJs' => true,

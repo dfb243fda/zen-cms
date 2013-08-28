@@ -1,6 +1,6 @@
 <?php
 
-namespace HtmlJsCssOptimizer\Service;
+namespace HtmlJsCssMinifier\Service;
 
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;

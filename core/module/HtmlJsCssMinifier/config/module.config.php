@@ -1,8 +1,8 @@
 <?php
 return array(
-    'HtmlJsCssOptimizer' => array(
-        'title' => 'i18n::HtmlJsCssOptimizer module',
-        'description' => 'i18n::HtmlJsCssOptimizer module description',
+    'HtmlJsCssMinifier' => array(
+        'title' => 'i18n::HtmlJsCssMinifier module',
+        'description' => 'i18n::HtmlJsCssMinifier module description',
         
         'version' => '0.1',
     ),
@@ -17,13 +17,13 @@ return array(
     ),
     'router' => array(
         'routes' => array(
-            'munee' => array(
+            'minify' => array(
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => array(
-                    'route'    => '/munee',
+                    'route'    => '/minify',
                     'defaults' => array(
-                        'controller' => 'HtmlJsCssOptimizer\Controllers\Munee',
-                        'action'     => 'munee',
+                        'controller' => 'HtmlJsCssMinifier\Controllers\Minify',
+                        'action'     => 'minify',
                     ),
                 ),
             ),
@@ -31,36 +31,36 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'HtmlJsCssOptimizer\Controllers\Munee' => 'HtmlJsCssOptimizer\Controllers\MuneeController',
+            'HtmlJsCssMinifier\Controllers\Minify' => 'HtmlJsCssMinifier\Controllers\MinifyController',
         ),
     ),
     'service_manager' => array(
         'invokables' => array(
-            'HtmlJsCssOptimizer\Service\HeaderSetter' => 'HtmlJsCssOptimizer\Service\HeaderSetter',
-            'HtmlJsCssOptimizer\Service\HtmlJsCssOptimizer' => 'HtmlJsCssOptimizer\Service\HtmlJsCssOptimizer',
+            'HtmlJsCssMinifier\Service\HeaderSetter' => 'HtmlJsCssMinifier\Service\HeaderSetter',
+            'HtmlJsCssMinifier\Service\HtmlJsCssMinifier' => 'HtmlJsCssMinifier\Service\HtmlJsCssMinifier',
         ),
     ),
     
     'dynamic_config' => array(
         'tabs' => array(
             'html_js_css' => array(
-                'title' => 'i18n::HtmlJsCssOptimizer config tab',
+                'title' => 'i18n::HtmlJsCssMinifier config tab',
             ),
         ),
         'form' => array(
             'html_js_css' => array(
                 'fieldsets' => array(
-                    'HtmlJsCssOptimizer' => array(
+                    'HtmlJsCssMinifier' => array(
                         'spec' => array(
-                            'name' => 'HtmlJsCssOptimizer',
+                            'name' => 'HtmlJsCssMinifier',
                             'elements' => array(
                                 'minifyHtml' => array(
                                     'spec' => array(
                                         'name' => 'minifyHtml',
                                         'type' => 'checkbox',
                                         'options' => array(
-                                            'label' => 'i18n::HtmlJsCssOptimizer config minifyHtml',
-                                            'description' => 'i18n::HtmlJsCssOptimizer config minifyHtml description',
+                                            'label' => 'i18n::HtmlJsCssMinifier config minifyHtml',
+                                            'description' => 'i18n::HtmlJsCssMinifier config minifyHtml description',
                                         ),
                                     ),
                                 ),
@@ -69,8 +69,8 @@ return array(
                                         'name' => 'minifyJs',
                                         'type' => 'checkbox',
                                         'options' => array(
-                                            'label' => 'i18n::HtmlJsCssOptimizer config minifyJs',
-                                            'description' => 'i18n::HtmlJsCssOptimizer config minifyJs description',
+                                            'label' => 'i18n::HtmlJsCssMinifier config minifyJs',
+                                            'description' => 'i18n::HtmlJsCssMinifier config minifyJs description',
                                         ),
                                     ),
                                 ),
@@ -79,8 +79,8 @@ return array(
                                         'name' => 'minifyCss',
                                         'type' => 'checkbox',
                                         'options' => array(
-                                            'label' => 'i18n::HtmlJsCssOptimizer config minifyCss',
-                                            'description' => 'i18n::HtmlJsCssOptimizer config minifyCss description',
+                                            'label' => 'i18n::HtmlJsCssMinifier config minifyCss',
+                                            'description' => 'i18n::HtmlJsCssMinifier config minifyCss description',
                                         ),
                                     ),
                                 ),
