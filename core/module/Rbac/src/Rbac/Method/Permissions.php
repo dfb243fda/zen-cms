@@ -6,36 +6,26 @@ use App\Method\AbstractMethod;
 use Rbac\Model\Permissions as PermissionsModel;
 
 class Permissions extends AbstractMethod
-{
-    protected $rootServiceLocator;
-    
-    protected $permissionsModel;
-    
-    protected $request;
-    
-    public function init()
-    {
-        $this->rootServiceLocator = $this->getServiceLocator();
-        $this->permissionsModel = new PermissionsModel($this->rootServiceLocator);
-        $this->request = $this->rootServiceLocator->get('request');
-    }
-    
+{    
     public function main()
     {        
-        if ($this->request->isPost()) {
+        $permissionsModel = new PermissionsModel($this->serviceLocator);
+        $request = $this->serviceLocator->get('request');
+        
+        if ($request->isPost()) {
             $result = array();
             
-            if (null !== $this->request->getPost('role') &&
-                null !== $this->request->getPost('resource') &&
-                null !== $this->request->getPost('privelege') &&
-                null !== $this->request->getPost('is_allowed')
+            if (null !== $this->params()->fromPost('role') &&
+                null !== $this->params()->fromPost('resource') &&
+                null !== $this->params()->fromPost('privelege') &&
+                null !== $this->params()->fromPost('is_allowed')
                 ) {
-                $roleId = (int)$this->request->getPost('role');
-                $resource = (string)$this->request->getPost('resource');
-                $privelege = (string)$this->request->getPost('privelege');
-                $isAllowed = (int)$this->request->getPost('is_allowed');
+                $roleId = (int)$this->params()->fromPost('role');
+                $resource = (string)$this->params()->fromPost('resource');
+                $privelege = (string)$this->params()->fromPost('privelege');
+                $isAllowed = (int)$this->params()->fromPost('is_allowed');
                 
-                $tmp = $this->permissionsModel->edit($roleId, $resource, $privelege, $isAllowed);
+                $tmp = $permissionsModel->edit($roleId, $resource, $privelege, $isAllowed);
                 
                 if ($tmp['success']) {
                     $result['success'] = true;
@@ -51,8 +41,8 @@ class Permissions extends AbstractMethod
             }
             
         } else {
-            $roles = $this->permissionsModel->getRoles();
-            $permissions = $this->permissionsModel->getPermissions();
+            $roles = $permissionsModel->getRoles();
+            $permissions = $permissionsModel->getPermissions();
             
             $result = array(
                 'contentTemplate' => array(

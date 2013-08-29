@@ -8,32 +8,17 @@ use ObjectTypes\Model\ObjectTypes as ObjectTypesModel;
 
 class AddField extends AbstractMethod
 {    
-    protected $translator;
-    
-    protected $serviceManager;
-    
-    protected $request;
-    
-    protected $objectTypesModel;
-    
-    public function init()
-    {
-        $this->rootServiceLocator = $this->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->request = $this->rootServiceLocator->get('request');
-        $this->objectTypesModel = new ObjectTypesModel($this->rootServiceLocator);
-    }
-
-
     public function main()
     {
+        $objectTypesModel = new ObjectTypesModel($this->serviceLocator);
+        
         $result = array();
         
         if (null !== $this->params()->fromRoute('objectTypeId') && null !== $this->params()->fromRoute('groupId')) {            
             $objectTypeId = (int)$this->params()->fromRoute('objectTypeId');
             $groupId = (int)$this->params()->fromRoute('groupId');
             
-            $tmp = $this->objectTypesModel->addField($objectTypeId, $groupId, $this->request->getPost());
+            $tmp = $objectTypesModel->addField($objectTypeId, $groupId, $this->params()->fromPost());
             
             if ($tmp['success']) {
                 $result['id'] = $tmp['id'];
@@ -47,18 +32,6 @@ class AddField extends AbstractMethod
                 $result['success'] = false;
                 $form = $tmp['form'];
                 $result['formMsg'] = $form->getMessages();
-/*                
-                $form = $tmp['form'];                
-                $formMessages = $form->getMessages();
-                if (!empty($formMessages)) {
-                    $result['errMsg'] = array();
-                    foreach ($formMessages as $field=>$messages) {
-                        foreach ($messages as $msg) {
-                            $result['errMsg'][] = $field . ' ' . $msg;
-                        }
-                    } 
-                }   
-*/             
             }
         } else {
             $result['success'] = false;

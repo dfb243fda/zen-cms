@@ -7,25 +7,11 @@ use App\Method\AbstractMethod;
 use ObjectTypes\Model\ObjectTypes as ObjectTypesModel;
 
 class AddGroup extends AbstractMethod
-{    
-    protected $rootServiceLocator;
-    
-    protected $translator;
-    
-    protected $request;
-    
-    protected $objectTypesModel;
-    
-    public function init()
-    {
-        $this->rootServiceLocator = $this->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');        
-        $this->request = $this->rootServiceLocator->get('request');        
-        $this->objectTypesModel = new ObjectTypesModel($this->rootServiceLocator);
-    }
-    
+{        
     public function main()
     {
+        $objectTypesModel = new ObjectTypesModel($this->serviceLocator);
+        
         $result = array(
             'success' => 0,
         );
@@ -35,7 +21,7 @@ class AddGroup extends AbstractMethod
         else {            
             $objectTypeId = (int)$this->params()->fromRoute('id');
             
-            $tmp = $this->objectTypesModel->addGroup($objectTypeId, $this->request->getPost());
+            $tmp = $objectTypesModel->addGroup($objectTypeId, $this->params()->fromPost());
             
             if ($tmp['success']) {
                 $result['msg'] = 'Группа успешно создана';

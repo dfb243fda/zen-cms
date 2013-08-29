@@ -11,7 +11,7 @@ class TemplatesList extends AbstractMethod
     
     public function init()
     {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
+        $this->rootServiceLocator = $this->getServiceLocator();
         $this->templatesModel = new Templates($this->rootServiceLocator, $this->url());
         $this->moduleManager = $this->rootServiceLocator->get('moduleManager');
     }

@@ -6,23 +6,12 @@ use App\Method\AbstractMethod;
 use ObjectTypes\Model\Guides;
 
 class EditGuideItem extends AbstractMethod
-{
-    protected $rootServiceLocator;
-    
-    protected $translator;
-    
-    protected $guidesModel;
-    
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->guidesModel = new Guides($this->rootServiceLocator);
-        $this->request = $this->rootServiceLocator->get('request');
-    }
-    
+{    
     public function main()
     {
+        $guidesModel = new Guides($this->serviceLocator);
+        $request = $this->serviceLocator->get('request');
+        
         $result = array();
         
         if (null === $this->params()->fromRoute('id')) {
@@ -32,17 +21,17 @@ class EditGuideItem extends AbstractMethod
         
         $guideItemId = (int)$this->params()->fromRoute('id');
         
-        $this->guidesModel->setGuideItemId($guideItemId);
+        $guidesModel->setGuideItemId($guideItemId);
         
-        $form = $this->guidesModel->getGuideItemForm();        
+        $form = $guidesModel->getGuideItemForm();        
         $formConfig = $form['formConfig'];
         $formValues = $form['formValues'];
         $formMessages = array();
         
-        if ($this->request->isPost()) {
-            $tmp = $this->guidesModel->editGuideItem($this->request->getPost());
+        if ($request->isPost()) {
+            $tmp = $guidesModel->editGuideItem($this->params()->fromPost());
             if ($tmp['success']) {
-                if (!$this->request->isXmlHttpRequest()) {
+                if (!$request->isXmlHttpRequest()) {
                     $this->flashMessenger()->addSuccessMessage('Термин успешно обновлен');
                     
                     $this->redirect()->refresh();

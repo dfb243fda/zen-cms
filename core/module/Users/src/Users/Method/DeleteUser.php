@@ -7,29 +7,22 @@ use Users\Model\Users;
 
 class DeleteUser extends AbstractMethod
 {
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->db = $this->rootServiceLocator->get('db');
-        $this->usersModel = new Users($this->rootServiceLocator);     
-        $this->request = $this->rootServiceLocator->get('request');
-    }
-    
     public function main()
     {
+        $usersModel = new Users($this->serviceLocator);    
+        
         $result = array(
             'success' => false,
         );
         
-        $userId = $this->request->getPost('id');
+        $userId = $this->params()->fromPost('id');
         if (null === $userId) {
             $result['errMsg'] = 'Не переданы все необходимые параметры';
             return $result;
         }
         $userId = (int)$userId;
         
-        if ($this->usersModel->delete($userId)) {
+        if ($usersModel->delete($userId)) {
             $result['success'] = true;
             $result['msg'] = 'Пользователь успешно удален';
         } else {

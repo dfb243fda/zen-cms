@@ -3,17 +3,12 @@
 namespace ObjectTypes\Method;
 
 use App\Method\AbstractMethod;
-use Zend\Db\Sql\Sql;
-use Zend\Db\ResultSet\ResultSet;
 
 class GuidesList extends AbstractMethod
-{
-    protected $extKey = 'ObjectTypes';
-    
+{    
     public function init()
     {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
+        $this->translator = $this->serviceLocator->get('translator');
     }
 
 
@@ -32,7 +27,7 @@ class GuidesList extends AbstractMethod
     {
         $result = array();
         
-        $this->rootServiceLocator->get('viewHelperManager')->get('HeadScript')->appendFile(ROOT_URL_SEGMENT . '/js/ObjectTypes/object_types.js');
+        $this->serviceLocator->get('viewHelperManager')->get('HeadScript')->appendFile(ROOT_URL_SEGMENT . '/js/ObjectTypes/object_types.js');
         
         $result['tabs'] = array(
             array(
@@ -91,7 +86,7 @@ class GuidesList extends AbstractMethod
         
         $result['items'] = array();        
         
-        $objectTypesCollection = $this->rootServiceLocator->get('objectTypesCollection');
+        $objectTypesCollection = $this->serviceLocator->get('objectTypesCollection');
         $guides = $objectTypesCollection->getGuidesData();
                
         foreach ($guides as $id=>$row) {            

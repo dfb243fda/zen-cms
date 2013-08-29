@@ -7,19 +7,13 @@ use Search\Model\Search as SearchModel;
 
 
 class Search extends AbstractMethod
-{
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->request = $this->rootServiceLocator->get('request');
-        $this->searchModel = new SearchModel($this->rootServiceLocator);    
-    }
-    
+{    
     public function main()
     {
-        if ($this->request->getPost('task') == 'refresh_search_index') {
-            $this->searchModel->refreshIndex();
+        $searchModel = new SearchModel($this->serviceLocator);    
+        
+        if ($this->params()->fromPost('task') == 'refresh_search_index') {
+            $searchModel->refreshIndex();
             $this->flashMessenger()->addSuccessMessage('Индекс успешно обновлен');
             return $this->redirect()->refresh();
         }
@@ -28,7 +22,7 @@ class Search extends AbstractMethod
             'contentTemplate' => array(
                 'name' => 'content_template/Search/search_info.phtml',
                 'data' => array(
-                    'indexedPagesCount' => $this->searchModel->getIndexedPagesCount(),
+                    'indexedPagesCount' => $searchModel->getIndexedPagesCount(),
                 ),
             ),
         );

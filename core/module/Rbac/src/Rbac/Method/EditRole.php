@@ -4,23 +4,14 @@ namespace Rbac\Method;
 
 use App\Method\AbstractMethod;
 use Rbac\Model\Roles;
-use Zend\Validator\AbstractValidator;
 
 class EditRole extends AbstractMethod
 {
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->db = $this->rootServiceLocator->get('db');
-        $this->rolesModel = new Roles($this->rootServiceLocator);     
-        $this->request = $this->rootServiceLocator->get('request');
-        
-        AbstractValidator::setDefaultTranslator($this->rootServiceLocator->get('translator'));
-    }
-
     public function main()
     {
+        $rolesModel = new Roles($this->serviceLocator);     
+        $request = $this->serviceLocator->get('request');
+        
         $result = array();
         
         $roleId = $this->params()->fromRoute('id');
@@ -28,15 +19,15 @@ class EditRole extends AbstractMethod
             throw new \Exception('role id is undefined');
         }
         
-        $form = $this->rolesModel->getForm($roleId);        
+        $form = $rolesModel->getForm($roleId);        
         $formConfig = $form['formConfig'];
         $formValues = $form['formValues'];
         $formMessages = array();
         
-        if ($this->request->isPost()) {
-            $tmp = $this->rolesModel->edit($roleId, $this->request->getPost());
+        if ($request->isPost()) {
+            $tmp = $rolesModel->edit($roleId, $this->params()->fromPost());
             if ($tmp['success']) {
-                if (!$this->request->isXmlHttpRequest()) {
+                if (!$request->isXmlHttpRequest()) {
                     $this->flashMessenger()->addSuccessMessage('Роль успешно изменена');
                     $this->redirect()->refresh();
                 }

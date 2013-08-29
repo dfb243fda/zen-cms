@@ -2,26 +2,19 @@
 
 namespace Users\Method;
 
-use Pages\Entity\FeContentMethod;
+use Pages\AbstractMethod\FeContentMethod;
 use Users\Model\Users;
 
 class LoginForm extends FeContentMethod
 {
-    protected $usersModel;
-    
-    public function init()
-    {
-        $sm = $this->serviceLocator->getServiceLocator();
-        $this->usersModel = new Users($sm);
-        $this->configManager = $sm->get('configManager');
-    }
-
-
     public function main()
-    {        
+    {   
+        $usersModel = new Users($this->serviceLocator);
+        $configManager = $this->serviceLocator->get('configManager');
+        
         $result = array();
         
-        $result['formConfig'] = $this->usersModel->getLoginFormConfig();
+        $result['formConfig'] = $usersModel->getLoginFormConfig();
         $result['formValues'] = array();     
 
         $fm = $this->flashMessenger()->setNamespace('users-login-form')->getMessages();
@@ -30,7 +23,7 @@ class LoginForm extends FeContentMethod
                 'identity' => array($fm[0]),
             );
         }          
-        $result['enableRegistration'] = (bool)$this->configManager->get('users', 'allow_registration');
+        $result['enableRegistration'] = (bool)$configManager->get('users', 'allow_registration');
         
         return $result;
     }    

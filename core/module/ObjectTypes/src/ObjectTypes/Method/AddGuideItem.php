@@ -7,22 +7,11 @@ use ObjectTypes\Model\Guides;
 
 class AddGuideItem extends AbstractMethod
 {
-    protected $rootServiceLocator;
-    
-    protected $translator;
-    
-    protected $guidesModel;
-    
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->guidesModel = new Guides($this->rootServiceLocator);
-        $this->request = $this->rootServiceLocator->get('request');
-    }
-    
     public function main()
     {
+        $guidesModel = new Guides($this->serviceLocator);
+        $request = $this->serviceLocator->get('request');
+        
         $result = array();
         
         if (null === $this->params()->fromRoute('id')) {
@@ -32,17 +21,17 @@ class AddGuideItem extends AbstractMethod
         
         $guideId = (int)$this->params()->fromRoute('id');
         
-        $this->guidesModel->setGuideId($guideId);
+        $guidesModel->setGuideId($guideId);
         
-        $form = $this->guidesModel->getGuideItemForm();        
+        $form = $guidesModel->getGuideItemForm();        
         $formConfig = $form['formConfig'];
         $formValues = $form['formValues'];
         $formMessages = array();
         
-        if ($this->request->isPost()) {
-            $tmp = $this->guidesModel->addGuideItem($this->request->getPost());
+        if ($request->isPost()) {
+            $tmp = $guidesModel->addGuideItem($this->params()->fromPost());
             if ($tmp['success']) {
-                if (!$this->request->isXmlHttpRequest()) {
+                if (!$request->isXmlHttpRequest()) {
                     $this->flashMessenger()->addSuccessMessage('Термин успешно добавлен');
                     
                     $this->redirect()->toRoute('admin/method', array(

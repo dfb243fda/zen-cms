@@ -4,22 +4,14 @@ namespace Users\Method;
 
 use App\Method\AbstractMethod;
 use Users\Model\Users;
-use Zend\Validator\AbstractValidator;
 
 class EditUser extends AbstractMethod
-{
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->db = $this->rootServiceLocator->get('db');
-        $this->usersModel = new Users($this->rootServiceLocator);     
-        $this->request = $this->rootServiceLocator->get('request');
-        AbstractValidator::setDefaultTranslator($this->rootServiceLocator->get('translator'));
-    }
-    
+{    
     public function main()
     {
+        $usersModel = new Users($this->serviceLocator);     
+        $request = $this->serviceLocator->get('request');
+        
         $result = array();
         
         $userId = $this->params()->fromRoute('id');
@@ -29,20 +21,20 @@ class EditUser extends AbstractMethod
         
         if ($this->params()->fromRoute('objectTypeId') !== null) {
             $objectTypeId = (string)$this->params()->fromRoute('objectTypeId');
-            $this->usersModel->setObjectTypeId($objectTypeId);
+            $usersModel->setObjectTypeId($objectTypeId);
         }        
         
-        $form = $this->usersModel->getForm($userId);        
+        $form = $usersModel->getForm($userId);        
         $formConfig = $form['formConfig'];
         $formValues = $form['formValues'];
         $formMessages = array();
         
-        if ($this->request->isPost()) {
-            $tmp = $this->usersModel->edit($userId, $this->request->getPost());
+        if ($request->isPost()) {
+            $tmp = $usersModel->edit($userId, $this->params()->fromPost());
             if ($tmp['success']) {
-                if (!$this->request->isXmlHttpRequest()) {
+                if (!$request->isXmlHttpRequest()) {
                     $this->flashMessenger()->addSuccessMessage('Пользователь успешно изменен');
-                    $this->redirect()->refresh();
+                    return $this->redirect()->refresh();
                 }
 
                 return array(

@@ -4,50 +4,23 @@ namespace ObjectTypes\Method;
 
 use App\Method\AbstractMethod;
 
-use Zend\Db\Sql\Sql;
-use Zend\Db\ResultSet\ResultSet;
-use Zend\Form\Factory;
-use App\FieldsGroup\FieldsGroup;
-
-use App\Field\Field;
-
 class DelGroup extends AbstractMethod
-{
-    protected $extKey = 'ObjectTypes';
-    
-    protected $translator;
-    
-    protected $db;
-    
-    protected $fieldsCollection;
-    
-    protected $objectTypesCollection;
-    
-    protected $objectTypesTable = 'object_types';
-    
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->db = $this->rootServiceLocator->get('db');
-        $this->fieldsCollection = $this->rootServiceLocator->get('fieldsCollection');
-        $this->objectTypesCollection = $this->rootServiceLocator->get('objectTypesCollection');
-        $this->request = $this->rootServiceLocator->get('request');
-    }
-    
+{    
     public function main()
     {
+        $objectTypesCollection = $this->serviceLocator->get('objectTypesCollection');
+        
         $result = array(
             'success' => false,
         );
-        if (null === $this->request->getPost('groupId') || null === $this->request->getPost('objectTypeId')) {
+        if (null === $this->params()->fromPost('groupId') || null === $this->params()->fromPost('objectTypeId')) {
             $result['errMsg'] = 'Не переданы все необходимые параметры';
         } 
         else {
-            $objectTypeId = (int)$this->request->getPost('objectTypeId');
-            $groupId = (int)$this->request->getPost('groupId');
+            $objectTypeId = (int)$this->params()->fromPost('objectTypeId');
+            $groupId = (int)$this->params()->fromPost('groupId');
             
-            $type = $this->objectTypesCollection->getType($objectTypeId);
+            $type = $objectTypesCollection->getType($objectTypeId);
                 
             if (false === $type) {
                 $result['errMsg'] = 'Тип данных ' . $objectTypeId . ' не найден';

@@ -4,23 +4,15 @@ namespace Users\Method;
 
 use App\Method\AbstractMethod;
 use Users\Model\Users;
-use Zend\Validator\AbstractValidator;
 
 class AddUser extends AbstractMethod
 {
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->db = $this->rootServiceLocator->get('db');
-        $this->usersModel = new Users($this->rootServiceLocator);     
-        $this->request = $this->rootServiceLocator->get('request');
-        
-        AbstractValidator::setDefaultTranslator($this->rootServiceLocator->get('translator'));
-    }
     
     public function main()
     {
+        $usersModel = new Users($this->serviceLocator);     
+        $request = $this->serviceLocator->get('request');
+        
         $result = array();
         
         if ($this->params()->fromRoute('objectTypeId') === null) {
@@ -28,19 +20,19 @@ class AddUser extends AbstractMethod
         } else {
             $objectTypeId = (string)$this->params()->fromRoute('objectTypeId');
         }
-        $this->usersModel->setObjectTypeId($objectTypeId);
+        $usersModel->setObjectTypeId($objectTypeId);
         
-        $form = $this->usersModel->getForm();        
+        $form = $usersModel->getForm();        
         $formConfig = $form['formConfig'];
         $formValues = $form['formValues'];
         $formMessages = array();
         
-        if ($this->request->isPost()) {
-            $tmp = $this->usersModel->add($this->request->getPost());
+        if ($request->isPost()) {
+            $tmp = $usersModel->add($this->params()->fromPost());
             if ($tmp['success']) {
-                if (!$this->request->isXmlHttpRequest()) {
+                if (!$request->isXmlHttpRequest()) {
                     $this->flashMessenger()->addSuccessMessage('Пользователь успешно добавлен');
-                    $this->redirect()->toRoute('admin/method', array(
+                    return $this->redirect()->toRoute('admin/method', array(
                         'module' => 'Users',
                         'method' => 'EditUser',
                         'id'     => $tmp['userId'],

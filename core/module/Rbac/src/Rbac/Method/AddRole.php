@@ -4,35 +4,27 @@ namespace Rbac\Method;
 
 use App\Method\AbstractMethod;
 use Rbac\Model\Roles;
-use Zend\Validator\AbstractValidator;
 
 class AddRole extends AbstractMethod
 {
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->db = $this->rootServiceLocator->get('db');
-        $this->rolesModel = new Roles($this->rootServiceLocator);     
-        $this->request = $this->rootServiceLocator->get('request');
-        AbstractValidator::setDefaultTranslator($this->rootServiceLocator->get('translator'));
-    }
-
     public function main()
     {
+        $rolesModel = new Roles($this->serviceLocator);     
+        $request = $this->serviceLocator->get('request');
+        
         $result = array();
         
         $parentRoleId = $this->params()->fromRoute('id' , 0);
         
-        $form = $this->rolesModel->getForm(null, $parentRoleId);        
+        $form = $rolesModel->getForm(null, $parentRoleId);        
         $formConfig = $form['formConfig'];
         $formValues = $form['formValues'];
         $formMessages = array();
         
-        if ($this->request->isPost()) {
-            $tmp = $this->rolesModel->add($this->request->getPost());
+        if ($request->isPost()) {
+            $tmp = $rolesModel->add($this->params()->fromPost());
             if ($tmp['success']) {
-                if (!$this->request->isXmlHttpRequest()) {
+                if (!$request->isXmlHttpRequest()) {
                     $this->flashMessenger()->addSuccessMessage('Роль успешно добавлена');
                     $this->redirect()->toRoute('admin/method',array(
                         'module' => 'Rbac',

@@ -6,19 +6,13 @@ use App\Method\AbstractMethod;
 use Templates\Model\Templates;
 
 class AddTemplate extends AbstractMethod
-{
-    protected $templatesModel;    
-    
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->templatesModel = new Templates($this->rootServiceLocator, $this->url());
-        $this->moduleManager = $this->rootServiceLocator->get('moduleManager');
-        $this->request = $this->rootServiceLocator->get('request');
-    }
-    
+{    
     public function main()
     {           
+        $templatesModel = new Templates($this->serviceLocator, $this->url());
+        $moduleManager = $this->serviceLocator->get('moduleManager');
+        $request = $this->serviceLocator->get('request');
+        
         if (!$this->params()->fromRoute('templateModule')) {
             throw new \Exception('Wrong parameters transferred');
         } elseif (!$this->params()->fromRoute('templateMethod')) {
@@ -31,22 +25,20 @@ class AddTemplate extends AbstractMethod
             $templateType = 'content_template';
         }
         
-        $formConfig = $this->templatesModel->getFormConfig();
+        $formConfig = $templatesModel->getFormConfig();
         
         $formMsg = array();
         
-        if ($this->request->isPost()) {
-            $formValues = $this->request->getPost();
-            
-            $factory = new \Zend\Form\Factory($this->rootServiceLocator->get('FormElementManager'));
+        if ($request->isPost()) {            
+            $factory = new \Zend\Form\Factory($this->serviceLocator->get('FormElementManager'));
 
             $form = $factory->createForm($formConfig);         
-            $form->setData($formValues);
+            $form->setData($this->params()->fromPost());
             
             if ($form->isValid()) {
                 $formValues = $form->getData();
                 
-                $this->templatesModel->addTemplate($module, $method, $templateType, $formValues);                
+                $templatesModel->addTemplate($module, $method, $templateType, $formValues);                
                 
                 $urlParams = array(
                     'templateModule' => $module,                    
@@ -69,8 +61,8 @@ class AddTemplate extends AbstractMethod
         } else {
             if ('' == $method) {
                 $formValues = array(
-                    'content' => $this->templatesModel->getPageTemplateDefaultContent(),
-                    'markers' => $this->templatesModel->getPageTemplateDefaultMarkers(),
+                    'content' => $templatesModel->getPageTemplateDefaultContent(),
+                    'markers' => $templatesModel->getPageTemplateDefaultMarkers(),
                 );
             } else {
                 $formValues = array();

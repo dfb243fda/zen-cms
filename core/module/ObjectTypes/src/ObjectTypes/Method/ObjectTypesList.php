@@ -5,13 +5,10 @@ namespace ObjectTypes\Method;
 use App\Method\AbstractMethod;
 
 class ObjectTypesList extends AbstractMethod
-{
-    protected $extKey = 'ObjectTypes';
-    
+{    
     public function init()
     {
-        $this->rootServiceLocator = $this->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
+        $this->translator = $this->serviceLocator->get('translator');
     }
 
 
@@ -31,7 +28,7 @@ class ObjectTypesList extends AbstractMethod
     {
         $result = array();
         
-        $this->rootServiceLocator->get('viewHelperManager')->get('HeadScript')->appendFile(ROOT_URL_SEGMENT . '/js/ObjectTypes/object_types.js');
+        $this->serviceLocator->get('viewHelperManager')->get('HeadScript')->appendFile(ROOT_URL_SEGMENT . '/js/ObjectTypes/object_types.js');
         
         $result['tabs'] = array(
             array(
@@ -90,7 +87,7 @@ class ObjectTypesList extends AbstractMethod
         
         $result['items'] = array();        
         
-        $objectTypesCollection = $this->rootServiceLocator->get('objectTypesCollection');
+        $objectTypesCollection = $this->serviceLocator->get('objectTypesCollection');
         $objectTypes = $objectTypesCollection->getChildrenTypesList($parentId);
         
         foreach ($objectTypes as $row) {

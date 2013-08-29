@@ -7,34 +7,22 @@ use ObjectTypes\Model\Guides;
 
 class DelGuideItem extends AbstractMethod
 {
-    protected $rootServiceLocator;
-    
-    protected $translator;
-    
-    protected $guidesModel;
-    
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->guidesModel = new Guides($this->rootServiceLocator);
-        $this->request = $this->rootServiceLocator->get('request');
-    }
-
     public function main()
     {
+        $guidesModel = new Guides($this->serviceLocator);
+        
         $result = array(
             'success' => false,
         );
         
-        if (null === $this->request->getPost('id')) {
+        if (null === $this->params()->fromPost('id')) {
             $result['errMsg'] = 'Не переданы все необходимые параметры';
             return $result;
         }
         
-        $guideItemId = (int)$this->request->getPost('id');
+        $guideItemId = (int)$this->params()->fromPost('id');
         
-        if ($this->guidesModel->deleteGuideItem($guideItemId)) {
+        if ($guidesModel->deleteGuideItem($guideItemId)) {
             $result['success'] = true;
             $result['msg'] = 'Термин удален';
         } else {

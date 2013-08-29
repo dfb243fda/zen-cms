@@ -6,12 +6,7 @@ use Pages\AbstractMethod\FePageMethod;
 use App\Utility\GeneralUtility;
 
 class PageLink extends FePageMethod
-{        
-    public function init()
-    {
-        
-    }
-    
+{            
     public function main()
     {
         $url = $this->pageData['fieldGroups']['page-link']['fields']['url'];

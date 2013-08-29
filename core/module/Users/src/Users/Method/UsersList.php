@@ -10,10 +10,9 @@ class UsersList extends AbstractMethod
 {
     public function init()
     {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->request = $this->rootServiceLocator->get('request');
-        $this->usersModel = new Users($this->rootServiceLocator);    
+        $this->translator = $this->serviceLocator->get('translator');
+        $this->request = $this->serviceLocator->get('request');
+        $this->usersModel = new Users($this->serviceLocator);    
     }
 
 
@@ -31,7 +30,7 @@ class UsersList extends AbstractMethod
     {
         $result = array();
         
-        $this->rootServiceLocator->get('viewHelperManager')->get('HeadScript')->appendFile(ROOT_URL_SEGMENT . '/js/Users/users.js');
+        $this->serviceLocator->get('viewHelperManager')->get('HeadScript')->appendFile(ROOT_URL_SEGMENT . '/js/Users/users.js');
         
         $result['contentTemplate'] = array(
             'name' => 'content_template/' . CURRENT_THEME . '/tree_grid.phtml',

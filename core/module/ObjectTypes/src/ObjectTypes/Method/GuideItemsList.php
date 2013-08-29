@@ -6,18 +6,15 @@ use App\Method\AbstractMethod;
 use ObjectTypes\Model\Guides;
 
 class GuideItemsList extends AbstractMethod
-{    
-    protected $rootServiceLocator;
-    
+{        
     protected $translator;
     
     protected $guidesModel;
     
     public function init()
     {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->guidesModel = new Guides($this->rootServiceLocator);
+        $this->translator = $this->serviceLocator->get('translator');
+        $this->guidesModel = new Guides($this->serviceLocator);
     }
 
 
@@ -47,7 +44,7 @@ class GuideItemsList extends AbstractMethod
     {
         $result = array();
         
-        $this->rootServiceLocator->get('viewHelperManager')->get('HeadScript')->appendFile(ROOT_URL_SEGMENT . '/js/ObjectTypes/guides.js');
+        $this->serviceLocator->get('viewHelperManager')->get('HeadScript')->appendFile(ROOT_URL_SEGMENT . '/js/ObjectTypes/guides.js');
         
         $result['tabs'] = array(
             array(

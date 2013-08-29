@@ -10,10 +10,9 @@ class RolesList extends AbstractMethod
 {
     public function init()
     {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->request = $this->rootServiceLocator->get('request');
-        $this->rolesModel = new Roles($this->rootServiceLocator);    
+        $this->translator = $this->serviceLocator->get('translator');
+        $this->request = $this->serviceLocator->get('request');
+        $this->rolesModel = new Roles($this->serviceLocator);    
     }
 
 

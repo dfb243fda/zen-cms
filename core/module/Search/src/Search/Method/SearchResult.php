@@ -2,21 +2,15 @@
 
 namespace Search\Method;
 
-use Pages\Entity\FeContentMethod;
+use Pages\AbstractMethod\FeContentMethod;
 use Search\Model\Search as SearchModel;
 
 class SearchResult extends FeContentMethod
-{
-    protected $searchModel;
-    
-    public function init()
-    {
-        $rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->searchModel = new SearchModel($rootServiceLocator);
-    }
-    
+{    
     public function main()
     {
+        $searchModel = new SearchModel($this->serviceLocator);
+        
         $searchQuery = $this->params()->fromQuery('search');
         if (!is_array($searchQuery)) {
             $searchQuery = array(
@@ -28,7 +22,7 @@ class SearchResult extends FeContentMethod
             $pageNum = 1;
         }
         
-        $result = $this->searchModel->find($searchQuery, $pageNum);
+        $result = $searchModel->find($searchQuery, $pageNum);
         
         return $result;        
     }

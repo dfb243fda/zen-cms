@@ -7,29 +7,22 @@ use Rbac\Model\Roles;
 
 class DeleteRole extends AbstractMethod
 {
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->db = $this->rootServiceLocator->get('db');
-        $this->rolesModel = new Roles($this->rootServiceLocator);     
-        $this->request = $this->rootServiceLocator->get('request');
-    }
-
     public function main()
     {
+        $rolesModel = new Roles($this->serviceLocator);     
+        
         $result = array(
             'success' => false,
         );
         
-        $roleId = $this->request->getPost('id');
+        $roleId = $this->params()->fromPost('id');
         if (null === $roleId) {
             $result['errMsg'] = 'Не переданы все необходимые параметры';
             return $result;
         }
         $roleId = (int)$roleId;
         
-        if ($this->rolesModel->delete($roleId)) {
+        if ($rolesModel->delete($roleId)) {
             $result['success'] = true;
             $result['msg'] = 'Роль успешно удалена';
         } else {

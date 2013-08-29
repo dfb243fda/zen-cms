@@ -9,27 +9,17 @@ use ObjectTypes\Model\ObjectTypes as ObjectTypesModel;
 
 class EditObjectType extends AbstractMethod
 {    
-    protected $objectTypesModel;
-    
-    public function init()
-    {
-        $this->rootServiceLocator = $this->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->db = $this->rootServiceLocator->get('db');
-        $this->objectTypesCollection = $this->rootServiceLocator->get('objectTypesCollection');
-        $this->fieldTypesCollection = $this->rootServiceLocator->get('fieldTypesCollection');
-        $this->objectTypesModel = new ObjectTypesModel($this->rootServiceLocator);
-        $this->request = $this->rootServiceLocator->get('request');
-    }
-
-
     public function main()
     {
+        $objectTypesModel = new ObjectTypesModel($this->serviceLocator);
+        $translator = $this->serviceLocator->get('translator');
+        $request = $this->serviceLocator->get('request');
+        
         $result = array();
         
         $result['tabs'] = array(
             array(
-                'title' => $this->translator->translate('ObjectTypes:Object types'),
+                'title' => $translator->translate('ObjectTypes:Object types'),
                 'link' => $this->url()->fromRoute('admin/method', array(
                     'module' => 'ObjectTypes',
                     'method' => 'ObjectTypesList',                    
@@ -37,7 +27,7 @@ class EditObjectType extends AbstractMethod
                 'active' => true,
             ),
             array(
-                'title' => $this->translator->translate('ObjectTypes:Guides'),
+                'title' => $translator->translate('ObjectTypes:Guides'),
                 'link' => $this->url()->fromRoute('admin/method', array(
                     'module' => 'ObjectTypes',
                     'method' => 'GuidesList',
@@ -52,41 +42,37 @@ class EditObjectType extends AbstractMethod
         
         $objectTypeId = (int)$this->params()->fromRoute('id');
                 
-        $tmp = $this->objectTypesModel->getObjectTypeForm($objectTypeId);
+        $tmp = $objectTypesModel->getObjectTypeForm($objectTypeId);
         
         $objectTypeFormConfig = $tmp['formConfig'];
         $objectTypeFormValues = $tmp['formValues'];
                 
         $objectTypeFormMsg = array();
                 
-        $tmp = $this->objectTypesModel->getGroupForm();        
+        $tmp = $objectTypesModel->getGroupForm();        
         $groupFormConfig = $tmp['formConfig'];
         $groupFormValues = $tmp['formValues'];
          
         
-        $fieldGroups = $this->objectTypesModel->getObjectTypeFieldGroups($objectTypeId);
+        $fieldGroups = $objectTypesModel->getObjectTypeFieldGroups($objectTypeId);
         
-        $tmp = $this->objectTypesModel->getFieldForm();     
+        $tmp = $objectTypesModel->getFieldForm();     
         $fieldFormConfig = $tmp['formConfig'];
         $fieldFormValues = $tmp['formValues'];
         
-        if ($this->request->isPost()) {  
-            $factory = new Factory($this->rootServiceLocator->get('FormElementManager'));
+        if ($request->isPost()) {  
+            $factory = new Factory($this->serviceLocator->get('FormElementManager'));
             
             $form = $factory->createForm($objectTypeFormConfig);  
             
-            $form->setData($this->request->getPost());
+            $form->setData($this->params()->fromPost());
             if ($form->isValid()) {
                 $values = $form->getData();
                 
-                $this->objectTypesModel->editObjectType($objectTypeId, $values);
+                $objectTypesModel->editObjectType($objectTypeId, $values);
 
                 $this->flashMessenger()->addSuccessMessage('Тип данных успешно обновлен');
-                $this->redirect()->refresh();
-
-                $result['success'] = true;
-                $result['msg'] = 'Тип данных успешно обновлен';
-                return $result;
+                return $this->redirect()->refresh();
             } else {
                 $objectTypeFormMsg = $form->getMessages();
             }
