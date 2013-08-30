@@ -51,6 +51,22 @@ return array(
             ),
         ),
     ),    
+    'service_manager' => array(
+        'invokables' => array(            
+            'AdminPanel\Service\PageData' => 'AdminPanel\Service\PageData',
+            'AdminPanel\Service\UserData' => 'AdminPanel\Service\UserData',
+            'AdminPanel\Service\SystemInfo' => 'AdminPanel\Service\SystemInfo',
+            'AdminPanel\Service\Errors' => 'AdminPanel\Service\Errors',
+            'AdminPanel\Service\OutputRenderer' => 'AdminPanel\Service\OutputRenderer',
+            
+            'AdminPanel\Service\OutputRenderer\Json' => 'AdminPanel\Service\OutputRenderer\Json',
+            'AdminPanel\Service\OutputRenderer\Html' => 'AdminPanel\Service\OutputRenderer\Html',
+            'AdminPanel\Service\OutputRenderer\Xml' => 'AdminPanel\Service\OutputRenderer\Xml',
+            'AdminPanel\Service\OutputRenderer\VarDump' => 'AdminPanel\Service\OutputRenderer\VarDump',
+            'AdminPanel\Service\OutputRenderer\PrintR' => 'AdminPanel\Service\OutputRenderer\PrintR',
+            'AdminPanel\Service\OutputRenderer\JsonHtml' => 'AdminPanel\Service\OutputRenderer\JsonHtml',
+        ),
+    ),
     'controllers' => array(
         'invokables' => array(
             'AdminPanel\Controller\Admin' => 'AdminPanel\Controller\AdminController',
