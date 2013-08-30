@@ -127,7 +127,10 @@ return array(
             'Pages\Collection\Content' => 'Pages\Collection\Content',
             'Pages\Entity\PageType' => 'Pages\Entity\PageType',
             
-            'Pages\Service\Page' => 'Pages\Service\Page',
+            'Pages\Listener\OnBootstrap' => 'Pages\Listener\OnBootstrap',
+            'Pages\Service\Installer' => 'Pages\Service\Installer',
+            'Pages\Service\PageTypesDetector' => 'Pages\Service\PageTypesDetector',
+            'Pages\Service\ContentTypesDetector' => 'Pages\Service\ContentTypesDetector',
         ),
     ),
     
