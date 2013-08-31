@@ -4,6 +4,7 @@ namespace Bootstrapper\Service;
 
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
+use Zend\Form\Form;
 
 class DynamicConfig implements ServiceManagerAwareInterface
 {
@@ -22,8 +23,7 @@ class DynamicConfig implements ServiceManagerAwareInterface
     
     public function getConfig()
     {
-        $sm = $this->serviceManager;
-        $db = $sm->get('db');
+        $db = $this->serviceManager->get('db');
         
 
         $sqlRes = $db->query('select prefix, title from ' . DB_PREF . 'langs', array())->toArray();
@@ -33,9 +33,9 @@ class DynamicConfig implements ServiceManagerAwareInterface
             $languages[$row['prefix']] = $row['title'];
         }
 
-        $translator = $sm->get('translator');
+        $translator = $this->serviceManager->get('translator');
         
-        $configManager = $sm->get('configManager');
+        $configManager = $this->serviceManager->get('configManager');
         
         $continents = array( 'Africa', 'America', 'Antarctica', 'Arctic', 'Asia', 'Atlantic', 'Australia', 'Europe', 'Indian', 'Pacific');
 
@@ -118,51 +118,44 @@ class DynamicConfig implements ServiceManagerAwareInterface
         $dateTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         $localTime = $dateTime->format($format);
 
+        
+        $form = new Form();
+        $form->getFormFactory()->setFormElementManager($this->serviceManager->get('FormElementManager'));
+        
+        $form->add(array(
+            'name' => 'system',
+            'type' => 'fieldset',
+        ));
+        
+        $form->get('system')->add(array(
+            'name' => 'language',
+            'type' => 'select',
+            'options' => array(
+                'label' => 'i18n::Dynamic config system language',
+                'description' => 'i18n::Dynamic config system language description',
+                'value_options' => $languages,
+            ),
+        ));
+        
+        $form->get('system')->add(array(
+            'name' => 'timezone',
+            'type' => 'select',
+            'options' => array(
+                'label' => 'i18n::Dynamic config system timezone',
+                'description' => sprintf($translator->translate('Dynamic config system timezone description'), $utcTime, $localTime),
+                'value_options' => $timeZones,
+            ),
+        ));
+        
+        $form->getInputFilter()
+             ->get('system')
+             ->get('timezone')
+             ->setRequired(true);
+        
         return array(
             'form' => array(
-                'general' => array(
-                    'fieldsets' => array(
-                        'system' => array(
-                            'spec' => array(
-                                'name' => 'system',
-                                'elements' => array(
-                                    'language' => array(
-                                        'spec' => array(
-                                            'type' => 'select',
-                                            'name' => 'language',
-                                            'options' => array(
-                                                'label' => 'i18n::Dynamic config system language',
-                                                'description' => 'i18n::Dynamic config system language description',
-                                                'value_options' => $languages,
-                                            ),
-                                        ),
-                                    ),
-                                    'timezone' => array(
-                                        'spec' => array(
-                                            'type' => 'select',
-                                            'name' => 'timezone',
-                                            'options' => array(
-                                                'label' => 'i18n::Dynamic config system timezone',
-                                                'description' => sprintf($translator->translate('Dynamic config system timezone description'), $utcTime, $localTime),
-                                                'value_options' => $timeZones,
-                                            ),
-                                        ),
-                                    ),
-                                ),
-                            ),
-                        ),
-                    ),
-                    'input_filter' => array(
-                        'system' => array(
-                            'type' => 'Zend\InputFilter\InputFilter',
-                            'timezone' => array(
-                                'required' => true,
-                            ),
-                        ),
-                    ),
-                ),
-            ),
+                'general' => $form,
+            ),            
         );
-    }
-    
+    }    
 }

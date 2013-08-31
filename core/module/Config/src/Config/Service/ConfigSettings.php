@@ -33,10 +33,10 @@ class ConfigSettings implements ServiceManagerAwareInterface
         $config = $this->serviceManager->get('config');
         $moduleManager = $this->serviceManager->get('moduleManager');
         
-        if (isset($config['dynamic_config'])) {
-            $dynamicConfig = $config['dynamic_config'];
+        if (isset($config['dynamic_config']['tabs'])) {
+            $tabs = $config['dynamic_config']['tabs'];
         } else {
-            $dynamicConfig = array();
+            $tabs = array();
         }
         
         $modules = $moduleManager->getActiveModules();
@@ -46,13 +46,14 @@ class ConfigSettings implements ServiceManagerAwareInterface
             $instance = new $className;
             
             if (method_exists($instance, 'getDynamicConfig')) {
-                $dynamicConfig = $this->mergeOptions($dynamicConfig, $instance->getDynamicConfig($this->serviceManager));
+                $dynamicConfig = $instance->getDynamicConfig($this->serviceManager);
+                if (isset($dynamicConfig['tabs'])) {
+                    $tabs = array_merge($tabs, $dynamicConfig['tabs']);
+                }
             }
         }
         
-        $tabs = array();
-        foreach ($dynamicConfig['tabs'] as $k=>$v) {
-            $tabs[$k] = $v;
+        foreach ($tabs as $k=>$v) {
             $tabs[$k]['title'] = $translator->translateI18n($v['title']);
             
             $urlPlugin = $this->serviceManager->get('ControllerPluginManager')->get('url');
@@ -102,21 +103,5 @@ class ConfigSettings implements ServiceManagerAwareInterface
 
         return true;
     }
-    
-    protected function mergeOptions(array $array1, $array2 = null)
-    {
-        if (is_array($array2)) {
-            foreach ($array2 as $key => $val) {
-                if (is_array($array2[$key])) {
-                    $array1[$key] = (array_key_exists($key, $array1) && is_array($array1[$key]))
-                                  ? $this->mergeOptions($array1[$key], $array2[$key])
-                                  : $array2[$key];
-                } else {
-                    $array1[$key] = $val;
-                }
-            }
-        }
-        return $array1;
-    }   
     
 }

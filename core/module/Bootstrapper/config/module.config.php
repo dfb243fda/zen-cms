@@ -36,6 +36,7 @@ return array(
         'invokables' => array(
             'Bootstrapper\Service\Constants' => 'Bootstrapper\Service\Constants',
             'Bootstrapper\Service\Logger' => 'Bootstrapper\Service\Logger',
+            'Bootstrapper\Service\DynamicConfig' => 'Bootstrapper\Service\DynamicConfig',
         ),
     ),
     
@@ -55,7 +56,7 @@ return array(
                         'spec' => array(
                             'name' => 'system',
                             'elements' => array(
-                                'site_name' => array(
+                                array(
                                     'spec' => array(
                                         'name' => 'site_name',
                                         'options' => array(
@@ -64,7 +65,7 @@ return array(
                                         ),
                                     ),
                                 ),
-                                'site_desc' => array(
+                                array(
                                     'spec' => array(
                                         'name' => 'site_desc',
                                         'options' => array(
@@ -73,7 +74,7 @@ return array(
                                         ),
                                     ),
                                 ),
-                                'admin_email' => array(
+                                array(
                                     'spec' => array(
                                         'name' => 'admin_email',
                                         'options' => array(
@@ -107,11 +108,11 @@ return array(
             ),
             'date_time_formats' => array(
                 'fieldsets' => array(
-                    'system' => array(
+                    array(
                         'spec' => array(
                             'name' => 'system',
                             'elements' => array(
-                                'date_format' => array(
+                                array(
                                     'spec' => array(
                                         'name' => 'date_format',
                                         'options' => array(
@@ -120,7 +121,7 @@ return array(
                                         ),
                                     ),
                                 ),
-                                'js_date_format' => array(
+                                array(
                                     'spec' => array(
                                         'name' => 'js_date_format',
                                         'options' => array(
@@ -129,7 +130,7 @@ return array(
                                         ),
                                     ),
                                 ),
-                                'time_format' => array(
+                                array(
                                     'spec' => array(
                                         'name' => 'time_format',
                                         'options' => array(
@@ -138,7 +139,7 @@ return array(
                                         ),
                                     ),
                                 ),
-                                'js_time_format' => array(
+                                array(
                                     'spec' => array(
                                         'name' => 'js_time_format',
                                         'options' => array(

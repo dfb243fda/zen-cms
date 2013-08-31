@@ -159,11 +159,11 @@ return array(
         'form' => array(
             'pages' => array(
                 'fieldsets' => array(
-                    'pages' => array(
+                    array(
                         'spec' => array(
                             'name' => 'pages',
                             'elements' => array(
-                                'replace_spaces_with' => array(
+                                array(
                                     'spec' => array(
                                         'name' => 'replace_spaces_with',
                                         'options' => array(

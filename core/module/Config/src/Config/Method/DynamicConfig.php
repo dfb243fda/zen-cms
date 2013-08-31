@@ -15,7 +15,6 @@ class DynamicConfig extends AbstractMethod
             $currentTab = (string)$this->params()->fromRoute('id');
             $configSettings->setCurrentTab($currentTab);
         }
-//        $configSettings->init();
         
         $tabs = $configSettings->getTabs();
         $form = $configSettings->getForm();
