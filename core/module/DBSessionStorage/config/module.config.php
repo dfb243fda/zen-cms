@@ -25,17 +25,4 @@ return array(
             ),
         ),
     ),
-    'service_manager' => array(
-        'factories' => array(
-            'DBSessionStorage\Storage\DBStorage' => function($sm) {
-                $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                
-                $appConfig = $sm->get('ApplicationConfig');
-                
-                $storage = new DBSessionStorage\Storage\DBStorage($dbAdapter, $appConfig['dbPref']);
-                return $storage;
-            },
-        )
-    ),
-
 );

@@ -16,9 +16,25 @@ class Module {
     public function onBootstrap(\Zend\Mvc\MvcEvent $e)
     {
         $serviceManager = $e->getApplication()->getServiceManager();
-        $storage = $serviceManager->get('DBSessionStorage\Storage\DBStorage');
+        $storage = $serviceManager->get('DBSessionStorage\DBStorage');
         $request = $serviceManager->get('request');
         $storage->setSessionStorage($request);
+    }
+    
+    public function getServiceConfig()
+    {
+        return array(
+            'factories' => array(
+                'DBSessionStorage\DBStorage' => function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+
+                    $appConfig = $sm->get('ApplicationConfig');
+
+                    $storage = new DBStorage($dbAdapter, $appConfig['dbPref']);
+                    return $storage;
+                },
+            ),
+        );
     }
 
     public function getConfig() 
@@ -29,9 +45,6 @@ class Module {
     public function getAutoloaderConfig() 
     {
         return array(
-            'Zend\Loader\ClassMapAutoloader' => array(
-                __DIR__ . '/autoload_classmap.php',
-            ),
             'Zend\Loader\StandardAutoloader' => array(
                 'namespaces' => array(
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,

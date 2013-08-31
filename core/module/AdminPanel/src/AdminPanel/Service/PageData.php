@@ -26,13 +26,13 @@ class PageData implements ServiceManagerAwareInterface
     
     public function detectModuleAndMethod()
     {
-        $configManager = $this->serviceManager->get('configManager');
         $params = $this->serviceManager->get('ControllerPluginManager')->get('params');
+        $moduleManager = $this->serviceManager->get('moduleManager');
         
-        $mainPageModulStr = $configManager->get(CURRENT_THEME, 'be_main_page_module');     
-        $parts = explode(':', $mainPageModulStr);
-        $mainPageModule = $parts[0];   
-        $mainPageMethod = $parts[1];
+        $currentThemeConfig = $moduleManager->getModuleConfig(CURRENT_THEME);
+        
+        $mainPageModule = $currentThemeConfig['be_main_page_method'][0];   
+        $mainPageMethod = $currentThemeConfig['be_main_page_method'][1];
         
         if (null === $params->fromRoute('module')) {          
             $module = $mainPageModule;
@@ -73,11 +73,11 @@ class PageData implements ServiceManagerAwareInterface
         $translator = $this->serviceManager->get('translator');
         $isAllowed = $this->serviceManager->get('ControllerPluginManager')->get('isAllowed');
         $paramsPlugin = $this->serviceManager->get('ControllerPluginManager')->get('params');
+                
+        $currentThemeConfig = $moduleManager->getModuleConfig(CURRENT_THEME);
         
-        $mainPageModulStr = $configManager->get(CURRENT_THEME, 'be_main_page_module');     
-        $parts = explode(':', $mainPageModulStr);
-        $mainPageModule = $parts[0];   
-        $mainPageMethod = $parts[1];
+        $mainPageModule = $currentThemeConfig['be_main_page_method'][0];   
+        $mainPageMethod = $currentThemeConfig['be_main_page_method'][1];
         
         $module = $this->module;
         $method = $this->method;
@@ -158,11 +158,11 @@ class PageData implements ServiceManagerAwareInterface
         $moduleManager = $this->serviceManager->get('moduleManager');
         $urlPlugin = $this->serviceManager->get('ControllerPluginManager')->get('url');
         $translator = $this->serviceManager->get('translator');
+                
+        $currentThemeConfig = $moduleManager->getModuleConfig(CURRENT_THEME);
         
-        $mainPageModulStr = $configManager->get(CURRENT_THEME, 'be_main_page_module');     
-        $parts = explode(':', $mainPageModulStr);
-        $mainPageModule = $parts[0];   
-        $mainPageMethod = $parts[1];
+        $mainPageModule = $currentThemeConfig['be_main_page_method'][0];   
+        $mainPageMethod = $currentThemeConfig['be_main_page_method'][1];
         
         $module = $this->module;
         $method = $this->method;

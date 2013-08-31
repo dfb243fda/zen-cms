@@ -132,23 +132,25 @@ return array(
             'Pages\Service\PageTypesDetector' => 'Pages\Service\PageTypesDetector',
             'Pages\Service\ContentTypesDetector' => 'Pages\Service\ContentTypesDetector',
         ),
+        
+        'shared' => array(
+            'Pages\Entity\Page' => false,
+            'Pages\Entity\Content' => false,
+            'Pages\FormFactory\Page' => false,
+            'Pages\Form\PageBase' => false,
+            'Pages\Collection\Pages' => false,
+            'Pages\Service\DomainsTree' => false,
+            'Pages\Entity\Domain' => false,
+            'Pages\Form\Domain' => false,
+            'Pages\Collection\Domains' => false,
+            'Pages\Service\PageContent' => false,
+            'Pages\Form\ContentBase' => false,
+            'Pages\Collection\Content' => false,
+            'Pages\Entity\PageType' => false,
+        ),
     ),
     
-    'shared' => array(
-        'Pages\Entity\Page' => false,
-        'Pages\Entity\Content' => false,
-        'Pages\FormFactory\Page' => false,
-        'Pages\Form\PageBase' => false,
-        'Pages\Collection\Pages' => false,
-        'Pages\Service\DomainsTree' => false,
-        'Pages\Entity\Domain' => false,
-        'Pages\Form\Domain' => false,
-        'Pages\Collection\Domains' => false,
-        'Pages\Service\PageContent' => false,
-        'Pages\Form\ContentBase' => false,
-        'Pages\Collection\Content' => false,
-        'Pages\Entity\PageType' => false,
-    ),
+    
     
     'dynamic_config' => array(
         'tabs' => array(

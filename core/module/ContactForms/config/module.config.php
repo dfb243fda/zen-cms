@@ -62,6 +62,8 @@ return array(
             'ContactForms\Collection\ContactForms' => 'ContactForms\Collection\ContactForms',
             'ContactForms\Parser\HtmlTemplate' => 'ContactForms\Parser\HtmlTemplate',
             'ContactForms\Mailer\ContactForm' => 'ContactForms\Mailer\ContactForm',
+            
+            'ContactForms\Service\Installer' => 'ContactForms\Service\Installer',
         ),
         'shared' => array(
             'ContactForms\Service\FormsList' => false,

@@ -19,6 +19,19 @@ return array(
     ),
     'service_manager' => array(
         'invokables' => array(
+            'CustomFormElements\ObjectProperty\CkEditor'       => 'CustomFormElements\ObjectProperty\CkEditor',
+            'CustomFormElements\ObjectProperty\PageLink'       => 'CustomFormElements\ObjectProperty\PageLink',
+            'CustomFormElements\ObjectProperty\TimePicker'     => 'CustomFormElements\ObjectProperty\TimePicker',
+            'CustomFormElements\ObjectProperty\DateTimePicker' => 'CustomFormElements\ObjectProperty\DateTimePicker',
+            'CustomFormElements\ObjectProperty\DatePicker'     => 'CustomFormElements\ObjectProperty\DatePicker',
+            'CustomFormElements\ObjectProperty\Image'          => 'CustomFormElements\ObjectProperty\Image',
+            'CustomFormElements\ObjectProperty\MultiText'      => 'CustomFormElements\ObjectProperty\MultiText',
+            'CustomFormElements\ObjectProperty\Composite'      => 'CustomFormElements\ObjectProperty\Composite',
+            'CustomFormElements\ObjectProperty\ColorPicker'    => 'CustomFormElements\ObjectProperty\ColorPicker',
+            
+            'CustomFormElements\Service\Installer'             => 'CustomFormElements\Service\Installer',
+        ),
+        'aliases' => array(
             'ObjectProperty\CkEditor'       => 'CustomFormElements\ObjectProperty\CkEditor',
             'ObjectProperty\PageLink'       => 'CustomFormElements\ObjectProperty\PageLink',
             'ObjectProperty\TimePicker'     => 'CustomFormElements\ObjectProperty\TimePicker',

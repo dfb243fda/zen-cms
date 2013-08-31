@@ -299,7 +299,7 @@ class HtmlTemplate implements ServiceManagerAwareInterface
             $htmlAttr = $this->getTagAttributesFromArray($tag, $attr);
             
             if (!empty($htmlAttr)) {
-                $element->setAttributes($attr);                
+                $element->setAttributes($htmlAttr);                
             }
             if (isset($attr['is_multiple'])) {
                 $element->setAttribute('multiple', 'multiple');
@@ -330,7 +330,7 @@ class HtmlTemplate implements ServiceManagerAwareInterface
             $htmlAttr = $this->getTagAttributesFromArray($tag, $attr);
             
             if (!empty($htmlAttr)) {
-                $element->setAttributes($attr);                
+                $element->setAttributes($htmlAttr);                
             }
             if (isset($attr['value_options'])) {
                 $valueOptions = GeneralUtility::trimExplode(',', $attr['value_options']);
@@ -355,7 +355,7 @@ class HtmlTemplate implements ServiceManagerAwareInterface
             $htmlAttr = $this->getTagAttributesFromArray($tag, $attr);
             
             if (!empty($htmlAttr)) {
-                $element->setAttributes($attr);                
+                $element->setAttributes($htmlAttr);                
             }
             if (isset($attr['value_options'])) {
                 $valueOptions = GeneralUtility::trimExplode(',', $attr['value_options']);
@@ -387,7 +387,7 @@ class HtmlTemplate implements ServiceManagerAwareInterface
                     $element->setJsAttribute('maxDate', $htmlAttr['max']);
                 }
 */
-                $element->setAttributes($attr);                
+                $element->setAttributes($htmlAttr);                
             }
             
             if (isset($attr['default'])) {
@@ -422,7 +422,7 @@ class HtmlTemplate implements ServiceManagerAwareInterface
                     $element->setJsAttribute('maxDate', $htmlAttr['max']);
                 }
 */
-                $element->setAttributes($attr);                
+                $element->setAttributes($htmlAttr);                
             }
             
             if (isset($attr['default'])) {
@@ -457,7 +457,7 @@ class HtmlTemplate implements ServiceManagerAwareInterface
                     $element->setJsAttribute('maxDate', $htmlAttr['max']);
                 }
 */
-                $element->setAttributes($attr);                
+                $element->setAttributes($htmlAttr);                
             }
             
             if (isset($attr['default'])) {
@@ -484,7 +484,7 @@ class HtmlTemplate implements ServiceManagerAwareInterface
             $htmlAttr = $this->getTagAttributesFromArray($tag, $attr);
             
             if (!empty($htmlAttr)) {
-                $element->setAttributes($attr);                
+                $element->setAttributes($htmlAttr);                
             }
             
             if (isset($attr['size'])) {
@@ -511,7 +511,7 @@ class HtmlTemplate implements ServiceManagerAwareInterface
             $htmlAttr = $this->getTagAttributesFromArray($tag, $attr);
             
             if (!empty($htmlAttr)) {
-                $element->setAttributes($attr);                
+                $element->setAttributes($htmlAttr);                
             }
             
             $this->inputFilters[$element->getName()] = true;

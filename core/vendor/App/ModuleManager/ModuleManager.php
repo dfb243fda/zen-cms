@@ -11,9 +11,7 @@ class ModuleManager extends StandardModuleManager
     protected $serviceManager;
     
     protected $installedModulesData = array();
-    
-    protected $defaultMenuGroupWeight = 10;
-    
+        
     protected $modulesTable = 'modules';
         
     protected $isCmsInstalled;
@@ -405,54 +403,6 @@ class ModuleManager extends StandardModuleManager
             }            
         }
         return $modules;
-    }
+    }   
     
-    public function getMenuGroups()
-    {
-        $config = $this->serviceManager->get('config');
-        $translator = $this->serviceManager->get('translator');
-        
-        $modules = $this->getActiveModules();
-
-        $menuGroups = $config['menu_groups'];
-        
-        foreach ($menuGroups as $k=>$v) {
-            $menuGroups[$k]['title'] = $translator->translateI18n($menuGroups[$k]['title']);
-            $menuGroups[$k]['items'] = array();
-            if (!isset($v['weight'])) {
-                $menuGroups[$k]['weight'] = $this->defaultMenuGroupWeight;
-            }
-        }
-
-        uasort($menuGroups, function($a, $b) {
-            if ($a['weight'] == $b['weight']) {
-                return 0;
-            }
-            return ($a['weight'] < $b['weight']) ? -1 : 1;
-        });
-        
-        foreach ($modules as $moduleKey => $module) {
-            if (!empty($module['methods'])) {
-                foreach ($module['methods'] as $methodKey => $method) {
-                    if (isset($method['menu_group'])) {
-                        if (isset($menuGroups[$method['menu_group']])) {
-                            $method['module'] = $moduleKey;
-                            $method['method'] = $methodKey;
-                            $method['title'] = $translator->translateI18n($method['title']);
-                            $menuGroups[$method['menu_group']]['items'][] = $method;
-                        }
-                        else {
-                            throw new \Exception('Menu group not found ' . $method['menu_group'] . ' in module ' . $method['title'] . ' (' . $methodKey . ')');
-                        }
-                    }
-                }        
-            }            
-        }
-        
-        $menuGroups = $this->events->prepareArgs($menuGroups);
-        $this->events->trigger('get_menu_groups', $this, $menuGroups);
-        $menuGroups = (array)$menuGroups;
-        
-        return $menuGroups;
-    }
 }

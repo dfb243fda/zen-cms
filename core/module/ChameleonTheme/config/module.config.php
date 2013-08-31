@@ -7,6 +7,7 @@ return array(
         'description' => 'i18n::Chameleon theme module description',
         'version' => '0.1',
         'defaultTemplate' => 'page_template/ChameleonTheme/default.phtml',
+        'be_main_page_method' => array('ChameleonTheme', 'AdminMainPage'),
         'isRequired' => true,
         
         'methods' => array(
@@ -36,6 +37,12 @@ return array(
     'method_manager' => array(
         'invokables' => array(
             'ChameleonTheme\Method\AdminMainMenu' => 'ChameleonTheme\Method\AdminMainMenu',
+        ),
+    ),
+    'service_manager' => array(
+        'invokables' => array(
+            'ChameleonTheme\Service\AdminMainPage' => 'ChameleonTheme\Service\AdminMainPage',
+            'ChameleonTheme\Service\AdminMainMenu' => 'ChameleonTheme\Service\AdminMainMenu',
         ),
     ),
 );

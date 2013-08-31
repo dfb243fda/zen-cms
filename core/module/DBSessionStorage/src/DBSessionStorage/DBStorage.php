@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view
  * the file LICENSE.txt that was distributed with this source code.
  */
-namespace DBSessionStorage\Storage;
+namespace DBSessionStorage;
 use Zend\Session\SaveHandler\DbTableGateway;
 use Zend\Session\SaveHandler\DbTableGatewayOptions;
 use Zend\Db\Adapter\Adapter;

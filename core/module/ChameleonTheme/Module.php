@@ -36,11 +36,4 @@ class Module
     {
         return include __DIR__ . '/config/module.config.php';
     }
-    
-    public function onInstall($sm)
-    {
-        $configManager = $sm->get('configManager');
-        
-        $configManager->set('ChameleonTheme', 'be_main_page_modul', 'ChameleonTheme:AdminMainPage');
-    }
 }
