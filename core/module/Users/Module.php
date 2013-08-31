@@ -14,6 +14,20 @@ class Module
             ),
         );
     }
+    
+    public function onBootstrap($e)
+    {
+        $app = $e->getTarget();
+        
+        $locator = $app->getServiceManager();
+        $logger = $locator->get('logger');
+        
+        if ($locator->has('users_auth_service')) {
+            $logger->addProcessor('App\Log\Processor\User', 1, array(
+                'userData' => $locator->get('users_auth_service')->getIdentity(),
+            ));
+        }
+    }
 
     public function getConfig($env = null)
     {

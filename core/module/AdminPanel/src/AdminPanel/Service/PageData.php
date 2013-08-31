@@ -29,7 +29,7 @@ class PageData implements ServiceManagerAwareInterface
         $configManager = $this->serviceManager->get('configManager');
         $params = $this->serviceManager->get('ControllerPluginManager')->get('params');
         
-        $mainPageModulStr = $configManager->get(CURRENT_THEME, 'be_main_page_modul');     
+        $mainPageModulStr = $configManager->get(CURRENT_THEME, 'be_main_page_module');     
         $parts = explode(':', $mainPageModulStr);
         $mainPageModule = $parts[0];   
         $mainPageMethod = $parts[1];
@@ -74,7 +74,7 @@ class PageData implements ServiceManagerAwareInterface
         $isAllowed = $this->serviceManager->get('ControllerPluginManager')->get('isAllowed');
         $paramsPlugin = $this->serviceManager->get('ControllerPluginManager')->get('params');
         
-        $mainPageModulStr = $configManager->get(CURRENT_THEME, 'be_main_page_modul');     
+        $mainPageModulStr = $configManager->get(CURRENT_THEME, 'be_main_page_module');     
         $parts = explode(':', $mainPageModulStr);
         $mainPageModule = $parts[0];   
         $mainPageMethod = $parts[1];
@@ -159,7 +159,7 @@ class PageData implements ServiceManagerAwareInterface
         $urlPlugin = $this->serviceManager->get('ControllerPluginManager')->get('url');
         $translator = $this->serviceManager->get('translator');
         
-        $mainPageModulStr = $configManager->get(CURRENT_THEME, 'be_main_page_modul');     
+        $mainPageModulStr = $configManager->get(CURRENT_THEME, 'be_main_page_module');     
         $parts = explode(':', $mainPageModulStr);
         $mainPageModule = $parts[0];   
         $mainPageMethod = $parts[1];

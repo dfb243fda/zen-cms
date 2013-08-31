@@ -106,14 +106,10 @@ return call_user_func(function() {
         'module_paths' => array(
             CORE_PATH . '/module',
             APPLICATION_PATH . '/module',
-  //          'application/' . APPLICATION . '/module',
- //           'core/vendor',                
-  //          'application/' . APPLICATION . '/vendor',
         ),
         'config_glob_paths' => array(
             CORE_PATH . '/config/autoload/{,*.}{global,local}.php',
             APPLICATION_PATH . '/config/autoload/{,*.}{global,local}.php',
- //           'application/' . APPLICATION . '/config/autoload/{,*.}{global,local}.php'
         ),
         'config_cache_enabled' => false,
         'config_cache_key' => APPLICATION,

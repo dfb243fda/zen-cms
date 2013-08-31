@@ -53,7 +53,6 @@ class AdminController extends AbstractActionController
             $resultArray['method'] = $method;
         }
         
-        // service page data
         $resultArray['user'] = $userDataService->getUserData();
         
         $resultArray['page'] = $pageDataService->getPageData();
@@ -78,7 +77,6 @@ class AdminController extends AbstractActionController
         
         $eventManager->trigger('prepare_output', $this, array($resultArray));
         
-        //service output
         $output = $outputService->getOutput($resultArray);
         
         $args = $eventManager->prepareArgs(array(

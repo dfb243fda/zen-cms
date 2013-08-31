@@ -2,29 +2,10 @@
 
 namespace AdminPanel\Service\OutputRenderer;
 
-use Zend\ServiceManager\ServiceManager;
-use Zend\ServiceManager\ServiceManagerAwareInterface;
-use AdminPanel\Service\OutputRendererInterface;
-use Zend\View\Model\ViewModel;
+use AdminPanel\Service\OutputRendererAbstract;
 
-class Json implements 
-    ServiceManagerAwareInterface,
-    OutputRendererInterface
-{
-    /**
-     * @var ServiceManager
-     */
-    protected $serviceManager;
-    
-    
-    /**
-     * {@inheritDoc}
-     */
-    public function setServiceManager(ServiceManager $serviceManager)
-    {
-        $this->serviceManager = $serviceManager;
-    }
-    
+class Json extends OutputRendererAbstract
+{   
     public function render(array $resultArray)
     {
         $response = $this->serviceManager->get('response');
@@ -43,37 +24,8 @@ class Json implements
 
         $resultArray = array_merge($resultArray, $this->getViewResources($this->serviceManager->get('viewHelperManager')));
 
+        $this->removeObjectsFromArray($resultArray);
+        
         return json_encode($resultArray);
-    }
-    
-    protected function getViewResources($viewHelperManager)
-    {
-        $headScript = $viewHelperManager->get('headScript')->getContainer()->getValue();        
-        if (is_object($headScript)) {
-            $headScript = array($headScript);
-        }
-        
-        $headLink = $viewHelperManager->get('headLink')->getContainer()->getValue();
-        if (is_object($headLink)) {
-            $headLink = array($headLink);
-        }
-        
-        $inlineScript = $viewHelperManager->get('inlineScript')->getContainer()->getValue();
-        if (is_object($inlineScript)) {
-            $inlineScript = array($inlineScript);
-        }
-        
-        $result = array();
-        if (!empty($headScript)) {
-            $result['headScript'] = $headScript;
-        }
-        if (!empty($headLink)) {
-            $result['headLink'] = $headLink;
-        }
-        if (!empty($inlineScript)) {
-            $result['inlineScript'] = $inlineScript;
-        }
-        
-        return $result;
     }
 }

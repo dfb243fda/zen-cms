@@ -31,6 +31,14 @@ return array(
             ),
         ),
     ),
+    
+    'service_manager' => array(
+        'invokables' => array(
+            'Bootstrapper\Service\Constants' => 'Bootstrapper\Service\Constants',
+            'Bootstrapper\Service\Logger' => 'Bootstrapper\Service\Logger',
+        ),
+    ),
+    
     'dynamic_config' => array(
         'tabs' => array(
             'general' => array(

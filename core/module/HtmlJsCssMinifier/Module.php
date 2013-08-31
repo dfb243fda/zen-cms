@@ -53,6 +53,11 @@ class Module
         $locator = $app->getServiceManager();
         $eventManager = $app->getEventManager();
         
+        $appConfig = $locator->get('ApplicationConfig');
+        
+        /* Munee options */
+        define('MUNEE_CACHE', $appConfig['module_listener_options']['cache_dir'] . '/munee');
+        
         $htmlJsCssOptimizerService = $locator->get('HtmlJsCssMinifier\Service\HtmlJsCssMinifier');
         $configManager = $locator->get('configManager');
                 
