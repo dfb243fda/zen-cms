@@ -1,10 +1,10 @@
 <?php
 
-namespace AdminPanel\Service\OutputRenderer;
+namespace DirectAccessToMethods\Service\OutputRenderer;
 
-use AdminPanel\Service\OutputRendererAbstract;
+use DirectAccessToMethods\Service\OutputRendererAbstract;
 
-class VarDump extends OutputRendererAbstract
+class PrintR extends OutputRendererAbstract
 {    
     public function render(array $resultArray)
     {
@@ -26,6 +26,6 @@ class VarDump extends OutputRendererAbstract
 
         $this->removeObjectsFromArray($resultArray);
         
-        return '<pre>' . var_export($resultArray, true) . '</pre>';
+        return '<pre>' . print_r($resultArray, true) . '</pre>';
     }
 }

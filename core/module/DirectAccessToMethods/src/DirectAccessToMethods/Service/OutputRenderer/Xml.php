@@ -1,18 +1,18 @@
 <?php
 
-namespace AdminPanel\Service\OutputRenderer;
+namespace DirectAccessToMethods\Service\OutputRenderer;
 
-use AdminPanel\Service\OutputRendererAbstract;
+use DirectAccessToMethods\Service\OutputRendererAbstract;
 
-class VarDump extends OutputRendererAbstract
-{    
+class Xml extends OutputRendererAbstract
+{   
     public function render(array $resultArray)
     {
         $response = $this->serviceManager->get('response');
         $eventManager = $this->serviceManager->get('application')->getEventManager();
-        
-        $response->getHeaders()->addHeaders(array('Content-Type' => 'text/html; charset=utf-8'));
-                
+                        
+        $response->getHeaders()->addHeaders(array('Content-Type' => 'text/xml; charset=utf-8'));
+
         if (!empty($resultArray['errors'])) {
             foreach ($resultArray['errors'] as $k => $v) {
                 unset($resultArray['errors'][$k]['debug_backtrace']);
@@ -26,6 +26,13 @@ class VarDump extends OutputRendererAbstract
 
         $this->removeObjectsFromArray($resultArray);
         
-        return '<pre>' . var_export($resultArray, true) . '</pre>';
+        try {
+            $xml = \Array2XML::createXML('result', $resultArray);
+        } catch (\Exception $e) {
+            $tmp = array('xmlError' => $e->getMessage());
+            $xml = \Array2XML::createXML('result', $tmp);
+        }                
+
+        return $xml->saveXML();
     }
 }

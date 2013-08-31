@@ -24,6 +24,11 @@ return array(
             ),
         ),
     ),
+    'service_manager' => array(
+        'invokables' => array(
+            'Elfinder\Service\Connector' => 'Elfinder\Service\Connector',
+        ),
+    ),
     'translator' => array(
         'translation_file_patterns' => array(
             array(

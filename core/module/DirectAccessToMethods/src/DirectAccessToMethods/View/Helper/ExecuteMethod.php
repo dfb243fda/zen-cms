@@ -1,11 +1,13 @@
 <?php
 
-namespace DirectAccessToMethods\View\Helper\ExecuteMethod;
+namespace DirectAccessToMethods\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
 
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use App\Method\MethodInterface;
+use DirectAccessToMethods\Exception\DirectAccessException;
 
 class ExecuteMethod extends AbstractHelper implements ServiceLocatorAwareInterface
 {
@@ -35,7 +37,11 @@ class ExecuteMethod extends AbstractHelper implements ServiceLocatorAwareInterfa
     {    
         $methodManager = $this->serviceLocator->getServiceLocator()->get('methodManager');
         
-        $instance = $methodManager->get($method);       
+        $instance = $methodManager->get($method);   
+        
+        if (!$instance instanceof MethodInterface) {
+            throw new DirectAccessException('The method ' . get_class($instance) . ' does not implements App\Method\MethodInterface');
+        }
                 
         $instance->init();
         

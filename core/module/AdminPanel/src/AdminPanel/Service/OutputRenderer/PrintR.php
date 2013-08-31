@@ -9,7 +9,6 @@ class PrintR extends OutputRendererAbstract
     public function render(array $resultArray)
     {
         $response = $this->serviceManager->get('response');
-        $config = $this->serviceManager->get('config');
         $eventManager = $this->serviceManager->get('application')->getEventManager();
         
         $response->getHeaders()->addHeaders(array('Content-Type' => 'text/html; charset=utf-8'));

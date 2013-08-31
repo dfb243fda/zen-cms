@@ -1,8 +1,8 @@
 <?php
 
-namespace AdminPanel\Service\OutputRenderer;
+namespace DirectAccessToMethods\Service\OutputRenderer;
 
-use AdminPanel\Service\OutputRendererAbstract;
+use DirectAccessToMethods\Service\OutputRendererAbstract;
 
 class VarDump extends OutputRendererAbstract
 {    

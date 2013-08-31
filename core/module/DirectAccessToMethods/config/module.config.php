@@ -15,10 +15,26 @@ return array(
             ),
         ),
     ),
+    'service_manager' => array(
+        'invokables' => array(
+            'DirectAccessToMethods\Service\DirectAccess' => 'DirectAccessToMethods\Service\DirectAccess',
+            'DirectAccessToMethods\Service\SystemInfo' => 'DirectAccessToMethods\Service\SystemInfo',
+            'DirectAccessToMethods\Service\Errors' => 'DirectAccessToMethods\Service\Errors',
+            'DirectAccessToMethods\Service\OutputRenderer' => 'DirectAccessToMethods\Service\OutputRenderer',
+            
+            'DirectAccessToMethods\Service\OutputRenderer\Json' => 'DirectAccessToMethods\Service\OutputRenderer\Json',
+            'DirectAccessToMethods\Service\OutputRenderer\Xml' => 'DirectAccessToMethods\Service\OutputRenderer\Xml',
+            'DirectAccessToMethods\Service\OutputRenderer\VarDump' => 'DirectAccessToMethods\Service\OutputRenderer\VarDump',
+            'DirectAccessToMethods\Service\OutputRenderer\PrintR' => 'DirectAccessToMethods\Service\OutputRenderer\PrintR',
+        ),
+    ),
     'view_helpers' => array(
-        'factories' => array(
-            'executeMethod' => 'DirectAccessToMethods\View\Helper\ExecuteMethod\ExecuteMethodFactory',
+        'invokables' => array(
+            'DirectAccessToMethods\View\Helper\ExecuteMethod' => 'DirectAccessToMethods\View\Helper\ExecuteMethod',
         ),        
+        'aliases' => array(
+            'executeMethod' => 'DirectAccessToMethods\View\Helper\ExecuteMethod',
+        ),
     ),
     'router' => array(
         'routes' => array(
