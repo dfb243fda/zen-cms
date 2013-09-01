@@ -12,7 +12,8 @@ class DirectController extends AbstractActionController
         $directAccessService = $this->serviceLocator->get('DirectAccessToMethods\Service\DirectAccess');
         $systemInfoService = $this->serviceLocator->get('DirectAccessToMethods\Service\SystemInfo');
         $errorsService = $this->serviceLocator->get('DirectAccessToMethods\Service\Errors');
-        $outputService = $this->serviceLocator->get('DirectAccessToMethods\Service\OutputRenderer'); 
+        $rendererStrategy = $this->serviceLocator->get('App\View\RendererStrategy');       
+        $rendererStrategyOptions = $this->serviceLocator->get('DirectAccessToMethods\View\RendererStrategyOptions');    
         
         $module = (string)$this->params()->fromRoute('module');
         $method = (string)$this->params()->fromRoute('method');
@@ -38,11 +39,14 @@ class DirectController extends AbstractActionController
         $resultArray['systemInfo'] = $systemInfoService->getSystemInfo();
         
         $errors = $errorsService->getErrors();
-        $resultArray['errors'] = empty($errors) ? null : $errors;
+        if (!empty($errors)) {
+            $resultArray['errors'] = $errors;
+        }
         
-        $output = $outputService->getOutput($resultArray);
+        $rendererStrategy->setFormat($rendererStrategyOptions->getFormat());
         
-        $this->response->setContent($result); 
-        return $this->response;   
+        $rendererStrategy->registerStrategy();        
+                        
+        return $rendererStrategy->getResult($resultArray);
     }
 }

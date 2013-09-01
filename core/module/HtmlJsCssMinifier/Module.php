@@ -2,6 +2,8 @@
 
 namespace HtmlJsCssMinifier;
 
+use Zend\Mvc\MvcEvent;
+
 /**
  * Module class required for module to be initialized in ZF2 application
  */
@@ -61,16 +63,19 @@ class Module
         $htmlJsCssOptimizerService = $locator->get('HtmlJsCssMinifier\Service\HtmlJsCssMinifier');
         $configManager = $locator->get('configManager');
                 
-        $eventManager->attach('prepare_public_resources', function($e) use ($htmlJsCssOptimizerService, $configManager) {  
+        $eventManager->attach('prepare_public_resources', function($e) use ($htmlJsCssOptimizerService, $configManager) {              
             $htmlJsCssOptimizerService->prepareHeadLink($configManager->get('HtmlJsCssMinifier', 'minifyCss'));
             $htmlJsCssOptimizerService->prepareHeadScript($configManager->get('HtmlJsCssMinifier', 'minifyJs'));
             $htmlJsCssOptimizerService->prepareInlineScript($configManager->get('HtmlJsCssMinifier', 'minifyJs'));
         });
         
-        $eventManager->attach('prepare_output.post', function($e) use ($htmlJsCssOptimizerService, $configManager, $locator) {               
-            $params = $e->getParams();   
+        $eventManager->attach(MvcEvent::EVENT_FINISH, function($e) use ($htmlJsCssOptimizerService, $configManager, $locator) { 
+            $rendererStrategy = $locator->get('App\View\RendererStrategy');       
             
-            if ('html' == $params['format']) {      
+            if ('html' == $rendererStrategy->getFormat()) {
+                $response = $e->getResponse();
+                $html = $response->getBody(); // Maybe better getContent() ?
+                
                 if ($configManager->get('HtmlJsCssMinifier', 'minifyHtml')) {
                     $options = array(
                         'minifyCss' => true,
@@ -78,9 +83,11 @@ class Module
                         'jsCleanComments' => true,
                     );
 
-                    $params['result'] = $htmlJsCssOptimizerService->minifyHtml($params['result'], $options);  
-                }                              
+                    $html = $htmlJsCssOptimizerService->minifyHtml($html, $options);  
+                    $response->setContent($html);
+                }      
             }
+                                    
             
   /*          if (!@ini_get('zlib.output_compression') && (@strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false) ) {
                 $filter = new \Zend\Filter\Compress('Gz');

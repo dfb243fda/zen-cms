@@ -6,7 +6,7 @@ use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
-use Zend\Mvc\MvcEvent;
+use Zend\EventManager\EventInterface;
 
 class OnBootstrap implements
     ListenerAggregateInterface,
@@ -51,7 +51,7 @@ class OnBootstrap implements
         $this->serviceManager = $serviceManager;
     }
     
-    public function onModuleInstalled(MvcEvent $e)
+    public function onModuleInstalled(EventInterface $e)
     {
         $params = $e->getParams();
             
@@ -81,7 +81,7 @@ class OnBootstrap implements
         }
     }
     
-    public function onModuleUninstalled(MvcEvent $e)
+    public function onModuleUninstalled(EventInterface $e)
     {
         $params = $e->getParams();
    

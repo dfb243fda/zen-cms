@@ -20,12 +20,7 @@ return array(
             'DirectAccessToMethods\Service\DirectAccess' => 'DirectAccessToMethods\Service\DirectAccess',
             'DirectAccessToMethods\Service\SystemInfo' => 'DirectAccessToMethods\Service\SystemInfo',
             'DirectAccessToMethods\Service\Errors' => 'DirectAccessToMethods\Service\Errors',
-            'DirectAccessToMethods\Service\OutputRenderer' => 'DirectAccessToMethods\Service\OutputRenderer',
-            
-            'DirectAccessToMethods\Service\OutputRenderer\Json' => 'DirectAccessToMethods\Service\OutputRenderer\Json',
-            'DirectAccessToMethods\Service\OutputRenderer\Xml' => 'DirectAccessToMethods\Service\OutputRenderer\Xml',
-            'DirectAccessToMethods\Service\OutputRenderer\VarDump' => 'DirectAccessToMethods\Service\OutputRenderer\VarDump',
-            'DirectAccessToMethods\Service\OutputRenderer\PrintR' => 'DirectAccessToMethods\Service\OutputRenderer\PrintR',
+            'DirectAccessToMethods\View\RendererStrategyOptions' => 'DirectAccessToMethods\View\RendererStrategyOptions',
         ),
     ),
     'view_helpers' => array(

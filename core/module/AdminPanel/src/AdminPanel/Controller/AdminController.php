@@ -16,7 +16,10 @@ class AdminController extends AbstractActionController
         $userDataService = $this->serviceLocator->get('AdminPanel\Service\UserData');
         $systemInfoService = $this->serviceLocator->get('AdminPanel\Service\SystemInfo');
         $errorsService = $this->serviceLocator->get('AdminPanel\Service\Errors');
-        $outputService = $this->serviceLocator->get('AdminPanel\Service\OutputRenderer');        
+        $rendererStrategy = $this->serviceLocator->get('App\View\RendererStrategy');        
+        $rendererStrategyOptions = $this->serviceLocator->get('AdminPanel\View\RendererStrategyOptions');    
+        $application = $this->serviceLocator->get('application');
+        $eventManager = $application->getEventManager();
         
         $configManager = $this->serviceLocator->get('configManager');
         $config = $this->serviceLocator->get('config');
@@ -62,33 +65,27 @@ class AdminController extends AbstractActionController
         $resultArray['systemInfo'] = $systemInfoService->getSystemInfo();
         
         $errors = $errorsService->getErrors();
-        $resultArray['errors'] = empty($errors) ? null : $errors;
-        
+        if (!empty($errors)) {
+            $resultArray['errors'] = $errors;
+        }
+                
         
         if (isset($resultArray['page']['content']) && ($resultArray['page']['content'] instanceof Response)) {
             return $resultArray['page']['content'];
         }
         if ($this->response->isRedirect()) {
             return $this->response;
-        }    
+        }   
         
-        $application = $this->serviceLocator->get('application');
-        $eventManager = $application->getEventManager();
+        $rendererStrategy->setFormat($rendererStrategyOptions->getFormat())
+                         ->setRendererStrategies($rendererStrategyOptions->getRendererStrategies())
+                         ->setResultComposers($rendererStrategyOptions->getResultComposers());
+        
+        $rendererStrategy->registerStrategy();        
         
         $eventManager->trigger('prepare_output', $this, array($resultArray));
-        
-        $output = $outputService->getOutput($resultArray);
-        
-        $args = $eventManager->prepareArgs(array(
-            'resultArray' => $resultArray,
-            'output' => $output,
-            'format' => $outputService->getFormat(),
-        ));
-        
-        $eventManager->trigger('prepare_output.post', $this, $args);
-        
-        $this->response->setContent($args['output']); 
-        return $this->response;        
+                        
+        return $rendererStrategy->getResult($resultArray);
     }
     
 }

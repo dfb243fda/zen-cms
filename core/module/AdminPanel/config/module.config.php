@@ -57,14 +57,10 @@ return array(
             'AdminPanel\Service\UserData' => 'AdminPanel\Service\UserData',
             'AdminPanel\Service\SystemInfo' => 'AdminPanel\Service\SystemInfo',
             'AdminPanel\Service\Errors' => 'AdminPanel\Service\Errors',
-            'AdminPanel\Service\OutputRenderer' => 'AdminPanel\Service\OutputRenderer',
+            'AdminPanel\View\RendererStrategyOptions' => 'AdminPanel\View\RendererStrategyOptions',
             
-            'AdminPanel\Service\OutputRenderer\Json' => 'AdminPanel\Service\OutputRenderer\Json',
-            'AdminPanel\Service\OutputRenderer\Html' => 'AdminPanel\Service\OutputRenderer\Html',
-            'AdminPanel\Service\OutputRenderer\Xml' => 'AdminPanel\Service\OutputRenderer\Xml',
-            'AdminPanel\Service\OutputRenderer\VarDump' => 'AdminPanel\Service\OutputRenderer\VarDump',
-            'AdminPanel\Service\OutputRenderer\PrintR' => 'AdminPanel\Service\OutputRenderer\PrintR',
-            'AdminPanel\Service\OutputRenderer\JsonHtml' => 'AdminPanel\Service\OutputRenderer\JsonHtml',
+            'AdminPanel\View\ResultComposer\HtmlComposer' => 'AdminPanel\View\ResultComposer\HtmlComposer',
+            'AdminPanel\View\ResultComposer\JsonHtmlComposer' => 'AdminPanel\View\ResultComposer\JsonHtmlComposer',
         ),
     ),
     'controllers' => array(
