@@ -36,6 +36,9 @@ return array(
     ),
     'service_manager' => array(
         'invokables' => array(
+            'HtmlJsCssMinifier\Service\Installer' => 'HtmlJsCssMinifier\Service\Installer',
+            'HtmlJsCssMinifier\Listener\OnBootstrap' => 'HtmlJsCssMinifier\Listener\OnBootstrap',
+            
             'HtmlJsCssMinifier\Service\HeaderSetter' => 'HtmlJsCssMinifier\Service\HeaderSetter',
             'HtmlJsCssMinifier\Service\HtmlJsCssMinifier' => 'HtmlJsCssMinifier\Service\HtmlJsCssMinifier',
         ),
@@ -50,11 +53,11 @@ return array(
         'form' => array(
             'html_js_css' => array(
                 'fieldsets' => array(
-                    'HtmlJsCssMinifier' => array(
+                    array(
                         'spec' => array(
                             'name' => 'HtmlJsCssMinifier',
                             'elements' => array(
-                                'minifyHtml' => array(
+                                array(
                                     'spec' => array(
                                         'name' => 'minifyHtml',
                                         'type' => 'checkbox',
@@ -64,7 +67,7 @@ return array(
                                         ),
                                     ),
                                 ),
-                                'minifyJs' => array(
+                                array(
                                     'spec' => array(
                                         'name' => 'minifyJs',
                                         'type' => 'checkbox',
@@ -74,7 +77,7 @@ return array(
                                         ),
                                     ),
                                 ),
-                                'minifyCss' => array(
+                                array(
                                     'spec' => array(
                                         'name' => 'minifyCss',
                                         'type' => 'checkbox',

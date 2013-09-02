@@ -12,6 +12,7 @@ class HtmlComposer extends ComposerAbstract
         $config = $this->serviceManager->get('config');
         $themePageTemplate = $config[CURRENT_THEME]['defaultTemplate'];
         $viewRenderer = $this->serviceManager->get('ViewRenderer');
+        $eventManager = $this->serviceManager->get('application')->getEventManager();
         
         if (isset($resultArray['page']['contentTemplate'])) {                    
             $contentViewModel = new ViewModel();
@@ -23,14 +24,12 @@ class HtmlComposer extends ComposerAbstract
             unset($resultArray['page']['contentTemplate']);
         }
         
-        $eventManager = $this->serviceManager->get('application')->getEventManager();
-           
-        
         $view = new ViewModel($resultArray);
         $view->setTemplate($themePageTemplate);
         
-        // я не возвращаю view здесь, потому что мне нужно отследить момент,
-        // когда она отрисовывается, поэтому я отрисовыаю её прямо здесь
+        // я не возвращаю view, потому что мне нужно отследить момент,
+        // когда она отрисовывается, и вызвать событие prepare_public_resources
+        // поэтому я отрисовыаю весь контент прямо здесь и возвращаю его
 //        return $view;      
         
         
@@ -39,12 +38,10 @@ class HtmlComposer extends ComposerAbstract
         $wrapperViewModel = $layout();
 
         $wrapperViewModel->content = $viewRenderer->render($view);
-
+        
         $eventManager->trigger('prepare_public_resources', $this, array($resultArray));
 
-//        return $viewRenderer->render($wrapperViewModel); 
-       
-        return $view;
+        return $viewRenderer->render($wrapperViewModel); 
         
     }
 }

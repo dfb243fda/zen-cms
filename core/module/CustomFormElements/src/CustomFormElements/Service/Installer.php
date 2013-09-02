@@ -5,7 +5,7 @@ namespace CustomFormElements\Service;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
 
-class FormsList implements ServiceManagerAwareInterface
+class Installer implements ServiceManagerAwareInterface
 {
     /**
      * @var ServiceManager

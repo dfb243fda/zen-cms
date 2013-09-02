@@ -54,7 +54,7 @@ class PageData implements ServiceManagerAwareInterface
     }
     
     public function getModule()
-    {
+    {        
         return $this->module;
     }
     

@@ -17,7 +17,11 @@ return array(
             'App\I18n\Translator\Translator' => 'App\I18n\Translator\TranslatorServiceFactory',  
             'App\FileManager\FileManager' => 'App\FileManager\FileManagerFactory',
             'App\Method\MethodManager' => 'App\Method\MethodManagerFactory',    
-            'Zend\Log\Logger' => 'Zend\Log\LoggerServiceFactory',            
+            'Zend\Log\Logger' => 'Zend\Log\LoggerServiceFactory',    
+            
+            'App\View\Strategy\XmlStrategy' => 'App\Mvc\Service\ViewXmlStrategyFactory',            
+            'App\View\Strategy\VarExportStrategy' => 'App\Mvc\Service\ViewVarExportStrategyFactory',    
+            'App\View\Strategy\PrintRStrategy' => 'App\Mvc\Service\ViewPrintRStrategyFactory',    
         ),
         'invokables' => array(
             'App\ObjectType\ObjectType' => 'App\ObjectType\ObjectType',
@@ -29,6 +33,17 @@ return array(
             'App\FieldTypesCollection\FieldTypesCollection' => 'App\FieldTypesCollection\FieldTypesCollection',   
             'App\SqlParser\SqlParser' => 'App\SqlParser\SqlParser',
             'App\Log\Writer\ArrayWriter' => 'App\Log\Writer\ArrayWriter',
+            'App\View\ResultComposer\JsonComposer' => 'App\View\ResultComposer\JsonComposer',
+            'App\View\ResultComposer\XmlComposer' => 'App\View\ResultComposer\XmlComposer',
+            'App\View\ResultComposer\VarExportComposer' => 'App\View\ResultComposer\VarExportComposer',
+            'App\View\ResultComposer\PrintRComposer' => 'App\View\ResultComposer\PrintRComposer',
+            
+            'App\View\Renderer\XmlRenderer' => 'App\View\Renderer\XmlRenderer',
+            'App\View\Renderer\VarExportRenderer' => 'App\View\Renderer\VarExportRenderer',
+            'App\View\Renderer\PrintRRenderer' => 'App\View\Renderer\PrintRRenderer',
+            
+            'App\View\RendererStrategy' => 'App\View\RendererStrategy',
+            
         ),
         'aliases' => array(
             'Translator' => 'App\I18n\Translator\Translator',

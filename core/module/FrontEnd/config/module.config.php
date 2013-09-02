@@ -9,6 +9,17 @@ return array(
         'priority' => -8,
         'isRequired' => true,
     ),
+    'service_manager' => array(
+        'invokables' => array(
+            'FrontEnd\Service\UserData' => 'FrontEnd\Service\UserData',
+            'FrontEnd\Service\SystemInfo' => 'FrontEnd\Service\SystemInfo',
+            'FrontEnd\Service\Errors' => 'FrontEnd\Service\Errors',
+            'FrontEnd\View\RendererStrategyOptions' => 'FrontEnd\View\RendererStrategyOptions',
+            
+            'FrontEnd\View\ResultComposer\HtmlComposer' => 'FrontEnd\View\ResultComposer\HtmlComposer',
+            'FrontEnd\View\ResultComposer\JsonHtmlComposer' => 'FrontEnd\View\ResultComposer\JsonHtmlComposer',
+        ),        
+    ),
     'translator' => array(
         'translation_file_patterns' => array(
             array(

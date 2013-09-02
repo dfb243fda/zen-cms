@@ -8,7 +8,6 @@ $this->headTitle($this->translate('Installer:System installation'));
 $this->headTitle($this->translate('Installer:Step 2'));
 
 $this->headMeta()->appendHttpEquiv('Content-Type', 'text/html; charset=UTF-8');
-$sm = $this->getHelperPluginManager()->getServiceLocator();
 ?>
 <div class="container">
     <div class="header clearfix">	
@@ -31,17 +30,9 @@ $sm = $this->getHelperPluginManager()->getServiceLocator();
         <div class="content__sub-title"><?php echo $this->translate('Installer DB settings subtitle') ?></div>
         <div class="content__body form-wrap">
             <?php
-            $factory = new Zend\Form\Factory($sm->get('FormElementManager'));
-            $formConfig = $this->formConfig;
-
-            $form = $factory->createForm($formConfig);    
+            $form = $this->form;    
             $form->setAttribute('class', 'form-3c');
-            $form->setData($this->formValues);
             $form->prepare();
-
-            if (!empty($this->formMsg)) {
-                $form->setMessages($this->formMsg);
-            }
             
             echo $this->form()->openTag($form);
             

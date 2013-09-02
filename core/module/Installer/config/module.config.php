@@ -42,6 +42,16 @@ return array(
     ),  
     'service_manager' => array(
         'invokables' => array(
+            'Installer\Service\Bootstrapper' => 'Installer\Service\Bootstrapper',
+            'Installer\Service\InstallerResources' => 'Installer\Service\InstallerResources',
+            'Installer\Form\LanguageForm' => 'Installer\Form\LanguageForm',
+            'Installer\Form\DbSettingsForm' => 'Installer\Form\DbSettingsForm',
+            'Installer\Service\CheckServer' => 'Installer\Service\CheckServer',
+            'Installer\Service\CmsInstaller' => 'Installer\Service\CmsInstaller',
+            'Installer\Service\DemoSites' => 'Installer\Service\DemoSites',
+            'Installer\Form\AccessForm' => 'Installer\Form\AccessForm',
+            'Installer\Service\ConfigFileCreator' => 'Installer\Service\ConfigFileCreator',
+            
             'Installer\Model\Installer' => 'Installer\Model\Installer',
             'Installer\Demo\Demo1' => 'Installer\Demo\Demo1',
         ),

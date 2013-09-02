@@ -6,7 +6,7 @@ use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
 use App\FieldsGroup\FieldsGroup;
 
-class FormsList implements ServiceManagerAwareInterface
+class Installer implements ServiceManagerAwareInterface
 {
     /**
      * @var ServiceManager

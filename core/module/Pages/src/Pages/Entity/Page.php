@@ -240,7 +240,7 @@ class Page implements ServiceManagerAwareInterface
         if (empty($sqlRes)) {
             $result['statusCode'] = Response::STATUS_CODE_404;
             
-            $sqlRes = $this->db->query('
+            $sqlRes = $db->query('
                 select t1.*, t2.name as title
                 from ' . DB_PREF . $this->pagesTable . ' t1, ' . DB_PREF . $this->objectsTable . ' t2
                 where t1.is_404 = 1 and t1.domain_id = ? and t1.object_id = t2.id and t1.is_deleted = 0 and t1.is_active = 1

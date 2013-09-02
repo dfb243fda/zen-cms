@@ -1,6 +1,6 @@
 <?php
 
-namespace AdminPanel\View\ResultComposer;
+namespace FrontEnd\View\ResultComposer;
 
 use App\View\ResultComposer\ComposerAbstract;
 use Zend\View\Model\ViewModel;
@@ -11,6 +11,8 @@ class JsonHtmlComposer extends ComposerAbstract
     public function getResult(array $resultArray)
     {
         $viewRenderer = $this->serviceManager->get('ViewRenderer');
+        $page = $this->target->getPageEntity();
+        $eventManager = $this->serviceManager->get('application')->getEventManager();
         
         if (!empty($resultArray['errors'])) {
             foreach ($resultArray['errors'] as $k => $v) {
@@ -19,17 +21,24 @@ class JsonHtmlComposer extends ComposerAbstract
             }
         }
         
-        if (isset($resultArray['page']['contentTemplate'])) {                    
-            $contentViewModel = new ViewModel();
-            $contentViewModel->setTemplate($resultArray['page']['contentTemplate']['name']);                    
-            if (isset($resultArray['page']['contentTemplate']['data'])) {
-                $contentViewModel->setVariables($resultArray['page']['contentTemplate']['data']);
-            }                    
-            $resultArray['page']['content'] = $viewRenderer->render($contentViewModel);
-            unset($resultArray['page']['contentTemplate']);
+        if (!empty($resultArray['page']['content'])) {
+            foreach ($resultArray['page']['content'] as $marker=>$content) {
+                $str = '';
+                foreach ($content as $v) {
+                    $tmpTemplateData = $page->getTemplate($v['template']);
+
+                    $tmpView = new ViewModel();
+                    $tmpView->setTemplate($tmpTemplateData['type'] . '/' . $tmpTemplateData['module'] . '/' . $tmpTemplateData['method'] . '/' . $tmpTemplateData['name']);
+
+                    $tmpView->setVariables($v);
+
+                    $str .= $viewRenderer->render($tmpView);                            
+                }
+
+                $resultArray['page']['content'][$marker] = $str;
+            }
         }
         
-        $eventManager = $this->serviceManager->get('application')->getEventManager();
         $eventManager->trigger('prepare_public_resources', $this, array($resultArray));
         
         $resultArray = array_merge($resultArray, $this->getViewResources($this->serviceManager->get('viewHelperManager')));

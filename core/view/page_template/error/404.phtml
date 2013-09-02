@@ -1,6 +1,6 @@
 <?php
     $this->headLink()->appendStylesheet($this->basePath('/css/core/404.css'));
-    $this->headLink(array('rel' => 'icon', 'href' => ROOT_URL_SEGMENT . '/img/core/favicon.ico'));   
+    $this->headLink(array('rel' => 'icon', 'href' => $this->basePath('/img/core/favicon.ico')));   
     
     $this->headTitle()->setSeparator(' - ');
     $this->headTitle('Zen-CMS');
