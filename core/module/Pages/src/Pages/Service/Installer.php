@@ -34,5 +34,16 @@ class Installer implements ServiceManagerAwareInterface
         $configManager = $this->serviceManager->get('configManager');
         
         $configManager->set('pages', 'replace_spaces_with', '_');
+        
+        $db = $this->serviceManager->get('db');
+        $request = $this->serviceManager->get('request');
+        $uri = $request->getUri();     
+        $host = $uri->getHost() . $request->getBasePath();
+        $db->query('
+            insert into ' . DB_PREF . 'domains
+                (host, is_default, default_lang_id)
+            values
+                (?, ?, ?)
+        ', array($host, 1, 1));
     }
 }

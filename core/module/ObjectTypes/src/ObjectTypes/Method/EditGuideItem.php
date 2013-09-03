@@ -32,9 +32,8 @@ class EditGuideItem extends AbstractMethod
             $tmp = $guidesModel->editGuideItem($this->params()->fromPost());
             if ($tmp['success']) {
                 if (!$request->isXmlHttpRequest()) {
-                    $this->flashMessenger()->addSuccessMessage('Термин успешно обновлен');
-                    
-                    $this->redirect()->refresh();
+                    $this->flashMessenger()->addSuccessMessage('Термин успешно обновлен');                    
+                    return $this->redirect()->refresh();
                 }
 
                 return array(

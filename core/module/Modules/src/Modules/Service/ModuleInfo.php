@@ -1,9 +1,17 @@
 <?php
 
-namespace Modules\Model;
+namespace Modules\Service;
 
-class Modules
+use Zend\ServiceManager\ServiceManager;
+use Zend\ServiceManager\ServiceManagerAwareInterface;
+
+class ModuleInfo implements ServiceManagerAwareInterface
 {
+    /**
+     * @var ServiceManager
+     */
+    protected $serviceManager;
+    
     const STATUS_OK = 'ok';
     const STATUS_REMOVED = 'removed';
     const STATUS_MODIFIED = 'modified';
@@ -14,64 +22,59 @@ class Modules
         self::STATUS_MODIFIED => 'Modules difference state modified',
     );
     
-    protected $serviceManager;
+    protected $module;
     
-    public function __construct($sm)
+    /**
+     * Set service manager
+     *
+     * @param ServiceManager $serviceManager
+     */
+    public function setServiceManager(ServiceManager $serviceManager)
     {
-        $this->serviceManager = $sm;
+        $this->serviceManager = $serviceManager;
     }
     
-    public function getDbDifference($module)
+    public function setModule($module)
+    {
+        $this->module = $module;
+        return $this;
+    }
+    
+    public function getModuleInfo()
+    {
+        $moduleManager = $this->serviceManager->get('moduleManager');
+        $translator = $this->serviceManager->get('translator');
+        
+        $moduleConfig = $moduleManager->getModuleConfig($this->module);
+        
+        $moduleConfig['title'] = $translator->translateI18n($moduleConfig['title']);
+        $moduleConfig['description'] = $translator->translateI18n($moduleConfig['description']);
+        
+        if (!empty($moduleConfig['methods'])) {
+            foreach ($moduleConfig['methods'] as $k=>$v) {
+                $moduleConfig['methods'][$k]['title'] = $translator->translateI18n($v['title']);
+                $moduleConfig['methods'][$k]['description'] = $translator->translateI18n($v['description']);
+            }
+        }
+        
+        return $moduleConfig;
+    }
+    
+    public function getDbDifference()
     {
         $moduleManager = $this->serviceManager->get('moduleManager');
         
-        $sql = $moduleManager->getTablesSql($module);
-        
-        $db = $this->serviceManager->get('db');
+        $sql = $moduleManager->getTablesSql($this->module);
         
         $sqlParser = $this->serviceManager->get('SqlParser');
         
         return $sqlParser->getUpdateSuggestions($sql);                    
     }
     
-    public function updateDbDifference($dbDifference, $post)
+    public function getFilesDifference()
     {
-        $db = $this->serviceManager->get('db');
+        $module = $this->module;
         
-        if (isset($post['query']) && is_array($post['query'])) {
-            foreach ($dbDifference as $k => $v) {
-                foreach ($v as $k2 => $v2) {
-                    if (in_array($k2, $post['query'])) {
-                        if (is_array($v2)) {
-                            $v2 = $v2['query'];
-                        }
-                        $db->query($v2, array());
-                    }                    
-                }
-            }
-        }        
-    }
-    
-    public function updateFilesDifference($filesDifference, $post)
-    {
-        $fileManager = $this->serviceManager->get('fileManager');
-        
-        if (isset($post['file']) && is_array($post['file'])) {
-            foreach ($filesDifference as $k => $v) {
-                foreach ($v['items'] as $item) {                    
-                    if (in_array($item['pathMd5'], $post['file'])) {                        
-                        if (!is_dir(dirname($item['targetFile']))) {
-                            $fileManager->mkdir(dirname($item['targetFile']), true);
-                        }          
-                        copy($item['sourceFile'], $item['targetFile']);
-                    }
-                }
-            }
-        }        
-    }
-    
-    public function getFilesDifference($module)
-    {
         $config = $this->serviceManager->get('ApplicationConfig');  
         
         $moduleManager = $this->serviceManager->get('moduleManager');
@@ -147,4 +150,44 @@ class Modules
           
         return $filesDifference;
     }
+    
+    public function updateDbDifference($post)
+    {
+        $dbDifference = $this->getDbDifference();
+        $db = $this->serviceManager->get('db');
+        
+        if (isset($post['query']) && is_array($post['query'])) {
+            foreach ($dbDifference as $k => $v) {
+                foreach ($v as $k2 => $v2) {
+                    if (in_array($k2, $post['query'])) {
+                        if (is_array($v2)) {
+                            $v2 = $v2['query'];
+                        }
+                        $db->query($v2, array());
+                    }                    
+                }
+            }
+        }        
+    }
+    
+    public function updateFilesDifference($post)
+    {
+        $filesDifference = $this->getFilesDifference();
+        $fileManager = $this->serviceManager->get('fileManager');
+        
+        if (isset($post['file']) && is_array($post['file'])) {
+            foreach ($filesDifference as $k => $v) {
+                foreach ($v['items'] as $item) {                    
+                    if (in_array($item['pathMd5'], $post['file'])) {                        
+                        if (!is_dir(dirname($item['targetFile']))) {
+                            $fileManager->mkdir(dirname($item['targetFile']), true);
+                        }          
+                        copy($item['sourceFile'], $item['targetFile']);
+                    }
+                }
+            }
+        }        
+    }
+    
+    
 }

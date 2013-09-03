@@ -54,6 +54,18 @@ class Module
         );
     }   
     
+    public function onInstall($sm)
+    {
+        $configManager = $sm->get('configManager');
+        
+        $configManager->set('system', 'date_format', 'd-m-Y');
+        $configManager->set('system', 'js_date_format', 'dd-mm-yy');
+        $configManager->set('system', 'time_format', 'H:i');
+        $configManager->set('system', 'js_time_format', 'HH:mm');
+                
+        $configManager->set('system', 'timezone', date_default_timezone_get());
+    }
+    
     protected function setLocale()
     {
         $configManager = $this->serviceManager->get('configManager');

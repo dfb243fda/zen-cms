@@ -59,6 +59,13 @@ return array(
             
         ),
     ),
+    'service_manager' => array(
+        'invokables' => array(
+            'Modules\Service\Permissions' => 'Modules\Service\Permissions',
+            'Modules\Service\ModulesList' => 'Modules\Service\ModulesList',
+            'Modules\Service\ModuleInfo' => 'Modules\Service\ModuleInfo',
+        ),
+    ),
     'translator' => array(
         'translation_file_patterns' => array(
             array(

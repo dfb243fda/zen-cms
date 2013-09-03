@@ -52,7 +52,7 @@ return array(
             'Installer\Form\AccessForm' => 'Installer\Form\AccessForm',
             'Installer\Service\ConfigFileCreator' => 'Installer\Service\ConfigFileCreator',
             
-            'Installer\Model\Installer' => 'Installer\Model\Installer',
+//            'Installer\Model\Installer' => 'Installer\Model\Installer',
             'Installer\Demo\Demo1' => 'Installer\Demo\Demo1',
         ),
     ),

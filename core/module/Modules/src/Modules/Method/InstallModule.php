@@ -5,41 +5,32 @@ namespace Modules\Method;
 use App\Method\AbstractMethod;
 
 class InstallModule extends AbstractMethod
-{
-    protected $moduleManager;
-    
-    protected $translator;
-    
-    public function init()
-    {
-        $this->rootServiceLocator = $this->getServiceLocator();
-        $this->moduleManager = $this->rootServiceLocator->get('ModuleManager');
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->request = $this->rootServiceLocator->get('request');
-    }
-        
+{        
     public function main()
     {
+        $moduleManager = $this->serviceLocator->get('moduleManager');
+        $translator = $this->serviceLocator->get('translator');
+        
         $result = array(
             'success' => false,
         );
         
-        if (null === $this->request->getPost('module')) {
-            $result['errMsg'] = $this->translator->translate('Wrong parameters transferred');
+        if (null === $this->params()->fromPost('module')) {
+            $result['errMsg'] = $translator->translate('Wrong parameters transferred');
         } else {
-            $module = (string)$this->request->getPost('module');
-            if ($this->moduleManager->isModuleExists($module)) {
-                if ($this->moduleManager->isModuleInstalled($module)) {
-                    $result['errMsg'] = sprintf($this->translator->translate('Module %s is already installed'), $module);
+            $module = (string)$this->params()->fromPost('module');
+            if ($moduleManager->isModuleExists($module)) {
+                if ($moduleManager->isModuleInstalled($module)) {
+                    $result['errMsg'] = sprintf($translator->translate('Module %s is already installed'), $module);
                 } else {
-                    if ($result['success'] = $this->moduleManager->installModule($module)) {
-                        $result['msg'] = sprintf($this->translator->translate('Module %s has been installed'), $module);
+                    if ($result['success'] = $moduleManager->installModule($module)) {
+                        $result['msg'] = sprintf($translator->translate('Module %s has been installed'), $module);
                     } else {
-                        $result['errMsg'] = sprintf($this->translator->translate('There are errors while module %s installed'), $module);
+                        $result['errMsg'] = sprintf($translator->translate('There are errors while module %s installed'), $module);
                     }
                 }
             } else {
-                $result['errMsg'] = sprintf($this->translator->translate('Module %s does not find'), $module);
+                $result['errMsg'] = sprintf($translator->translate('Module %s does not find'), $module);
             }
         }
         return $result;

@@ -143,7 +143,12 @@ return array(
             'ObjectProperty\Textarea'      => 'ObjectTypes\ObjectProperty\Textarea',
             'ObjectProperty\MultiCheckbox' => 'ObjectTypes\ObjectProperty\MultiCheckbox',
             'ObjectProperty\Url'           => 'ObjectTypes\ObjectProperty\Url',
-            'ObjectProperty\Number'        => 'ObjectTypes\ObjectProperty\Number',            
+            'ObjectProperty\Number'        => 'ObjectTypes\ObjectProperty\Number',        
+            
+            'ObjectTypes\Service\Installer' => 'ObjectTypes\Service\Installer',
+            'ObjectTypes\Service\ObjectTypesTree' => 'ObjectTypes\Service\ObjectTypesTree',
+            'ObjectTypes\Service\GuidesList' => 'ObjectTypes\Service\GuidesList',
+            'ObjectTypes\Service\GuideItemsList' => 'ObjectTypes\Service\GuideItemsList',
         ),
     ),
     'router' => array(

@@ -20,6 +20,8 @@ class Module
     
     public function onInstall($sm)
     {
+        require_once __DIR__ . '/src/' . __NAMESPACE__ . '/Service/Installer.php';
+        $sm->setInvokableClass('HtmlJsCssMinifier\Service\Installer', 'HtmlJsCssMinifier\Service\Installer');
         $moduleInstaller = $sm->get('HtmlJsCssMinifier\Service\Installer');
         $moduleInstaller->install();  
     }

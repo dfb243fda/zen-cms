@@ -1,0 +1,34 @@
+<?php
+
+$this->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/ObjectTypes/object_types.js');
+
+$data = array(    
+    'createBtn' => array(
+        'link' => $this->url('admin/method', array(
+            'module' => 'ObjectTypes',
+            'method' => 'AddGuideItem',
+            'id'     => $this->guideId,
+        )),
+        'text' => 'Добавить термин в справочник',
+    ),
+    'url' => $this->url('admin/GuideItemsList', array(
+        'task' => 'get_data',
+        'id'   => $this->guideId,
+    )),  
+    'columns' => array(
+        array(
+            array(                        
+                'title' => $this->translate('ObjectTypes:Guide item name field'),
+                'field' => 'name',
+                'width' => '200',
+            ),
+            array(                        
+                'title' => '',
+                'field' => 'icons',
+                'width' => '200',
+            )
+        )                    
+    ),
+);
+
+echo $this->partial('content_template/' . CURRENT_THEME . '/tree_grid.phtml', $data);

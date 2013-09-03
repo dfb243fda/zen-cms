@@ -9,6 +9,69 @@ use Zend\Stdlib\ResponseInterface as Response;
 
 class ModuleInfo extends AbstractMethod
 {
+    public function main()
+    {
+        $moduleInfoService = $this->serviceLocator->get('Modules\Service\ModuleInfo');
+        $moduleManager = $this->serviceLocator->get('moduleManager');
+    
+        $result = array();
+
+        if (null === $this->params()->fromRoute('id')) {
+            $result['errMsg'] = 'Не переданы все необходимые параметры';
+            return $result;
+        }
+
+        $moduleKey = (string)$this->params()->fromRoute('id');
+
+        if (!$moduleManager->isModuleActive($moduleKey)) {
+            $result['errMsg'] = 'Модуль ' . $moduleKey . ' не установлен, либо отключен';
+            return $result;
+        }
+        $moduleInfoService->setModule($moduleKey);
+        
+        if (null !== $this->params()->fromPost('task')) {
+            $task = (string)$this->params()->fromPost('task');
+            
+            switch ($task) {
+                case 'db_difference':
+                    $moduleInfoService->updateDbDifference($this->params()->fromPost());
+                    return $this->redirect()->refresh();
+                case 'files_difference':    
+                    $moduleInfoService->updateFilesDifference($this->params()->fromPost());
+                    return $this->redirect()->refresh();
+                case 'full_update':
+                    if ($moduleManager->updateModule($moduleKey)) {
+                        $this->flashMessenger()->addSuccessMessage('Модуль успешно обновлен');
+                    } else {
+                        $this->flashMessenger()->addErrorMessage('При обновлении модуля произошли ошибки');
+                    }
+                    return $this->redirect()->refresh();
+            }
+        }
+        
+        $result['contentTemplate'] = array(
+            'name' => 'content_template/Modules/module_info.phtml',
+            'data' => array(
+                'moduleConfig'    => $moduleInfoService->getModuleInfo(),
+                'filesDifference' => $moduleInfoService->getFilesDifference(),
+                'dbDifference'    => $moduleInfoService->getDbDifference(),
+            ),
+        );        
+        
+        if ($this->flashMessenger()->hasSuccessMessages()) {
+            $result['msg'] = $this->flashMessenger()->getSuccessMessages();
+        } 
+        if ($this->flashMessenger()->hasErrorMessages()) {
+            $result['errMsg'] = $this->flashMessenger()->getErrorMessages();
+        }
+        
+        return $result;        
+    }
+    
+}
+
+class ModuleInfo2 extends AbstractMethod
+{
     protected $moduleManager;
     
     protected $translator;

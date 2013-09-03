@@ -159,14 +159,7 @@ class CmsInstaller implements ServiceManagerAwareInterface
         
         $configManager->set('system', 'language', $installSession->step1['language']);
         
-        $configManager->set('system', 'site_name', $translator->translate('Dynamic config site name'));
-        
-        $configManager->set('system', 'date_format', 'd-m-Y');
-        $configManager->set('system', 'js_date_format', 'dd-mm-yy');
-        $configManager->set('system', 'time_format', 'H:i');
-        $configManager->set('system', 'js_time_format', 'HH:mm');
-                
-        $configManager->set('system', 'timezone', date_default_timezone_get());
+        $configManager->set('system', 'site_name', $translator->translate('Dynamic config site name'));       
         
         $configManager->set('system', 'admin_email', $email);
         
@@ -177,16 +170,6 @@ class CmsInstaller implements ServiceManagerAwareInterface
                 (prefix, title)
             values (?, ?), (?, ?)
         ', array('ru_RU', 'Русский', 'en_EN', 'English'));
-        
-        $request = $this->serviceManager->get('request');
-        $uri = $request->getUri();     
-        $host = $uri->getHost() . $request->getBasePath();
-        $db->query('
-            insert into ' . DB_PREF . 'domains
-                (host, is_default, default_lang_id)
-            values
-                (?, ?, ?)
-        ', array($host, 1, 1));
         
         $fileManager = $this->serviceManager->get('fileManager');
         
@@ -210,6 +193,18 @@ class CmsInstaller implements ServiceManagerAwareInterface
         $moduleManager->deactivateModule('Installer');
         
         return true;
+    }
+    
+    public function installDemoSite($site)
+    {
+        $demoSitesService = $this->serviceManager->get('Installer\Service\DemoSites');
+        $sites = $demoSitesService->getDemoSites();
+        
+        if ($site && isset($sites[$site])) {
+            $instance = $this->serviceManager->get($sites[$site]['service']);
+            
+            $instance->createDemoSite();
+        }
     }
     
     public function createUser($email, $password)

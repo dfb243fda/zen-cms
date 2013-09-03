@@ -1,0 +1,32 @@
+<?php
+
+$this->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/ObjectTypes/object_types.js');
+
+$data = array(
+    'createBtn' => array(
+        'link' => $this->url('admin/method', array(
+            'module' => 'ObjectTypes',
+            'method' => 'AddObjectType',
+        )),
+        'text' => 'Создать тип данных',
+    ),
+    'url' => $this->url('admin/ObjectTypesList', array(
+        'task' => 'get_data',
+    )),  
+    'columns' => array(
+        array(
+            array(                        
+                'title' => $this->translate('ObjectTypes:Object type name field'),
+                'field' => 'name',
+                'width' => '200',
+            ),
+            array(                        
+                'title' => '',
+                'field' => 'icons',
+                'width' => '200',
+            )
+        )                    
+    ),
+);
+
+echo $this->partial('content_template/' . CURRENT_THEME . '/tree_grid.phtml', $data);
