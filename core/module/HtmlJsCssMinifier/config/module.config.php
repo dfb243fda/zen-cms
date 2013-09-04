@@ -37,7 +37,10 @@ return array(
     'service_manager' => array(
         'invokables' => array(
             'HtmlJsCssMinifier\Service\Installer' => 'HtmlJsCssMinifier\Service\Installer',
-            'HtmlJsCssMinifier\Listener\OnBootstrap' => 'HtmlJsCssMinifier\Listener\OnBootstrap',
+            
+            'HtmlJsCssMinifier\Listener\PublicResourcesComposer' => 'HtmlJsCssMinifier\Listener\PublicResourcesComposer', 
+            'HtmlJsCssMinifier\Listener\HtmlMinifier' => 'HtmlJsCssMinifier\Listener\HtmlMinifier', 
+            
             
             'HtmlJsCssMinifier\Service\HeaderSetter' => 'HtmlJsCssMinifier\Service\HeaderSetter',
             'HtmlJsCssMinifier\Service\HtmlJsCssMinifier' => 'HtmlJsCssMinifier\Service\HtmlJsCssMinifier',

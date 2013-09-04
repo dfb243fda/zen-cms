@@ -11,9 +11,13 @@ class Module
         $app = $e->getTarget();
         $locator = $app->getServiceManager();
         
-        $onBootstrapListener = $locator->get('Pages\Listener\OnBootstrap');        
-        $eventManager = $locator->get('application')->getEventmanager();        
-        $eventManager->attach($onBootstrapListener);
+        $eventManager = $locator->get('application')->getEventmanager();    
+        
+        $modulePageTypesCollector = $locator->get('Pages\Listener\ModulePageTypesCollector');                    
+        $eventManager->attach($modulePageTypesCollector);
+        
+        $moduleContentTypesCollector = $locator->get('Pages\Listener\ModuleContentTypesCollector');                    
+        $eventManager->attach($moduleContentTypesCollector);
     }
     
     public function getAutoloaderConfig()

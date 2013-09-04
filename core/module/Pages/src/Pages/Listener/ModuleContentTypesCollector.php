@@ -8,7 +8,7 @@ use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\EventManager\EventInterface;
 
-class OnBootstrap implements
+class ModuleContentTypesCollector implements
     ListenerAggregateInterface,
     ServiceManagerAwareInterface
 {
@@ -63,13 +63,6 @@ class OnBootstrap implements
             $db = $this->serviceManager->get('db');
             foreach ($moduleConfig['methods'] as $k=>$v) {
                 if (isset($v['type'])) {
-                    if ('fe_page' == $v['type']) {
-                        $db->query('
-                            insert ignore into ' . DB_PREF . 'page_types 
-                                (title, module, method, service) 
-                            values (?, ?, ?, ?)', array($v['title'], $module, $k, $v['service']));
-                    }
-
                     if ('fe_content' == $v['type']) {
                         $db->query('
                             insert ignore into ' . DB_PREF . 'page_content_types 
@@ -88,10 +81,6 @@ class OnBootstrap implements
         $module = $params['module'];
 
         $db = $this->serviceManager->get('db');
-
-        $db->query('
-            delete from ' . DB_PREF . 'page_types 
-            where module = ?', array($module));
 
         $db->query('
             delete from ' . DB_PREF . 'page_content_types 

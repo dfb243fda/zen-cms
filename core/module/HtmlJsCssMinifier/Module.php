@@ -29,14 +29,17 @@ class Module
     public function onBootstrap($e)
     {
         $app = $e->getTarget();
-        $locator = $app->getServiceManager();
+        $locator = $app->getServiceManager();        
         
-        $onBootstrapListener = $locator->get('HtmlJsCssMinifier\Listener\OnBootstrap'); 
         $eventManager = $locator->get('application')->getEventmanager();        
         $appConfig = $locator->get('ApplicationConfig');
                 
         define('MUNEE_CACHE', $appConfig['module_listener_options']['cache_dir'] . '/munee');        
               
-        $eventManager->attach($onBootstrapListener);
+        $publicResourcesComposer = $locator->get('HtmlJsCssMinifier\Listener\PublicResourcesComposer'); 
+        $eventManager->attach($publicResourcesComposer);
+        
+        $htmlMinifier = $locator->get('HtmlJsCssMinifier\Listener\HtmlMinifier'); 
+        $eventManager->attach($htmlMinifier);
     }
 }

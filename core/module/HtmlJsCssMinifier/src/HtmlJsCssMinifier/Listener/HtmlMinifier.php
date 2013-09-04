@@ -9,7 +9,7 @@ use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\EventManager\EventInterface;
 use Zend\Mvc\MvcEvent;
 
-class OnBootstrap implements
+class HtmlMinifier implements
     ListenerAggregateInterface,
     ServiceManagerAwareInterface
 {
@@ -28,7 +28,6 @@ class OnBootstrap implements
      */
     public function attach(EventManagerInterface $events)
     {
-        $this->listeners[] = $events->attach('prepare_public_resources', array($this, 'preparePublicResources'));
         $this->listeners[] = $events->attach(MvcEvent::EVENT_FINISH, array($this, 'minifyHtml'));
     }
 
@@ -50,16 +49,6 @@ class OnBootstrap implements
     public function setServiceManager(ServiceManager $serviceManager)
     {
         $this->serviceManager = $serviceManager;
-    }
-    
-    public function preparePublicResources(EventInterface $e)
-    {
-        $htmlJsCssOptimizerService = $this->serviceManager->get('HtmlJsCssMinifier\Service\HtmlJsCssMinifier');
-        $configManager = $this->serviceManager->get('configManager');
-        
-        $htmlJsCssOptimizerService->prepareHeadLink($configManager->get('HtmlJsCssMinifier', 'minifyCss'));
-        $htmlJsCssOptimizerService->prepareHeadScript($configManager->get('HtmlJsCssMinifier', 'minifyJs'));
-        $htmlJsCssOptimizerService->prepareInlineScript($configManager->get('HtmlJsCssMinifier', 'minifyJs'));
     }
     
     public function minifyHtml(EventInterface $e)
