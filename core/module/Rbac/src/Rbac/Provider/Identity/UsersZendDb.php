@@ -8,11 +8,9 @@
 
 namespace Rbac\Provider\Identity;
 
-use Rbac\Exception\InvalidRoleException;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Where;
 use Zend\Db\Sql\Sql;
-use Zend\Permissions\Acl\Role\RoleInterface;
 use Users\Service\User;
 
 /**

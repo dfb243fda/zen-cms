@@ -93,7 +93,7 @@ return array(
         'unauthorized_strategy' => 'Rbac\View\UnauthorizedStrategy',
 
         // Template name for the unauthorized strategy
-        'template'              => 'error/403',
+        'template'              => 'page_template/Rbac/403.phtml',
     ),
     'translator' => array(
         'translation_file_patterns' => array(
@@ -106,29 +106,26 @@ return array(
     ),
 
     'service_manager' => array(
+        'invokables' => array(
+            'Rbac\Service\NewUserRolesSetter' => 'Rbac\Service\NewUserRolesSetter',
+            'Rbac\Service\ModulePermissionsCollector' => 'Rbac\Service\ModulePermissionsCollector',            
+        ),
         'factories' => array(
-            'Rbac\Config'                              => 'Rbac\Service\ConfigServiceFactory',
-            'Rbac\View\UnauthorizedStrategy'           => 'Rbac\Service\UnauthorizedStrategyServiceFactory',
-            'Rbac\Guards'                              => 'Rbac\Service\GuardsServiceFactory',
             'Rbac\Service\Authorize'                   => 'Rbac\Service\AuthorizeFactory',
+            'Rbac\View\UnauthorizedStrategy'           => 'Rbac\Service\UnauthorizedStrategyServiceFactory',
+            'Rbac\Guards'                              => 'Rbac\Service\GuardsServiceFactory',            
             'Rbac\RoleProviders'                       => 'Rbac\Service\RoleProvidersServiceFactory',
             'Rbac\ResourceProviders'                   => 'Rbac\Service\ResourceProvidersServiceFactory',
             'Rbac\RuleProviders'                       => 'Rbac\Service\RuleProvidersServiceFactory',
-            'Rbac\Provider\Identity\ProviderInterface' => 'Rbac\Service\IdentityProviderServiceFactory',
-            'Rbac\Provider\Identity\ZfcUserZendDb'     => 'Rbac\Service\ZfcUserZendDbIdentityProviderServiceFactory',
-            'Rbac\Provider\Identity\ZfcUserZendDb2'    => 'Rbac\Service\ZfcUserZendDbIdentityProviderServiceFactory2',
             'Rbac\Provider\Identity\UsersZendDb'       => 'Rbac\Service\UsersZendDbIdentityProviderServiceFactory',
-        ),
-        'aliases'     => array(
-            'rbac_zend_db_adapter' => 'Zend\Db\Adapter\Adapter',
         ),
     ),
     
-    'view_manager' => array(
-        'template_map' => array(
-            'error/403' => APPLICATION_PATH . '/view/page_template/Rbac/403.phtml',
-        ),
-    ),
+//    'view_manager' => array(
+//        'template_map' => array(
+//            'error/403' => APPLICATION_PATH . '/view/page_template/Rbac/403.phtml',
+//        ),
+//    ),
     
     'router' => array(
         'routes' => array(

@@ -26,8 +26,8 @@ class UnauthorizedStrategyServiceFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $config = $serviceLocator->get('Rbac\Config');
+        $config = $serviceLocator->get('config');
 
-        return new UnauthorizedStrategy($config['template']);
+        return new UnauthorizedStrategy($config['Rbac']['template']);
     }
 }

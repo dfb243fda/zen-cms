@@ -36,7 +36,7 @@ class UnauthorizedStrategy implements ListenerAggregateInterface
      * @var \Zend\Stdlib\CallbackHandler[]
      */
     protected $listeners = array();
-
+    
     /**
      * @param string $template name of the template to use on unauthorized requests
      */
@@ -83,7 +83,7 @@ class UnauthorizedStrategy implements ListenerAggregateInterface
     }
     
     public function prepare403ViewModel(MvcEvent $e)
-    {
+    {        
         $vars = $e->getResult();
         if ($vars instanceof Response) {
             // Already have a response as the result
@@ -110,7 +110,7 @@ class UnauthorizedStrategy implements ListenerAggregateInterface
                 $model->setVariable('message', 'Access forbidden');
             }
         }
-
+        
         $model->setTemplate($this->getTemplate());
         $e->setResult($model);
 /*        
@@ -139,7 +139,7 @@ class UnauthorizedStrategy implements ListenerAggregateInterface
         if ($result instanceof Response || ($response && ! $response instanceof HttpResponse)) {
             return;
         }
-
+        
         // Common view variables
         $viewVariables = array(
            'error'      => $event->getParam('error'),

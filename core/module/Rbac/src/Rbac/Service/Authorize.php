@@ -12,18 +12,13 @@ use Rbac\Provider\Role\ProviderInterface as RoleProvider;
 use Rbac\Provider\Resource\ProviderInterface as ResourceProvider;
 use Rbac\Provider\Rule\ProviderInterface as RuleProvider;
 use Rbac\Provider\Identity\ProviderInterface as IdentityProvider;
-use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Permissions\Acl\Acl;
 use Zend\Permissions\Acl\Exception\InvalidArgumentException;
 use Zend\Permissions\Acl\Resource\GenericResource;
 use Rbac\Guard\GuardInterface;
 use Zend\Permissions\Acl\Resource\ResourceInterface;
+use Zend\ServiceManager\ServiceManager;
 
-/**
- * Authorize service
- *
- * @author Ben Youngblood <bx.youngblood@gmail.com>
- */
 class Authorize
 {
     const TYPE_ALLOW = 'allow';
@@ -61,27 +56,20 @@ class Authorize
     protected $guards = array();
 
     /**
-     * @var \Closure|null
+     * @var ServiceManager
      */
-    protected $loaded;
-
+    protected $serviceManager;
+    
+    
     /**
-     * @var \Zend\ServiceManager\ServiceLocatorInterface
+     * {@inheritDoc}
      */
-    protected $serviceLocator;
-
-    /**
-     * @param array                                        $config
-     * @param \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
-     */
-    public function __construct(array $config, ServiceLocatorInterface $serviceLocator)
+    public function __construct(ServiceManager $serviceManager)
     {
-        $this->serviceLocator = $serviceLocator;
-        $that                 = $this;
-        $this->loaded         = function () use ($that) {
-            $that->load();
-        };
+        $this->serviceManager = $serviceManager;
+        $this->load();
     }
+    
 
     /**
      * @deprecated this method will be removed in BjyAuthorize 2.0.x
@@ -92,8 +80,6 @@ class Authorize
      */
     public function addRoleProvider(RoleProvider $provider)
     {
-        $this->loaded && $this->loaded->__invoke();
-
         $this->roleProviders[] = $provider;
 
         return $this;
@@ -108,8 +94,6 @@ class Authorize
      */
     public function addResourceProvider(ResourceProvider $provider)
     {
-        $this->loaded && $this->loaded->__invoke();
-
         $this->resourceProviders[] = $provider;
 
         return $this;
@@ -124,8 +108,6 @@ class Authorize
      */
     public function addRuleProvider(RuleProvider $provider)
     {
-        $this->loaded && $this->loaded->__invoke();
-
         $this->ruleProviders[] = $provider;
 
         return $this;
@@ -140,8 +122,6 @@ class Authorize
      */
     public function setIdentityProvider(IdentityProvider $provider)
     {
-        $this->loaded && $this->loaded->__invoke();
-
         $this->identityProvider = $provider;
 
         return $this;
@@ -154,8 +134,6 @@ class Authorize
      */
     public function getIdentityProvider()
     {
-        $this->loaded && $this->loaded->__invoke();
-
         return $this->identityProvider;
     }
 
@@ -168,8 +146,6 @@ class Authorize
      */
     public function addGuard(GuardInterface $guard)
     {
-        $this->loaded && $this->loaded->__invoke();
-
         $this->guards[] = $guard;
 
         if ($guard instanceof ResourceProvider) {
@@ -191,8 +167,6 @@ class Authorize
      */
     public function getGuards()
     {
-        $this->loaded && $this->loaded->__invoke();
-
         return $this->guards;
     }
 
@@ -205,9 +179,7 @@ class Authorize
      */
     public function getIdentity()
     {
-        $this->loaded && $this->loaded->__invoke();
-
-        return 'bjyauthorize-identity';
+        return 'rbac-identity';
     }
 
     /**
@@ -215,8 +187,6 @@ class Authorize
      */
     public function getAcl()
     {
-        $this->loaded && $this->loaded->__invoke();
-
         return $this->acl;
     }
 
@@ -227,9 +197,7 @@ class Authorize
      * @return bool
      */
     public function isAllowed($resource, $privilege = null)
-    {
-        $this->loaded && $this->loaded->__invoke();
-
+    {        
         try {
             return $this->acl->isAllowed($this->getIdentity(), $resource, $privilege);
         } catch (InvalidArgumentException $e) {
@@ -244,28 +212,24 @@ class Authorize
      */
     public function load()
     {
-        if (null === $this->loaded) {
-            return;
-        }
-
-        $this->loaded = null;
         $this->acl    = new Acl();
 
-        foreach ($this->serviceLocator->get('Rbac\RoleProviders') as $provider) {
+        foreach ($this->serviceManager->get('Rbac\RoleProviders') as $provider) {
             $this->addRoleProvider($provider);
         }
 
-        foreach ($this->serviceLocator->get('Rbac\ResourceProviders') as $provider) {
+        foreach ($this->serviceManager->get('Rbac\ResourceProviders') as $provider) {
             $this->addResourceProvider($provider);
         }
 
-        foreach ($this->serviceLocator->get('Rbac\RuleProviders') as $provider) {
+        foreach ($this->serviceManager->get('Rbac\RuleProviders') as $provider) {
             $this->addRuleProvider($provider);
         }
 
-        $this->setIdentityProvider($this->serviceLocator->get('Rbac\Provider\Identity\ProviderInterface'));
+        $config = $this->serviceManager->get('config');
+        $this->setIdentityProvider($this->serviceManager->get($config['Rbac']['identity_provider']));
 
-        foreach ($this->serviceLocator->get('Rbac\Guards') as $guard) {
+        foreach ($this->serviceManager->get('Rbac\Guards') as $guard) {
             $this->addGuard($guard);
         }
 
@@ -362,7 +326,7 @@ class Authorize
 
         if (4 === $ruleSize) {
             list($roles, $resources, $privileges, $assertion) = $rule;
-            $assertion = $this->serviceLocator->get($assertion);
+            $assertion = $this->serviceManager->get($assertion);
         } elseif (3 === $ruleSize) {
             list($roles, $resources, $privileges) = $rule;
         } elseif (2 === $ruleSize) {
@@ -372,7 +336,7 @@ class Authorize
         }
 
         if (is_string($assertion)) {
-            $assertion = $this->serviceLocator->get($assertion);
+            $assertion = $this->serviceManager->get($assertion);
         }
 
         if (static::TYPE_ALLOW === $type) {

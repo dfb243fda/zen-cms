@@ -12,10 +12,8 @@ use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ModuleManager\Feature\ControllerPluginProviderInterface;
 use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
-use Zend\Mvc\ApplicationInterface;
 use Zend\ServiceManager\AbstractPluginManager;
 
 /**
@@ -29,27 +27,35 @@ class Module implements
     ConfigProviderInterface,
     ControllerPluginProviderInterface,
     ViewHelperProviderInterface
-{
+{    
     /**
      * {@inheritDoc}
      */
     public function onBootstrap(EventInterface $event)
     {
-        /* @var $app \Zend\Mvc\ApplicationInterface */
         $app            = $event->getTarget();
-        /* @var $sm \Zend\ServiceManager\ServiceLocatorInterface */
         $serviceManager = $app->getServiceManager();
-        $config         = $serviceManager->get('Rbac\Config');
-        $strategy       = $serviceManager->get($config['unauthorized_strategy']);
+                
         $guards         = $serviceManager->get('Rbac\Guards');
-
         foreach ($guards as $guard) {
             $app->getEventManager()->attach($guard);
         }
-
+        
+        $config         = $serviceManager->get('config');
+        $strategy = $serviceManager->get($config['Rbac']['unauthorized_strategy']);
         $app->getEventManager()->attach($strategy);
         
+        $this->setDisplayErrors($serviceManager);
         
+        $newUserRolesSetter = $serviceManager->get('Rbac\Service\NewUserRolesSetter');
+        $app->getEventManager()->attach($newUserRolesSetter);
+        
+        $moduleRolesCollector = $serviceManager->get('Rbac\Service\ModulePermissionsCollector');
+        $app->getEventManager()->attach($moduleRolesCollector);             
+    }
+    
+    protected function setDisplayErrors($serviceManager)
+    {
         $appConfig = $serviceManager->get('ApplicationConfig');
         
         $authService = $serviceManager->get('Rbac\Service\Authorize');
@@ -71,73 +77,6 @@ class Module implements
 
             $serviceManager->get('viewManager')->getExceptionStrategy()->setDisplayExceptions(false);
         }
-
-        
-      
- //       $usersService = $serviceManager->get('users_service');
- //       
-        $app->getEventManager()->attach('register.post', function($event) use ($serviceManager) {
-            $db = $serviceManager->get('db');
-            
-            $params = $event->getParams();
-            
-            $userId = $params['userId'];
-            
-            $configManager = $serviceManager->get('configManager');
-            
-            $roles = $configManager->get('users', 'new_user_roles');
-         
-            if (!empty($roles)) {
-                foreach ($roles as $roleId) {
-                    $db->query('insert into ' . DB_PREF . 'user_role_linker (user_id, role_id) values (?, ?)', array($userId, $roleId));
-                } 
-            }
-        });
-        
-        $app->getEventManager()->attach('module_installed', function($e) use ($serviceManager) {
-            $params = $e->getParams();
-            
-            $module = $params['module'];
-            
-            $moduleManager = $serviceManager->get('moduleManager');
-        
-            $moduleConfig = $moduleManager->getModuleConfig($module);
-               
-            $db = $serviceManager->get('db');
-            
-            $permissionResources = array();
-            
-            $moduleClass = $module . '\Module';
-            $instance = new $moduleClass();
-
-            if (isset($moduleConfig['permission_resources'])) {
-                $permissionResources[$module] = $moduleConfig['permission_resources'];
-            }
-
-            if (method_exists($instance, 'getPermissionResources')) {
-                $tmp = call_user_func_array(array($instance, 'getPermissionResources'), array($sm));
-                $permissionResources[$module] = array_merge($permissionResources[$module], $tmp);
-            }      
-
-            foreach ($permissionResources as $module=>$value) {
-                foreach ($value as $resourceData) {
-                    $db->query('
-                        insert into ' . DB_PREF . 'permission_resources (resource, privelege, name, is_active, module)
-                        values (?, ?, ?, ?, ?)', array($resourceData['resource'], $resourceData['privelege'], $resourceData['name'], 1, $module));
-                }            
-            }
-        });
-        
-        $app->getEventManager()->attach('module_uninstalled.post', function($event) use ($serviceManager) {
-            $db = $serviceManager->get('db');
-            
-            $params = $event->getParams();
-            
-            $module = $params['module'];
-            
-            $db->query('delete from ' . DB_PREF . 'permission_resources where module = ?', array($module));
-        });
-        
     }
     
     public function getDynamicConfig($sm)

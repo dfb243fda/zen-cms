@@ -9,7 +9,7 @@ use Zend\Stdlib\ResponseInterface as Response;
 class AdminController extends AbstractActionController
 {
     protected $routeLogin = 'login';
-        
+    
     public function indexAction()
     {
         $pageDataService = $this->serviceLocator->get('AdminPanel\Service\PageData');
@@ -75,14 +75,15 @@ class AdminController extends AbstractActionController
         }
         if ($this->response->isRedirect()) {
             return $this->response;
-        }   
+        }           
         
         $rendererStrategy->setFormat($rendererStrategyOptions->getFormat())
+                         ->setTarget($this)
                          ->setRendererStrategies($rendererStrategyOptions->getRendererStrategies())
                          ->setResultComposers($rendererStrategyOptions->getResultComposers());
         
         $rendererStrategy->registerStrategy();        
-        
+                      
         $eventManager->trigger('prepare_output', $this, array($resultArray));
                         
         return $rendererStrategy->getResult($resultArray);

@@ -51,7 +51,7 @@ class Controller implements GuardInterface, RuleProviderInterface, ResourceProvi
     public function __construct(array $rules, ServiceLocatorInterface $serviceLocator)
     {
         $this->serviceLocator = $serviceLocator;
-
+        
         foreach ($rules as $rule) {
             if (!is_array($rule['roles'])) {
                 $rule['roles'] = array($rule['roles']);

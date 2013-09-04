@@ -27,10 +27,10 @@ abstract class BaseProvidersServiceFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $config    = $serviceLocator->get('Rbac\Config');
+        $config    = $serviceLocator->get('config');
         $providers = array();
 
-        foreach ($config[static::PROVIDER_SETTING] as $providerName => $providerConfig) {
+        foreach ($config['Rbac'][static::PROVIDER_SETTING] as $providerName => $providerConfig) {
             if ($serviceLocator->has($providerName)) {
                 $providers[] = $serviceLocator->get($providerName);
             } else {

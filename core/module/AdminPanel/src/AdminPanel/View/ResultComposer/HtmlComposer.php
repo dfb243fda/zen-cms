@@ -41,7 +41,9 @@ class HtmlComposer extends ComposerAbstract
         
         $eventManager->trigger('prepare_public_resources', $this, array($resultArray));
 
-        return $viewRenderer->render($wrapperViewModel); 
+        $response = $this->getTarget()->getResponse();
+        $response->setContent($viewRenderer->render($wrapperViewModel));
+        return $response;  
         
     }
 }

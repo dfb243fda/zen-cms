@@ -11,20 +11,15 @@ namespace Rbac\Service;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-/**
- * Factory responsible of building the {@see \BjyAuthorize\Service\Authorize} service
- *
- * @author Ben Youngblood <bx.youngblood@gmail.com>
- */
 class AuthorizeFactory implements FactoryInterface
 {
     /**
      * {@inheritDoc}
      *
-     * @return \BjyAuthorize\Service\Authorize
+     * @return array
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return new Authorize($serviceLocator->get('Rbac\Config'), $serviceLocator);
+        return new Authorize($serviceLocator);
     }
 }

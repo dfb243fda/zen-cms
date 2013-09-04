@@ -31,8 +31,8 @@ class HtmlComposer extends ComposerAbstract
             }
         }
 
-        $view = new ViewModel($resultArray);          
-
+        $view = new ViewModel($resultArray);    
+                   
         if (isset($resultArray['page']['template'])) {                    
             $tmpTemplateData = $page->getTemplate($resultArray['page']['template']);
             $view->setTemplate($tmpTemplateData['type'] . '/' . $tmpTemplateData['module'] . '/' . $tmpTemplateData['name']);
@@ -51,9 +51,11 @@ class HtmlComposer extends ComposerAbstract
         $wrapperViewModel = $layout();
 
         $wrapperViewModel->content = $viewRenderer->render($view);
-        
+  
         $eventManager->trigger('prepare_public_resources', $this, array($resultArray));
-
-        return $viewRenderer->render($wrapperViewModel);         
+        
+        $response = $this->getTarget()->getResponse();
+        $response->setContent($viewRenderer->render($wrapperViewModel));
+        return $response;       
     }
 }

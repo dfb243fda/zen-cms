@@ -122,12 +122,10 @@ return array(
         'display_not_found_reason' => true,
         'display_exceptions'       => true,
         'doctype'                  => 'HTML5',
-        'not_found_template'       => 'error/404',
-        'exception_template'       => 'error/index',
+        'not_found_template'       => 'page_template/core/error/404.phtml',
+        'exception_template'       => 'page_template/core/error/index.phtml',
         'template_map' => array(
             'layout/layout'        => APPLICATION_PATH . '/view/wrapper/core/wrapper.phtml',
-            'error/404'            => APPLICATION_PATH . '/view/page_template/core/error/404.phtml',
-            'error/index'          => APPLICATION_PATH . '/view/page_template/core/error/index.phtml',
         ),
         'template_path_stack' => array(
             APPLICATION_PATH . '/view',
