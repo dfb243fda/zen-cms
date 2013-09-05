@@ -48,11 +48,11 @@ return array(
         'form' => array(
             'comments' => array(
                 'fieldsets' => array(
-                    'comments' => array(
+                    array(
                         'spec' => array(
                             'name' => 'comments',
                             'elements' => array(
-                                'activate_standard_comments' => array(
+                                array(
                                     'spec' => array(
                                         'name' => 'activate_standard_comments',
                                         'type' => 'checkbox',
@@ -62,7 +62,7 @@ return array(
                                         ),
                                     ),
                                 ),
-                                'items_on_page' => array(
+                                array(
                                     'spec' => array(
                                         'name' => 'items_on_page',
                                         'options' => array(

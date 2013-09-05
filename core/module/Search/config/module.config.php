@@ -47,6 +47,14 @@ return array(
             ),
         ),
     ),
+    'service_manager' => array(
+        'invokables' => array(
+            'Search\Listener\ModuleSearchObjectTypesCollector' => 'Search\Listener\ModuleSearchObjectTypesCollector',
+            'Search\Service\Installer' => 'Search\Service\Installer',
+            'Search\Service\SearchIndexer' => 'Search\Service\SearchIndexer',
+            'Search\Service\SearchEngine' => 'Search\Service\SearchEngine',
+        ),
+    ),
     'translator' => array(
         'translation_file_patterns' => array(
             array(
@@ -70,11 +78,11 @@ return array(
         'form' => array(
             'search' => array(
                 'fieldsets' => array(
-                    'search' => array(
+                    array(
                         'spec' => array(
                             'name' => 'search',
                             'elements' => array(
-                                'site_name' => array(
+                                array(
                                     'spec' => array(
                                         'name' => 'items_on_page',
                                         'options' => array(

@@ -133,6 +133,8 @@ return array(
             'Pages\Service\Installer' => 'Pages\Service\Installer',
             'Pages\Service\PageTypesDetector' => 'Pages\Service\PageTypesDetector',
             'Pages\Service\ContentTypesDetector' => 'Pages\Service\ContentTypesDetector',
+            
+            'Pages\Service\PageUrl' => 'Pages\Service\PageUrl',
         ),
         
         'shared' => array(

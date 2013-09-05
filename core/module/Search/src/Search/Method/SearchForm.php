@@ -8,11 +8,11 @@ class SearchForm extends FeContentMethod
 {    
     public function main()
     {
-        $pageService = $this->serviceLocator->get('Pages\Service\Page');
+        $pageUrlService = $this->serviceLocator->get('Pages\Service\PageUrl');
         
         $resultPageId = $this->contentData['fieldGroups']['common']['fields']['result_page_id'];
         
-        $resultPageLink = $pageService->getPageUrl($resultPageId);
+        $resultPageLink = $pageUrlService->getPageUrl($resultPageId);
         
         return array(
             'resultPageLink' => $resultPageLink,

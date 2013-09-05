@@ -3,33 +3,32 @@
 namespace Rbac\Method;
 
 use App\Method\AbstractMethod;
-use Rbac\Model\Roles;
 
 class AddRole extends AbstractMethod
 {
     public function main()
     {
-        $rolesModel = new Roles($this->serviceLocator);     
+        $rolesFormFactory = $this->serviceLocator->get('Rbac\FormFactory\RolesFormFactory');
         $request = $this->serviceLocator->get('request');
         
         $result = array();
         
         $parentRoleId = $this->params()->fromRoute('id' , 0);
         
-        $form = $rolesModel->getForm(null, $parentRoleId);        
-        $formConfig = $form['formConfig'];
-        $formValues = $form['formValues'];
-        $formMessages = array();
+        $rolesFormFactory->setParentRoleId($parentRoleId);
+        
+        $form = $rolesFormFactory->getForm();     
         
         if ($request->isPost()) {
-            $tmp = $rolesModel->add($this->params()->fromPost());
-            if ($tmp['success']) {
+            $rolesCollection = $this->serviceLocator->get('Rbac\Collection\Roles');
+            
+            if ($roleId = $rolesCollection->addRole($this->params()->fromPost())) {
                 if (!$request->isXmlHttpRequest()) {
                     $this->flashMessenger()->addSuccessMessage('Роль успешно добавлена');
-                    $this->redirect()->toRoute('admin/method',array(
+                    return $this->redirect()->toRoute('admin/method',array(
                         'module' => 'Rbac',
                         'method' => 'EditRole',
-                        'id' => $tmp['roleId'],
+                        'id' => $roleId,
                     ));
                 }
 
@@ -39,17 +38,13 @@ class AddRole extends AbstractMethod
                 );         
             } else {
                 $result['success'] = false;
-                $formMessages = $tmp['form']->getMessages();
-                $formValues = $tmp['form']->getData();
             }
         }
         
         $result['contentTemplate'] = array(
             'name' => 'content_template/Rbac/form_view.phtml',
             'data' => array(
-                'formConfig' => $formConfig,
-                'formValues' => $formValues,
-                'formMsg' => $formMessages,
+                'form' => $form,
             ),
         );
         

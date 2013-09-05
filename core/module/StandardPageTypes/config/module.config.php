@@ -21,6 +21,13 @@ return array(
             ),
         ),
     ),
+    
+    'service_manager' => array(
+        'invokables' => array(
+            'StandardPageTypes\Service\Installer' => 'StandardPageTypes\Service\Installer',
+        ),
+    ),
+    
     'translator' => array(
         'translation_file_patterns' => array(
             array(

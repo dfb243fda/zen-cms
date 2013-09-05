@@ -3,13 +3,12 @@
 namespace Rbac\Method;
 
 use App\Method\AbstractMethod;
-use Rbac\Model\Roles;
 
 class EditRole extends AbstractMethod
 {
     public function main()
-    {
-        $rolesModel = new Roles($this->serviceLocator);     
+    {   
+        $rolesFormFactory = $this->serviceLocator->get('Rbac\FormFactory\RolesFormFactory');
         $request = $this->serviceLocator->get('request');
         
         $result = array();
@@ -19,17 +18,19 @@ class EditRole extends AbstractMethod
             throw new \Exception('role id is undefined');
         }
         
-        $form = $rolesModel->getForm($roleId);        
-        $formConfig = $form['formConfig'];
-        $formValues = $form['formValues'];
-        $formMessages = array();
+        $rolesFormFactory->setRoleId($roleId);
+        
+        $form = $rolesFormFactory->getForm();   
         
         if ($request->isPost()) {
-            $tmp = $rolesModel->edit($roleId, $this->params()->fromPost());
-            if ($tmp['success']) {
+            $roleEntity = $this->serviceLocator->get('Rbac\Entity\RoleEntity');
+            
+            $roleEntity->setRoleId($roleId);
+            
+            if ($roleEntity->edit($this->params()->fromPost())) {
                 if (!$request->isXmlHttpRequest()) {
                     $this->flashMessenger()->addSuccessMessage('Роль успешно изменена');
-                    $this->redirect()->refresh();
+                    return $this->redirect()->refresh();
                 }
 
                 return array(
@@ -38,17 +39,13 @@ class EditRole extends AbstractMethod
                 );         
             } else {
                 $result['success'] = false;
-                $formMessages = $tmp['form']->getMessages();
-                $formValues = $tmp['form']->getData();
             }
         }
         
         $result['contentTemplate'] = array(
             'name' => 'content_template/Rbac/form_view.phtml',
             'data' => array(
-                'formConfig' => $formConfig,
-                'formValues' => $formValues,
-                'formMsg' => $formMessages,
+                'form' => $form,
             ),
         );
         

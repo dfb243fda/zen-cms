@@ -9,7 +9,9 @@ class Permissions extends AbstractMethod
 {    
     public function main()
     {        
-        $permissionsModel = new PermissionsModel($this->serviceLocator);
+        $permissionsCollection = $this->serviceLocator->get('Rbac\Collection\Permissions');
+        $rolesCollection = $this->serviceLocator->get('Rbac\Collection\Roles');
+        
         $request = $this->serviceLocator->get('request');
         
         if ($request->isPost()) {
@@ -25,7 +27,7 @@ class Permissions extends AbstractMethod
                 $privelege = (string)$this->params()->fromPost('privelege');
                 $isAllowed = (int)$this->params()->fromPost('is_allowed');
                 
-                $tmp = $permissionsModel->edit($roleId, $resource, $privelege, $isAllowed);
+                $tmp = $permissionsCollection->edit($roleId, $resource, $privelege, $isAllowed);
                 
                 if ($tmp['success']) {
                     $result['success'] = true;
@@ -41,15 +43,12 @@ class Permissions extends AbstractMethod
             }
             
         } else {
-            $roles = $permissionsModel->getRoles();
-            $permissions = $permissionsModel->getPermissions();
-            
             $result = array(
                 'contentTemplate' => array(
                     'name' => 'content_template/Rbac/permissions.phtml',
                     'data' => array(
-                        'roles' => $roles,
-                        'permissions' => $permissions,
+                        'roles' => $rolesCollection->getRoles(),
+                        'permissions' => $permissionsCollection->getPermissions(),
                     ),
                 ),
             );

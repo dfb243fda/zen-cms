@@ -34,8 +34,21 @@ return array(
                 'type' => 'be',
             ),
         ),
-        
+        'templatesDir' => 'view',
     ),
+    
+    'service_manager' => array(
+        'invokables' => array(
+            'Templates\Listener\ModuleTemplatesCollector' => 'Templates\Listener\ModuleTemplatesCollector',
+            'Templates\Service\Installer' => 'Templates\Service\Installer',
+            'Templates\Service\TemplatesList' => 'Templates\Service\TemplatesList',
+            'Templates\FormFactory\TemplatesFormFactory' => 'Templates\FormFactory\TemplatesFormFactory',
+            'Templates\Entity\TemplateEntity' => 'Templates\Entity\TemplateEntity',
+            'Templates\Form\TemplateForm' => 'Templates\Form\TemplateForm',
+            'Templates\Form\TemplateWithMarkersForm' => 'Templates\Form\TemplateWithMarkersForm',
+        ),
+    ),
+    
     'translator' => array(
         'translation_file_patterns' => array(
             array(

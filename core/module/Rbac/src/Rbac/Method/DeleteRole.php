@@ -3,13 +3,12 @@
 namespace Rbac\Method;
 
 use App\Method\AbstractMethod;
-use Rbac\Model\Roles;
 
 class DeleteRole extends AbstractMethod
 {
     public function main()
     {
-        $rolesModel = new Roles($this->serviceLocator);     
+        $rolesCollection = $this->serviceLocator->get('Rbac\Collection\Roles');     
         
         $result = array(
             'success' => false,
@@ -22,7 +21,7 @@ class DeleteRole extends AbstractMethod
         }
         $roleId = (int)$roleId;
         
-        if ($rolesModel->delete($roleId)) {
+        if ($rolesCollection->deleteRole($roleId)) {
             $result['success'] = true;
             $result['msg'] = 'Роль успешно удалена';
         } else {

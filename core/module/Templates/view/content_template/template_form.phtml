@@ -5,14 +5,10 @@ $sm = $this->getHelperPluginManager()->getServiceLocator();
 ?>
 
 <div class="templates-form form-wrap">
-    <?php
-    $factory = new Zend\Form\Factory($sm->get('FormElementManager'));
-    
-    $formConfig = $this->formConfig;
-   
-    $form = $factory->createForm($formConfig);       
+    <?php    
+    $form = $this->form;
+      
     $form->setAttribute('class', 'form-1c');
-    $form->setData($this->formValues);    
     
     $form->add(array(
         'type' => 'submit',

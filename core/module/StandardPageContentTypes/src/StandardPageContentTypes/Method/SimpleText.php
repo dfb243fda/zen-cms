@@ -6,6 +6,8 @@ use Pages\AbstractMethod\FeContentMethodInterface;
 
 class SimpleText implements FeContentMethodInterface
 {        
+    protected $contentData;
+    
     public function setContentData($contentData)
     {
         $this->contentData = $contentData;

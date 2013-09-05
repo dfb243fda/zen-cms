@@ -3,27 +3,19 @@
 namespace Templates\Method;
 
 use App\Method\AbstractMethod;
-use Templates\Model\Templates;
 
 class TemplatesList extends AbstractMethod
 {
-    protected $templatesModel;
-    
-    public function init()
-    {
-        $this->rootServiceLocator = $this->getServiceLocator();
-        $this->templatesModel = new Templates($this->rootServiceLocator, $this->url());
-        $this->moduleManager = $this->rootServiceLocator->get('moduleManager');
-    }
-    
     public function main()
     {           
+        $templatesList = $this->serviceLocator->get('Templates\Service\TemplatesList');
+        
         if (!$this->params()->fromRoute('templateModule')) {
             $templates = array();
             $createTemplateLink = null;
         } elseif (!$this->params()->fromRoute('templateMethod')) {
             $module = $this->params()->fromRoute('templateModule');
-            $templates = $this->templatesModel->getMethodTemplates($module, '');
+            $templates = $templatesList->getMethodTemplates($module, '');
             $createTemplateLink = $this->url()->fromRoute('admin/AddTemplate', array(
                 'templateModule' => $module,
             ));
@@ -31,14 +23,14 @@ class TemplatesList extends AbstractMethod
             $module = $this->params()->fromRoute('templateModule');
             $method = $this->params()->fromRoute('templateMethod');
          
-            $templates = $this->templatesModel->getMethodTemplates($module, $method);
+            $templates = $templatesList->getMethodTemplates($module, $method);
             $createTemplateLink = $this->url()->fromRoute('admin/AddTemplate', array(
                 'templateModule' => $module,
                 'templateMethod' => $method,
             ));
         }
         
-        $modules = $this->templatesModel->getModules();
+        $modules = $templatesList->getModules();
         
         $result = array(
             'contentTemplate' => array(

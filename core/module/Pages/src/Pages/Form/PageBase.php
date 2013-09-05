@@ -247,6 +247,6 @@ class PageBase extends Form implements ServiceManagerAwareInterface
              ->get('name')
              ->setRequired(true)
              ->getFilterChain()
-             ->attachByName('Zend\Filter\StringTrim');
+             ->attachByName('StringTrim');
     }
 }

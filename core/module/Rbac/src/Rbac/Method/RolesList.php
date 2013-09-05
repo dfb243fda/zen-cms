@@ -3,67 +3,26 @@
 namespace Rbac\Method;
 
 use App\Method\AbstractMethod;
-use Rbac\Model\Roles;
-
 
 class RolesList extends AbstractMethod
 {
-    public function init()
-    {
-        $this->translator = $this->serviceLocator->get('translator');
-        $this->request = $this->serviceLocator->get('request');
-        $this->rolesModel = new Roles($this->serviceLocator);    
-    }
-
-
     public function main()
     {
         if ('get_data' == $this->params()->fromRoute('task')) {
-            $result = $this->getItems((int)$this->request->getPost('id', 0));
+            $rolesTree = $this->serviceLocator->get('Rbac\Service\RolesTree');
+            
+            $parentId = (int)$this->params()->fromPost('id', 0);
+            $result = $rolesTree->getItems($parentId);
         } else {
-            $result = $this->getWrapper();
+            $result = array(
+                'contentTemplate' => array(
+                    'name' => 'content_template/Rbac/roles_tree.phtml',
+                ),
+            );
         }
         return $result;
     }
     
-    protected function getWrapper()
-    {
-        $result = array();
-        
-        $this->rootServiceLocator->get('viewHelperManager')->get('HeadScript')->appendFile(ROOT_URL_SEGMENT . '/js/Rbac/roles.js');
-        
-        $result['contentTemplate'] = array(
-            'name' => 'content_template/' . CURRENT_THEME . '/tree_grid.phtml',
-            'data' => array(
-                'createBtn' => array(
-                    'text' => 'Добавить роль',
-                    'link' => $this->url()->fromRoute('admin/method', array(
-                        'module' => 'Rbac',
-                        'method' => 'AddRole',
-                    )),
-                ),
-                'url' => $this->url()->fromRoute('admin/RolesList', array(
-                    'task'   => 'get_data',
-                )),  
-                'columns' => array(
-                    array(
-                        array(                        
-                            'title' => $this->translator->translate('Rbac:Name field'),
-                            'field' => 'name',
-                            'width' => '200',
-                        ),
-                        array(                        
-                            'title' => '',
-                            'field' => 'icons',
-                            'width' => '200',
-                        )
-                    )                    
-                ),
-            ),            
-        );
-        
-        return $result;
-    }
     
     protected function getItems($parentId)
     {                

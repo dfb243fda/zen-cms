@@ -107,8 +107,18 @@ return array(
 
     'service_manager' => array(
         'invokables' => array(
-            'Rbac\Service\NewUserRolesSetter' => 'Rbac\Service\NewUserRolesSetter',
-            'Rbac\Service\ModulePermissionsCollector' => 'Rbac\Service\ModulePermissionsCollector',            
+            'Rbac\Listener\NewUserRolesSetter' => 'Rbac\Listener\NewUserRolesSetter',
+            'Rbac\Listener\ModulePermissionsCollector' => 'Rbac\Listener\ModulePermissionsCollector',      
+            'Rbac\Collection\Permissions' => 'Rbac\Collection\Permissions',
+            'Rbac\Collection\Roles' => 'Rbac\Collection\Roles',
+            
+            'Rbac\Service\DisplayErrorsSetter' => 'Rbac\Service\DisplayErrorsSetter',
+            'Rbac\Service\DynamicConfig' => 'Rbac\Service\DynamicConfig',
+            'Rbac\Service\Installer' => 'Rbac\Service\Installer',
+            'Rbac\Service\RolesTree' => 'Rbac\Service\RolesTree',
+            'Rbac\FormFactory\RolesFormFactory' => 'Rbac\FormFactory\RolesFormFactory',
+            'Rbac\Form\RolesForm' => 'Rbac\Form\RolesForm',
+            'Rbac\Entity\RoleEntity' => 'Rbac\Entity\RoleEntity',
         ),
         'factories' => array(
             'Rbac\Service\Authorize'                   => 'Rbac\Service\AuthorizeFactory',
@@ -120,13 +130,7 @@ return array(
             'Rbac\Provider\Identity\UsersZendDb'       => 'Rbac\Service\UsersZendDbIdentityProviderServiceFactory',
         ),
     ),
-    
-//    'view_manager' => array(
-//        'template_map' => array(
-//            'error/403' => APPLICATION_PATH . '/view/page_template/Rbac/403.phtml',
-//        ),
-//    ),
-    
+        
     'router' => array(
         'routes' => array(
             'admin' => array(
@@ -145,60 +149,5 @@ return array(
             ),  
         ),
     ),
-    
-/*    
-    '--service_manager--' => array(
-        'factories' => array(
-            'BjyAuthorize\Config'                   => 'BjyAuthorize\Service\ConfigServiceFactory',
-            'BjyAuthorize\Guards'                   => 'BjyAuthorize\Service\GuardsServiceFactory',
-            'BjyAuthorize\RoleProviders'            => 'BjyAuthorize\Service\RoleProvidersServiceFactory',
-            'BjyAuthorize\ResourceProviders'        => 'BjyAuthorize\Service\ResourceProvidersServiceFactory',
-            'BjyAuthorize\RuleProviders'            => 'BjyAuthorize\Service\RuleProvidersServiceFactory',
-            'BjyAuthorize\Guard\Controller'         => 'BjyAuthorize\Service\ControllerGuardServiceFactory',
-            'BjyAuthorize\Guard\Route'              => 'BjyAuthorize\Service\RouteGuardServiceFactory',
-            'BjyAuthorize\Provider\Role\Config'     => 'BjyAuthorize\Service\ConfigRoleProviderServiceFactory',
-            'BjyAuthorize\Provider\Role\ZendDb'     => 'BjyAuthorize\Service\ZendDbRoleProviderServiceFactory',
-            'BjyAuthorize\Provider\Resource\Config' => 'BjyAuthorize\Service\ConfigResourceProviderServiceFactory',
-            'BjyAuthorize\Service\Authorize'        => 'BjyAuthorize\Service\AuthorizeFactory',
-            'BjyAuthorize\Provider\Identity\ProviderInterface'                => 'BjyAuthorize\Service\IdentityProviderServiceFactory',
-            'BjyAuthorize\Provider\Identity\AuthenticationIdentityProvider'                => 'BjyAuthorize\Service\AuthenticationIdentityProviderServiceFactory',
-            'BjyAuthorize\Provider\Role\ObjectRepositoryProvider'                => 'BjyAuthorize\Service\ObjectRepositoryRoleProviderFactory',
-            'BjyAuthorize\Collector\RoleCollector'  => 'BjyAuthorize\Service\RoleCollectorServiceFactory',
-            'BjyAuthorize\Provider\Identity\ZfcUserZendDb' => 'BjyAuthorize\Service\ZfcUserZendDbIdentityProviderServiceFactory',
-            'BjyAuthorize\View\UnauthorizedStrategy'  => 'BjyAuthorize\Service\UnauthorizedStrategyServiceFactory',
-        ),
-        'invokables'  => array(
-            'BjyAuthorize\View\RedirectionStrategy' => 'BjyAuthorize\View\RedirectionStrategy',
-        ),
-        'aliases'     => array(
-            'bjyauthorize_zend_db_adapter' => 'Zend\Db\Adapter\Adapter',
-        ),
-        'initializers' => array(
-            'BjyAuthorize\Service\AuthorizeAwareServiceInitializer'  => 'BjyAuthorize\Service\AuthorizeAwareServiceInitializer'
-        ),
-    ),
-
-    'view_manager' => array(
-        'template_map' => array(
-            'error/403' => __DIR__ . '/../view/error/403.phtml',
-            'zend-developer-tools/toolbar/bjy-authorize-role'
-                => __DIR__ . '/../view/zend-developer-tools/toolbar/bjy-authorize-role.phtml',
-        ),
-    ),
-
-    'zenddevelopertools' => array(
-        'profiler' => array(
-            'collectors' => array(
-                'bjy_authorize_role_collector' => 'BjyAuthorize\\Collector\\RoleCollector',
-            ),
-        ),
-        'toolbar' => array(
-            'entries' => array(
-                'bjy_authorize_role_collector' => 'zend-developer-tools/toolbar/bjy-authorize-role',
-            ),
-        ),
-    ),
-
-*/
-    
+        
 );

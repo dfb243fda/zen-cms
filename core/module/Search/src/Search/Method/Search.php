@@ -10,10 +10,10 @@ class Search extends AbstractMethod
 {    
     public function main()
     {
-        $searchModel = new SearchModel($this->serviceLocator);    
+        $searchIndexer = $this->serviceLocator->get('Search\Service\SearchIndexer');     
         
-        if ($this->params()->fromPost('task') == 'refresh_search_index') {
-            $searchModel->refreshIndex();
+        if ($this->params()->fromPost('task') == 'refresh_search_index') {                   
+            $searchIndexer->refreshIndex();
             $this->flashMessenger()->addSuccessMessage('Индекс успешно обновлен');
             return $this->redirect()->refresh();
         }
@@ -22,7 +22,7 @@ class Search extends AbstractMethod
             'contentTemplate' => array(
                 'name' => 'content_template/Search/search_info.phtml',
                 'data' => array(
-                    'indexedPagesCount' => $searchModel->getIndexedPagesCount(),
+                    'indexedPagesCount' => $searchIndexer->getIndexedPagesCount(),
                 ),
             ),
         );

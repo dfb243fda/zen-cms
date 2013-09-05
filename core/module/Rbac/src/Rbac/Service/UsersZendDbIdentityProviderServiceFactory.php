@@ -26,7 +26,7 @@ class UsersZendDbIdentityProviderServiceFactory implements FactoryInterface
         /* @var $userService \ZfcUser\Service\User */
         
         $userService = $serviceLocator->get('users_service');
-
+        
         $provider = new UsersZendDb($adapter, $userService);
 
         return $provider;

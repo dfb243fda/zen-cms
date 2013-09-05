@@ -1,6 +1,6 @@
 <?php
 
-namespace Rbac\Service;
+namespace Rbac\Listener;
 
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;

@@ -6,23 +6,67 @@ use App\Method\AbstractMethod;
 use Templates\Model\Templates;
 
 class EditTemplate extends AbstractMethod
-{
-    protected $templatesModel;    
-    
-    public function init()
-    {
-        $this->rootServiceLocator = $this->getServiceLocator();
-        $this->templatesModel = new Templates($this->rootServiceLocator, $this->url());
-        $this->moduleManager = $this->rootServiceLocator->get('moduleManager');
-        $this->request = $this->rootServiceLocator->get('request');
-    }
-    
+{    
     public function main()
     {      
+        $request = $this->serviceLocator->get('request');
+        
         if (!$this->params()->fromRoute('id')) {
             throw new \Exception('Wrong parameters transferred');
         }
         $id = (int)$this->params()->fromRoute('id');
+                
+        $templatesFormFactory = $this->serviceLocator->get('Templates\FormFactory\TemplatesFormFactory');
+        $templatesFormFactory->setTemplateId($id);
+        
+        $form = $templatesFormFactory->getForm();
+    
+        if ($request->isPost()) {
+            $form->setData($request->getPost());
+            
+            if ($form->isValid()) {
+                $templateEntity = $this->serviceLocator->get('Templates\Entity\TemplateEntity');
+                $templateEntity->setId($id);
+                
+                $templateEntity->edit($form->getData());
+            }
+        }        
+        
+        $result = array(
+            'contentTemplate' => array(
+                'name' => 'content_template/Templates/template_form.phtml',
+                'data' => array(
+                    'form' => $form,
+                ),
+            ),
+        );
+        
+        if ($this->flashMessenger()->hasSuccessMessages()) {
+            $result['msg'] = $this->flashMessenger()->getSuccessMessages();
+        } 
+        if ($this->flashMessenger()->hasErrorMessages()) {
+            $result['errMsg'] = $this->flashMessenger()->getErrorMessages();
+        }
+        
+        return $result;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         $formConfig = $this->templatesModel->getFormConfig();
         
