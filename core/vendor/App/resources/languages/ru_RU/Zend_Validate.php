@@ -225,6 +225,7 @@ return array(
 
     // Zend_Validate_Regex
     "Invalid type given, value should be string, integer or float" => "Недопустимый тип данных, значение должно быть числом с плавающей точкой, строкой, или целым числом",
+    "The input does not match against pattern '%pattern%'" => "Введенное значение не соответствует паттерну '%pattern%'",
     "'%value%' does not match against pattern '%pattern%'" => "'%value%' не соответствует шаблону '%pattern%'",
 
     // Zend_Validate_Sitemap_Changefreq

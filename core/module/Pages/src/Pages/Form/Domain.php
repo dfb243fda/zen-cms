@@ -3,30 +3,40 @@
 namespace Pages\Form;
 
 use Zend\Form\Form;
-use Zend\ServiceManager\ServiceManagerAwareInterface;
-use Zend\ServiceManager\ServiceManager;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-class Domain extends Form implements ServiceManagerAwareInterface
+class Domain extends Form implements ServiceLocatorAwareInterface
 {
     /**
-     * @var ServiceManager
+     * @var ServiceLocatorInterface
      */
-    protected $serviceManager;
+    protected $serviceLocator;
     
     /**
-     * Set service manager
+     * Set service locator
      *
-     * @param ServiceManager $serviceManager
+     * @param ServiceLocatorInterface $serviceLocator
      */
-    public function setServiceManager(ServiceManager $serviceManager)
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
     {
-        $this->serviceManager = $serviceManager;
+        $this->serviceLocator = $serviceLocator;
+    }
+
+    /**
+     * Get service locator
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
     }
 
     public function init()
     {                
-        $db = $this->serviceManager->get('db');
-        $translator = $this->serviceManager->get('translator');
+        $db = $this->serviceLocator->getServiceLocator()->get('db');
+        $translator = $this->serviceLocator->getServiceLocator()->get('translator');
 
         $sqlRes = $db->query('select id, title from ' . DB_PREF . 'langs', array())->toArray();
         $langs = array();
@@ -69,7 +79,7 @@ class Domain extends Form implements ServiceManagerAwareInterface
              ->get('host')
              ->setRequired(true)
              ->getFilterChain()
-             ->attachByName('Zend\Filter\StringTrim');
+             ->attachByName('StringTrim');
         
         $this->getInputFilter()
              ->get('default_lang_id')

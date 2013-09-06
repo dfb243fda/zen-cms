@@ -61,9 +61,8 @@ class ContactForm implements ServiceManagerAwareInterface
     
     public function getAdminForm()
     {        
-        $form = $this->serviceManager->get('ContactForms\Form\ContactForm');        
-        $form->init();
-        
+        $form = $this->serviceManager->get('FormElementManager')
+                                     ->get('ContactForms\Form\ContactForm');            
         $form->setData($this->data);
         
         return $form;

@@ -4,6 +4,7 @@ namespace Templates\FormFactory;
 
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
+use Zend\InputFilter\Factory as InputFactory;
 
 class TemplatesFormFactory implements ServiceManagerAwareInterface
 {
@@ -13,6 +14,8 @@ class TemplatesFormFactory implements ServiceManagerAwareInterface
     protected $serviceManager;
     
     protected $templateId;
+    
+    protected $templateType;
     
     /**
      * {@inheritDoc}
@@ -28,34 +31,71 @@ class TemplatesFormFactory implements ServiceManagerAwareInterface
         return $this;
     }
     
+    public function setTemplateType($templateType)
+    {
+        $this->templateType = $templateType;
+        return $this;
+    }
+    
     public function getForm()
     {
         if (null === $this->templateId) {
-            
+            if ('page_template' == $this->templateType) {
+                $withMarkers = true;
+                $formData = array(
+                    'content' => $this->getDefaultTemplateContent(),
+                    'markers' => $this->getDefaultTemplateMarkers(),
+                );
+            } else {
+                $withMarkers = false;
+                $formData = array();
+            }  
         } else {
             $templateEntity = $this->serviceManager->get('Templates\Entity\TemplateEntity');
             $templateEntity->setTemplateId($this->templateId);
             
             $templateData = $templateEntity->getData();
+          
+            $formData = $templateData;
+            $markersStr = '';
+            foreach ($formData['markers'] as $k=>$v) {
+                $markersStr .= $k . ' = ' . $v . LF;
+            }            
+            $formData['markers'] = $markersStr;
             
-            if ($templateData['method']) {
+            if ('page_template' == $templateData['type']) {
                 $withMarkers = true;
             } else {
                 $withMarkers = false;
-            }
-            $formData = array();
+            }            
         }
+        
+        $formElementManager = $this->serviceManager->get('FormElementManager');
         
         if ($withMarkers) {
-            $form = $this->serviceManager->get('Templates\Form\TemplateWithMarkersForm');
+            $form = $formElementManager->get('Templates\Form\TemplateWithMarkersForm');
+            $factory     = new InputFactory();
+            $filter = $factory->createInput(array('type' => 'Templates\Form\TemplateWithMarkersFilter'));
+            
+     //       $filter = $this->serviceManager->get('Templates\Form\TemplateWithMarkersFilter');            
         } else {
-            $form = $this->serviceManager->get('Templates\Form\TemplateForm');
+            $form = $formElementManager->get('Templates\Form\TemplateForm');
+            $filter = $this->serviceManager->get('Templates\Form\TemplateFilter');
         }
-        $form->init();
-        
+        $form->setInputFilter($filter);
         $form->setData($formData);
         
         return $form;
+    }
+    
+    protected function getDefaultTemplateContent()
+    {
+        return '<div class="container"><?php echo $this->page[\'content\'][\'main_content\'] ?></div>';
+    }
+    
+    protected function getDefaultTemplateMarkers()
+    {
+        return 'main_content=Основное содержимое';
     }
     
 }

@@ -3,45 +3,44 @@
 namespace Pages\Form;
 
 use Zend\Form\Form;
-use Zend\ServiceManager\ServiceManagerAwareInterface;
-use Zend\ServiceManager\ServiceManager;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-class PageBase extends Form implements ServiceManagerAwareInterface
+class PageBase extends Form implements ServiceLocatorAwareInterface
 {
     /**
-     * @var ServiceManager
+     * @var ServiceLocatorInterface
      */
-    protected $serviceManager;
-    
-    protected $pageTypeId;
-    
+    protected $serviceLocator;
     
     /**
-     * Set service manager
+     * Set service locator
      *
-     * @param ServiceManager $serviceManager
+     * @param ServiceLocatorInterface $serviceLocator
      */
-    public function setServiceManager(ServiceManager $serviceManager)
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
     {
-        $this->serviceManager = $serviceManager;
+        $this->serviceLocator = $serviceLocator;
     }
-    
-    public function setPageTypeId($typeId)
+
+    /**
+     * Get service locator
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
     {
-        $this->pageTypeId = $typeId;
-        return $this;
+        return $this->serviceLocator;
     }
     
     public function create()
-    {    
-        $this->getFormFactory()->setFormElementManager($this->serviceManager->get('FormElementManager'));
+    {            
+        $pageTypeId = $this->getOption('pageTypeId');
         
-        $pageTypeId = $this->pageTypeId;
-        
-        $translator = $this->serviceManager->get('translator');
-        $moduleManager = $this->serviceManager->get('moduleManager');
-        $db = $this->serviceManager->get('db');
-        $configManager = $this->serviceManager->get('configManager');
+        $translator = $this->serviceLocator->getServiceLocator()->get('translator');
+        $moduleManager = $this->serviceLocator->getServiceLocator()->get('moduleManager');
+        $db = $this->serviceLocator->getServiceLocator()->get('db');
+        $configManager = $this->serviceLocator->getServiceLocator()->get('configManager');
         
         $feTheme = $configManager->get('system', 'fe_theme');
                 

@@ -83,9 +83,8 @@ class Page implements ServiceManagerAwareInterface
         $objectPropertyCollection = $this->serviceManager->get('objectPropertyCollection');
         
         if (null === $this->pageId) {            
-            $form = $this->serviceManager->get('Pages\Form\PageBase');  
-            
-            $form->setPageTypeId($pageTypeId)->create();
+            $form = $this->serviceManager->get('FormElementManager')
+                                         ->get('Pages\Form\PageBase', array('pageTypeId' => $pageTypeId));  
             
             if (null === $objectTypeId) {
                 $valueOptions = $form->get('common')->get('object_type_id')->getValueOptions();
@@ -160,9 +159,8 @@ class Page implements ServiceManagerAwareInterface
                 $this->setObjectTypeId($objectTypeId);
             }              
             
-            $form = $this->serviceManager->get('Pages\Form\PageBase');  
-            
-            $form->setPageTypeId($pageTypeId)->create();        
+            $form = $this->serviceManager->get('FormElementManager')
+                                         ->get('Pages\Form\PageBase', array('pageTypeId' => $pageTypeId));  
             
             if (null === $objectTypeId) {
                 $valueOptions = $form->get('common')->get('object_type_id')->getValueOptions();

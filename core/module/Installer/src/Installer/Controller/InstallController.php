@@ -78,8 +78,7 @@ class InstallController extends AbstractActionController
         
         $installerResources->copyInstallerResources();
         
-        $form = $this->serviceLocator->get('Installer\Form\LanguageForm');
-        $form->init();
+        $form = $this->serviceLocator->get('FormElementManager')->get('Installer\Form\LanguageForm');
         
         if ($this->request->isPost()) {      
             $form->setData($this->request->getPost());
@@ -136,8 +135,7 @@ class InstallController extends AbstractActionController
         $installSession = $this->installSession;
         
         $msg = array();
-        $form = $this->serviceLocator->get('Installer\Form\DbSettingsForm');
-        $form->init();
+        $form = $this->serviceLocator->get('FormElementManager')->get('Installer\Form\DbSettingsForm');
         
         if ($this->request->isPost()) {      
             $form->setData($this->request->getPost());
@@ -326,8 +324,7 @@ class InstallController extends AbstractActionController
         
         $installSession = $this->installSession;
         
-        $form = $this->serviceLocator->get('Installer\Form\AccessForm');
-        $form->init();
+        $form = $this->serviceLocator->get('FormElementManager')->get('Installer\Form\AccessForm');
         
         if ($this->request->isPost()) {
             $form->setData($this->request->getPost());

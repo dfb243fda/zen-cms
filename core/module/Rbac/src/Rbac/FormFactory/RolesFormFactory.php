@@ -40,10 +40,8 @@ class RolesFormFactory implements ServiceManagerAwareInterface
     
     public function getForm()
     {
-        $form = $this->serviceManager->get('Rbac\Form\RolesForm');
-        
-        $form->setRoleId($this->roleId)->init();
-        
+        $form = $this->serviceManager->get('FormElementManager')->get('Rbac\Form\RolesForm', array('roleId' => $this->roleId));
+                
         if (null !== $this->roleId) {
             $db = $this->serviceManager->get('db');
             

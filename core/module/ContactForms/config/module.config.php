@@ -58,7 +58,6 @@ return array(
         'invokables' => array(
             'ContactForms\Service\FormsList' => 'ContactForms\Service\FormsList',
             'ContactForms\Entity\ContactForm' => 'ContactForms\Entity\ContactForm',
-            'ContactForms\Form\ContactForm' => 'ContactForms\Form\ContactForm',
             'ContactForms\Collection\ContactForms' => 'ContactForms\Collection\ContactForms',
             'ContactForms\Parser\HtmlTemplate' => 'ContactForms\Parser\HtmlTemplate',
             'ContactForms\Mailer\ContactForm' => 'ContactForms\Mailer\ContactForm',
@@ -68,7 +67,6 @@ return array(
         'shared' => array(
             'ContactForms\Service\FormsList' => false,
             'ContactForms\Entity\ContactForm' => false,
-            'ContactForms\Form\ContactForm' => false,
             'ContactForms\Collection\ContactForms' => false,
             'ContactForms\Parser\HtmlTemplate' => false,
             'ContactForms\Mailer\ContactForm' => false,

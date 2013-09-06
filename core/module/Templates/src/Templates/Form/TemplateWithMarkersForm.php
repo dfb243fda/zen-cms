@@ -8,7 +8,7 @@ class TemplateWithMarkersForm extends TemplateForm
     {
         parent::init();
         
-        $translator = $this->serviceManager->get('translator');
+        $translator = $this->serviceLocator->getServiceLocator()->get('translator');
         
         $this->add(array(
                 'type' => 'textarea',
@@ -17,6 +17,6 @@ class TemplateWithMarkersForm extends TemplateForm
                     'label' => $translator->translate('Templates:Template markers'),
                 ),
             ));
-    }
+    }    
     
 }

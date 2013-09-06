@@ -3,43 +3,44 @@
 namespace Pages\Form;
 
 use Zend\Form\Form;
-use Zend\ServiceManager\ServiceManagerAwareInterface;
-use Zend\ServiceManager\ServiceManager;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-class ContentBase extends Form implements ServiceManagerAwareInterface
+class ContentBase extends Form implements ServiceLocatorAwareInterface
 {
     /**
-     * @var ServiceManager
+     * @var ServiceLocatorInterface
      */
-    protected $serviceManager;
-    
-    protected $contentTypeId;
-    
+    protected $serviceLocator;
     
     /**
-     * Set service manager
+     * Set service locator
      *
-     * @param ServiceManager $serviceManager
+     * @param ServiceLocatorInterface $serviceLocator
      */
-    public function setServiceManager(ServiceManager $serviceManager)
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
     {
-        $this->serviceManager = $serviceManager;
+        $this->serviceLocator = $serviceLocator;
     }
-    
-    public function setContentTypeId($typeId)
+
+    /**
+     * Get service locator
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
     {
-        $this->contentTypeId = $typeId;
-        return $this;
+        return $this->serviceLocator;
     }
     
     public function create()
     {    
-        $contentTypeId = $this->contentTypeId;
+        $contentTypeId = $this->getOption('contentTypeId');
         
-        $translator = $this->serviceManager->get('translator');
-        $moduleManager = $this->serviceManager->get('moduleManager');
-        $db = $this->serviceManager->get('db');
-        $configManager = $this->serviceManager->get('configManager');
+        $translator = $this->serviceLocator->getServiceLocator()->get('translator');
+        $moduleManager = $this->serviceLocator->getServiceLocator()->get('moduleManager');
+        $db = $this->serviceLocator->getServiceLocator()->get('db');
+        $configManager = $this->serviceLocator->getServiceLocator()->get('configManager');
         
         
         $sqlRes = $db->query('select id, title, module from ' . DB_PREF . 'page_content_types', array())->toArray();
@@ -116,10 +117,8 @@ class ContentBase extends Form implements ServiceManagerAwareInterface
         $objectTypesMultiOptions = array();
         foreach ($sqlRes as $row) {
             $objectTypesMultiOptions[$row['id']] = $translator->translateI18n($row['name']);
-        }
-        
+        }       
                 
-        $this->getFormFactory()->setFormElementManager($this->serviceManager->get('FormElementManager'));
         
         $this->add(array(
             'name' => 'common',

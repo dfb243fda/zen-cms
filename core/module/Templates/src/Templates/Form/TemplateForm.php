@@ -3,44 +3,52 @@
 namespace Templates\Form;
 
 use Zend\Form\Form;
-use Zend\ServiceManager\ServiceManagerAwareInterface;
-use Zend\ServiceManager\ServiceManager;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-class TemplateForm extends Form implements ServiceManagerAwareInterface
+class TemplateForm extends Form implements ServiceLocatorAwareInterface
 {
     /**
-     * @var ServiceManager
+     * @var ServiceLocatorInterface
      */
-    protected $serviceManager;    
+    protected $serviceLocator;
     
     /**
-     * Set service manager
+     * Set service locator
      *
-     * @param ServiceManager $serviceManager
+     * @param ServiceLocatorInterface $serviceLocator
      */
-    public function setServiceManager(ServiceManager $serviceManager)
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
     {
-        $this->serviceManager = $serviceManager;
+        $this->serviceLocator = $serviceLocator;
+    }
+
+    /**
+     * Get service locator
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
     }
     
     public function init()
-    {
-        $translator = $this->serviceManager->get('translator');
-        
-        $this->getFormFactory()->setFormElementManager($this->serviceManager->get('FormElementManager'));
+    {        
+        $translator = $this->serviceLocator->getServiceLocator()->get('translator');
         
         $this->add(array(
-                'name' => 'name',
-                'options' => array(
-                    'label' => $translator->translate('Templates:Template file'),
-                ),
-            ))
-            ->add(array(
                 'name' => 'title',
                 'options' => array(
                     'label' => $translator->translate('Templates:Template name'),
                 ),
             ))
+            ->add(array(
+                'name' => 'name',
+                'options' => array(
+                    'label' => $translator->translate('Templates:Template file'),
+                ),
+            ))            
             ->add(array(
                 'type' => 'checkbox',
                 'name' => 'is_default',
@@ -55,15 +63,8 @@ class TemplateForm extends Form implements ServiceManagerAwareInterface
                     'label' => $translator->translate('Templates:Template content'),
                     'mode' => 'php',
                 ),
-            ))
-            ->add(array(
-                'type' => 'textarea',
-                'name' => 'markers',
-                'options' => array(
-                    'label' => $translator->translate('Templates:Template markers'),
-                ),
             ));
-        
+/*        
         $this->getInputFilter()
                 ->get('name')
                 ->setRequired(true);
@@ -71,7 +72,7 @@ class TemplateForm extends Form implements ServiceManagerAwareInterface
         $this->getInputFilter()
                 ->get('name')        
                 ->getValidatorChain()
-                ->attachByName('Regex', array('pattern' => '/.+\.phtml$/'));
+                ->attachByName('Regex', array('pattern' => '/^[a-z_\-0-9]+\.[a-z]{3,4}$/'));
         
         $this->getInputFilter()
                 ->get('name')
@@ -84,6 +85,8 @@ class TemplateForm extends Form implements ServiceManagerAwareInterface
                 ->setRequired(true)
                 ->getFilterChain()
                 ->attachByName('StringTrim');
+ * 
+ */
     }
     
 }

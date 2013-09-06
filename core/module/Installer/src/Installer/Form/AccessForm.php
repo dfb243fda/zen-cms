@@ -2,33 +2,40 @@
 
 namespace Installer\Form;
 
-use Zend\ServiceManager\ServiceManager;
-use Zend\ServiceManager\ServiceManagerAwareInterface;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Form\Form;
 
-class AccessForm extends Form implements ServiceManagerAwareInterface
+class AccessForm extends Form implements ServiceLocatorAwareInterface
 {
     /**
-     * @var ServiceManager
+     * @var ServiceLocatorInterface
      */
-    protected $serviceManager;
-    
+    protected $serviceLocator;
     
     /**
-     * Set service manager
+     * Set service locator
      *
-     * @param ServiceManager $serviceManager
+     * @param ServiceLocatorInterface $serviceLocator
      */
-    public function setServiceManager(ServiceManager $serviceManager)
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
     {
-        $this->serviceManager = $serviceManager;
+        $this->serviceLocator = $serviceLocator;
+    }
+
+    /**
+     * Get service locator
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
     }
     
     public function init()
-    {        
-        $this->getFormFactory()->setFormElementManager($this->serviceManager->get('formElementManager'));
-        
-        $translator = $this->serviceManager->get('translator');
+    {                
+        $translator = $this->serviceLocator->getServiceLocator()->get('translator');
         
         $this->add(array(
             'name' => 'email',

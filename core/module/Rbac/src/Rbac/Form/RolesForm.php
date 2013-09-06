@@ -2,48 +2,52 @@
 
 namespace Rbac\Form;
 
-use Zend\ServiceManager\ServiceManager;
-use Zend\ServiceManager\ServiceManagerAwareInterface;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Form\Form;
 
-class RolesForm extends Form implements ServiceManagerAwareInterface
+class RolesForm extends Form implements ServiceLocatorAwareInterface
 {
     /**
-     * @var ServiceManager
+     * @var ServiceLocatorInterface
      */
-    protected $serviceManager;
+    protected $serviceLocator;
     
     protected $table = 'roles';
-    
-    protected $roleId;
-    
+            
     /**
-     * {@inheritDoc}
+     * Set service locator
+     *
+     * @param ServiceLocatorInterface $serviceLocator
      */
-    public function setServiceManager(ServiceManager $serviceManager)
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
     {
-        $this->serviceManager = $serviceManager;
+        $this->serviceLocator = $serviceLocator;
     }
-    
-    public function setRoleId($roleId)
+
+    /**
+     * Get service locator
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
     {
-        $this->roleId = $roleId;
-        return $this;
+        return $this->serviceLocator;
     }
     
     public function init()
-    {
-        $this->getFormFactory()->setFormElementManager($this->serviceManager->get('FormElementManager'));
-        
-        $db = $this->serviceManager->get('db');
-        $translator = $this->serviceManager->get('translator');
+    {        
+        $db = $this->serviceLocator->getServiceLocator()->get('db');
+        $translator = $this->serviceLocator->getServiceLocator()->get('translator');
+    
+        $roleId = $this->getOption('roleId');
         
         $query = 'select id, name from ' . DB_PREF . $this->table;
         $bind = array();
         
-        if (null !== $this->roleId) {
+        if (null !== $roleId) {
             $query .= ' where id != ?';
-            $bind[] = $this->roleId;
+            $bind[] = $roleId;
         }
         
         $sqlRes = $db->query($query, $bind)->toArray();

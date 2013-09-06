@@ -19,7 +19,7 @@ return array(
     'Templates menu group' => 'Шаблоны',
     
     'Templates:Template name' => 'Название шаблона',
-    'Templates:Template file' => 'Имя файла',
+    'Templates:Template file' => 'Файл',
     'Templates:Is default template' => 'Является шаблоном по умолчанию',
     
     'Templates:Template file name' => 'Название файла',

@@ -69,9 +69,8 @@ class Content implements ServiceManagerAwareInterface
         $moduleManager = $this->serviceManager->get('moduleManager');
         
         if (null === $this->contentId) {            
-            $form = $this->serviceManager->get('Pages\Form\ContentBase');  
-            
-            $form->setContentTypeId($contentTypeId)->create();
+            $form = $this->serviceManager->get('FormElementManager')
+                                         ->get('Pages\Form\ContentBase', array('contentTypeId' => $contentTypeId));  
             
             if (null === $objectTypeId) {
                 $valueOptions = $form->get('common')->get('object_type_id')->getValueOptions();
@@ -131,9 +130,8 @@ class Content implements ServiceManagerAwareInterface
                 $this->setObjectTypeId($objectTypeId);
             }               
             
-            $form = $this->serviceManager->get('Pages\Form\ContentBase');  
-            
-            $form->setContentTypeId($contentTypeId)->create(); 
+            $form = $this->serviceManager->get('FormElementManager')
+                                         ->get('Pages\Form\ContentBase', array('contentTypeId' => $contentTypeId));  
             
             if (null === $objectTypeId) {
                 $valueOptions = $form->get('common')->get('object_type_id')->getValueOptions();

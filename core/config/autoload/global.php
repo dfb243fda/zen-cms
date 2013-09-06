@@ -130,6 +130,7 @@ return array(
         'template_path_stack' => array(
             APPLICATION_PATH . '/view',
         ),
+//        'default_template_suffix' => 'php',
     ),
     'view_helpers' => array(
         'invokables' => array(

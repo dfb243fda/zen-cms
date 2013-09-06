@@ -117,7 +117,6 @@ return array(
             'Rbac\Service\Installer' => 'Rbac\Service\Installer',
             'Rbac\Service\RolesTree' => 'Rbac\Service\RolesTree',
             'Rbac\FormFactory\RolesFormFactory' => 'Rbac\FormFactory\RolesFormFactory',
-            'Rbac\Form\RolesForm' => 'Rbac\Form\RolesForm',
             'Rbac\Entity\RoleEntity' => 'Rbac\Entity\RoleEntity',
         ),
         'factories' => array(

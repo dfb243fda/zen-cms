@@ -3,26 +3,25 @@
 namespace Templates\Method;
 
 use App\Method\AbstractMethod;
-use Templates\Model\Templates;
 
 class DeleteTemplate extends AbstractMethod
 {    
     public function main()
     {      
-        $templatesModel = new Templates($this->serviceLocator, $this->url());
-        
         if (!$this->params()->fromPost('id')) {
             throw new \Exception('Wrong parameters transferred');
         }
         
+        $templatesCollection = $this->serviceLocator->get('Templates\Collection\TemplatesCollection');
+        
         $id = (int)$this->params()->fromPost('id');
         
+        $success = false;
         try {
-            $success = $templatesModel->deleteTemplate($id);
-        } catch (\Exception $e) {
-            $success = false;
-        }
-        
+            if ($templatesCollection->deleteTemplate($id)) {
+                $success = true;
+            }
+        } catch (\Exception $e) {}
         
         $result = array(
             'success' => $success,

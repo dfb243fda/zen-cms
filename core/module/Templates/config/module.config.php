@@ -43,12 +43,11 @@ return array(
             'Templates\Service\Installer' => 'Templates\Service\Installer',
             'Templates\Service\TemplatesList' => 'Templates\Service\TemplatesList',
             'Templates\FormFactory\TemplatesFormFactory' => 'Templates\FormFactory\TemplatesFormFactory',
-            'Templates\Entity\TemplateEntity' => 'Templates\Entity\TemplateEntity',
-            'Templates\Form\TemplateForm' => 'Templates\Form\TemplateForm',
-            'Templates\Form\TemplateWithMarkersForm' => 'Templates\Form\TemplateWithMarkersForm',
+            'Templates\Entity\TemplateEntity' => 'Templates\Entity\TemplateEntity',            
+            'Templates\Collection\TemplatesCollection' => 'Templates\Collection\TemplatesCollection',
         ),
     ),
-    
+        
     'translator' => array(
         'translation_file_patterns' => array(
             array(

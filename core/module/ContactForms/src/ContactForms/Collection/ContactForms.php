@@ -26,7 +26,7 @@ class ContactForms implements ServiceManagerAwareInterface
     }
     
     /**
-     * return \ContactForms\Entity\Form
+     * return \ContactForms\Entity\ContactForm
      */
     public function getFormEntity($formId)
     {
@@ -67,8 +67,8 @@ class ContactForms implements ServiceManagerAwareInterface
      */
     public function getAdminForm()
     {
-        $form = $this->serviceManager->get('ContactForms\Form\ContactForm');        
-        $form->init();        
+        $form = $this->serviceManager->get('FormElementManager')
+                                     ->get('ContactForms\Form\ContactForm');  
         $form->setData($this->getDefaultData());
         
         return $form;
