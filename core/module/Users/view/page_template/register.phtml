@@ -1,7 +1,5 @@
 <?php
 
-$sm = $this->getHelperPluginManager()->getServiceLocator();
-
 $this->headTitle()->setSeparator(' - ');
 $this->headTitle('Zen-CMS');
 $this->headTitle($this->translate('Users:Authorization'));
@@ -15,17 +13,8 @@ if (!$this->enableRegistration) {
     return;
 }
 
-$factory = new Zend\Form\Factory($sm->get('FormElementManager'));
-$formConfig = $this->formConfig;
-
-$form = $factory->createForm($formConfig);   
-$form->setAttribute('method', 'post');
-$form->setData($this->formValues);
+$form = $this->form;
 $form->prepare();
-
-if (isset($this->formMsg)) {
-    $form->setMessages($this->formMsg);
-}
 
 $this->headLink()->appendStylesheet(ROOT_URL_SEGMENT . '/css/Users/registration.css');
 

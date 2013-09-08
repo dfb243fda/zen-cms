@@ -6,33 +6,58 @@ use Zend\View\Helper\AbstractHelper;
 use Zend\Authentication\AuthenticationService;
 use Users\Entity\UserInterface as User;
 
-class UserDisplayName extends AbstractHelper
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+
+class UserDisplayName extends AbstractHelper implements ServiceLocatorAwareInterface
 {
     /**
      * @var AuthenticationService
      */
     protected $authService;
+    
+    protected $serviceLocator;
+    
+    
+    /**
+     * Set service locator
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+    }
+
+    /**
+     * Get service locator
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
+    }
+    
 
     /**
      * __invoke
      *
      * @access public
-     * @param \ZfcUser\Entity\UserInterface $user
-     * @throws \ZfcUser\Exception\DomainException
+     * @param \Users\Entity\UserInterface $user
      * @return String
      */
     public function __invoke(User $user = null)
     {
-        if (null === $user) {
-            if ($this->getAuthService()->hasIdentity()) {
-                $user = $this->getAuthService()->getIdentity();
-                if (!$user instanceof User) {
-                    throw new \ZfcUser\Exception\DomainException(
-                        '$user is not an instance of User', 500
-                    );
-                }
+        if (null === $user) {       
+            $rootServiceManager = $this->serviceLocator->getServiceLocator();
+            
+            $authService = $rootServiceManager->get('users_auth_service');
+            
+            if ($authService->hasIdentity()) {
+                $user = $authService->getUser();
             } else {
-                return false;
+                return null;
             }
         }
 
@@ -46,27 +71,5 @@ class UserDisplayName extends AbstractHelper
         }
 
         return $displayName;
-    }
-
-    /**
-     * Get authService.
-     *
-     * @return AuthenticationService
-     */
-    public function getAuthService()
-    {
-        return $this->authService;
-    }
-
-    /**
-     * Set authService.
-     *
-     * @param AuthenticationService $authService
-     * @return \ZfcUser\View\Helper\ZfcUserDisplayName
-     */
-    public function setAuthService(AuthenticationService $authService)
-    {
-        $this->authService = $authService;
-        return $this;
     }
 }

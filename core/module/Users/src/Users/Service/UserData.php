@@ -1,6 +1,6 @@
 <?php
 
-namespace AdminPanel\Service;
+namespace Users\Service;
 
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
@@ -21,14 +21,16 @@ class UserData implements ServiceManagerAwareInterface
     }
         
     public function getUserData()
-    {        
-        $userAuth = $this->serviceManager->get('ControllerPluginManager')->get('userAuthentication');
+    {                
+        $authService = $this->serviceManager->get('users_auth_service');
         
-        if ($userAuth->hasIdentity()) {
-            $userData = $userAuth->getIdentity()->toArray();
+        $currentUser = $authService->getUser();          
+               
+        if ($currentUser) {
+            $userData = $currentUser->toArray();
             unset($userData['password']);
         } else {
-            $userData = null;            
+            $userData = null;
         }
         
         return $userData;

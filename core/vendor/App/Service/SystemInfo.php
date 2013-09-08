@@ -1,6 +1,6 @@
 <?php
 
-namespace AdminPanel\Service;
+namespace App\Service;
 
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManagerAwareInterface;

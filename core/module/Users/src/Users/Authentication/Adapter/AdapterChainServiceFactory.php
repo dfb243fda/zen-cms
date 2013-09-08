@@ -4,21 +4,13 @@ namespace Users\Authentication\Adapter;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Users\Authentication\Adapter\AdapterChain;
-use Users\Options\ModuleOptions;
-use Users\Authentication\Adapter\Exception\OptionsNotFoundException;
 
 class AdapterChainServiceFactory implements FactoryInterface
 {
-
-    /**
-     * @var ModuleOptions
-     */
- //   protected $options;
-
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $chain = new AdapterChain();
-        
+                
         $config = $serviceLocator->get('config');
         
         $options = $config['Users'];

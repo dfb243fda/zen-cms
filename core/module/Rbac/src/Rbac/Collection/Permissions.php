@@ -18,6 +18,8 @@ class Permissions implements ServiceManagerAwareInterface
     
     protected $permissionsTable = 'role_permissions';
     
+//    protected $rolesPrefix = '';
+    
     /**
      * {@inheritDoc}
      */
@@ -53,7 +55,7 @@ class Permissions implements ServiceManagerAwareInterface
                         $tmpPermission = null;
                     }
 
-                    $isAllowed = (int)$authService->getAcl()->isAllowed('id_' . $roleId, $tmpResource, $tmpPermission);                
+                    $isAllowed = (int)$authService->getAcl()->isAllowed($roleId, $tmpResource, $tmpPermission);                
                     $row['roles'][$roleId] = $isAllowed;
                 }
 
@@ -95,7 +97,7 @@ class Permissions implements ServiceManagerAwareInterface
             $privelege = null;
         }            
 
-        if (!$authService->getAcl()->hasRole('id_' . $roleId)) {
+        if (!$authService->getAcl()->hasRole($roleId)) {
             $result['errMsg'] = 'Переданы неверные параметры';
             return $result;
         }
@@ -104,9 +106,9 @@ class Permissions implements ServiceManagerAwareInterface
             return $result;
         }
 
-        if ($isAllowed && $authService->getAcl()->isAllowed('id_' . $roleId, $resource, $privelege)) {
+        if ($isAllowed && $authService->getAcl()->isAllowed($roleId, $resource, $privelege)) {
             $result['errMsg'] = 'privelege is already allowed';
-        } elseif (!$isAllowed && !$authService->getAcl()->isAllowed('id_' . $roleId, $resource, $privelege)) {
+        } elseif (!$isAllowed && !$authService->getAcl()->isAllowed($roleId, $resource, $privelege)) {
             $result['errMsg'] = 'privelege is already disallowed';
         } else {
             if (null === $resource) {

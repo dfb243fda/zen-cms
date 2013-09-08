@@ -13,9 +13,9 @@ class AdminController extends AbstractActionController
     public function indexAction()
     {
         $pageDataService = $this->serviceLocator->get('AdminPanel\Service\PageData');
-        $userDataService = $this->serviceLocator->get('AdminPanel\Service\UserData');
-        $systemInfoService = $this->serviceLocator->get('AdminPanel\Service\SystemInfo');
-        $errorsService = $this->serviceLocator->get('AdminPanel\Service\Errors');
+        $userDataService = $this->serviceLocator->get('Users\Service\UserData');
+        $systemInfoService = $this->serviceLocator->get('App\Service\SystemInfo');
+        $errorsService = $this->serviceLocator->get('App\Service\Errors');
         $rendererStrategy = $this->serviceLocator->get('App\View\RendererStrategy');        
         $rendererStrategyOptions = $this->serviceLocator->get('AdminPanel\View\RendererStrategyOptions');    
         $application = $this->serviceLocator->get('application');

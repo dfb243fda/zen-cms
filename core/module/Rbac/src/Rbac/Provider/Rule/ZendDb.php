@@ -21,6 +21,8 @@ class ZendDb implements ProviderInterface
     protected $rules = array();
     
     protected $tableName = 'role_permissions';
+    
+//    protected $rolesPrefix = '';
 
     /**
      * @param array $config
@@ -34,12 +36,12 @@ class ZendDb implements ProviderInterface
         $groupData = array();
         foreach ($sqlRes as $row) {
             if (isset($groupData[$row['privelege'] . ':' . $row['resource'] . ':' . $row['is_allowed']])) {
-                $groupData[$row['privelege'] . ':' . $row['resource'] . ':' . $row['is_allowed']]['roles'][] = 'id_' . $row['role'];
+                $groupData[$row['privelege'] . ':' . $row['resource'] . ':' . $row['is_allowed']]['roles'][] = $row['role'];
             } else {
                 $groupData[$row['privelege'] . ':' . $row['resource'] . ':' . $row['is_allowed']] = array(
                     'privelege' => $row['privelege'],
                     'resource' => $row['resource'],
-                    'roles' => array('id_' . $row['role']),
+                    'roles' => array($row['role']),
                     'is_allowed' => $row['is_allowed'],
                 );
             }

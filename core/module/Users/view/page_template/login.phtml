@@ -1,7 +1,5 @@
 <?php
 
-$sm = $this->getHelperPluginManager()->getServiceLocator();
-
 $this->headTitle()->setSeparator(' - ');
 $this->headTitle('Zen-CMS');
 $this->headTitle($this->translate('Users:Authorization'));
@@ -10,17 +8,8 @@ $this->headLink(array('rel' => 'icon', 'href' => ROOT_URL_SEGMENT . '/img/Users/
 
 $this->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=utf-8');
 
-$factory = new Zend\Form\Factory($sm->get('FormElementManager'));
-$formConfig = $this->formConfig;
-
-$form = $factory->createForm($formConfig);   
-$form->setAttribute('method', 'post');
-$form->setData($this->formValues);
+$form = $this->form;   
 $form->prepare();
-
-if (isset($this->formMsg)) {
-    $form->setMessages($this->formMsg);
-}
 
 $msg = $form->getMessages();
 if (empty($msg)) {
@@ -28,7 +17,6 @@ if (empty($msg)) {
 } else {
     $this->layout()->bodyAttr = array('class' => 'chameleon_unhappy');
 }
-
 
 $this->headLink()->appendStylesheet(ROOT_URL_SEGMENT . '/css/Users/users.css');
 

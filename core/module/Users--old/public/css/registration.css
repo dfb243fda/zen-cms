@@ -1,0 +1,160 @@
+/* reset */
+
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/* reset */
+
+.clearfix:after {
+    content:"\0020";
+    display:block;
+    height:0;
+    clear:both;
+    visibility:hidden;
+    overflow:hidden;
+}
+.clearfix {
+    display:block;
+}
+.clear {
+    clear:both;
+}
+.left {
+    float:left;
+}
+.right {
+    float:right;
+}
+.hide {
+    display: none;
+}
+
+
+html {
+    min-height: 100%;
+}
+
+body {
+	margin: 0;
+    background: url("../../img/Users/chameleon_looks.jpg") no-repeat scroll 100% 100% transparent;
+    min-height: 100%;
+}
+
+.registration__wrap {
+	border: 1px solid #0F890D;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	left: 50%;
+	margin-left: -235px;
+	top: 30px;
+	position: absolute;
+	width: 470px;
+    padding: 2px;
+}
+	.registration {
+		color: #E8E8E8;
+		background-color: #0F890D;
+		-webkit-border-radius: 10px;
+		-moz-border-radius: 10px;
+		border-radius: 10px;
+		padding: 25px;
+		font-size: 18px;
+	}
+    
+.registration .block__title {
+    text-align: center;
+}
+.registration .form-element {
+    display: block;
+    margin-bottom: 10px;
+}
+.registration .form-element textarea {
+    width: 800px;
+    height: 200px;
+}
+.registration .form-element__ckeditor,
+.registration .form-element__textarea {
+    display: block;
+    width: 100%;
+}    
+
+.registration .form-element > label {
+    display: block;
+    margin-bottom: 5px;
+}
+    .registration .form-element > label > span {
+        display: block;
+        margin-bottom: 5px;
+    } 
+    .registration .form-element input[type=text],
+    .registration .form-element input[type=password] {
+        width: 245px;
+    }
+        .registration .form-element__integer input[type=text],
+        .registration .form-element__float input[type=text],
+        .registration .form-element__price input[type=text] {
+            width: 222px;
+        }
+    .registration .form-element select {
+        width: 250px;
+    }
+ 
+.block__buttons {
+    margin-top: 25px;
+}    
+.registration input[type="submit"] {
+    font-size: 1.3em;
+}
+
+.form-element__errors li {
+    display: block;
+    color: #872F2F;
+    margin-bottom: 5px;
+}

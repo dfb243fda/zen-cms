@@ -24,8 +24,10 @@ return array(
             'App\View\Strategy\PrintRStrategy' => 'App\Mvc\Service\ViewPrintRStrategyFactory',    
         ),
         'invokables' => array(
+            'App\Service\SystemInfo' => 'App\Service\SystemInfo',
+            'App\Service\Errors' => 'App\Service\Errors',
+            
             'App\ObjectType\ObjectType' => 'App\ObjectType\ObjectType',
-            'App\ObjectType\Form' => 'App\ObjectType\Form',
             'App\ObjectPropertyCollection\ObjectPropertyCollection' => 'App\ObjectPropertyCollection\ObjectPropertyCollection',     
             'App\ObjectsCollection\ObjectsCollection' => 'App\ObjectsCollection\ObjectsCollection',
             'App\ObjectTypesCollection\ObjectTypesCollection' => 'App\ObjectTypesCollection\ObjectTypesCollection',   
@@ -62,7 +64,6 @@ return array(
         ),
         'shared' => array(
             'App\ObjectType\ObjectType' => false,
-            'App\ObjectType\Form' => false,
         ),
     ),
     'translator' => array(

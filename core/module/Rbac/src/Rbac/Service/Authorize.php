@@ -279,7 +279,7 @@ class Authorize
             }
 
             if ($role->getParent() !== null) {
-                $this->addRoles(array($role->getParent()));
+                $this->addRoles(array($role->getParent()));                
                 $this->acl->addRole($role, $role->getParent());
             } else {
                 $this->acl->addRole($role);

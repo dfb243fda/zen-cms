@@ -3,7 +3,7 @@
 namespace Users\Validator;
 
 use Zend\Validator\AbstractValidator;
-use Users\Mapper\UserInterface;
+use Users\Collection\Users as UsersCollection;
 
 abstract class AbstractRecord extends AbstractValidator
 {
@@ -22,9 +22,9 @@ abstract class AbstractRecord extends AbstractValidator
     );
 
     /**
-     * @var UserInterface
+     * @var UsersCollection
      */
-    protected $mapper;
+    protected $usersCollection;
 
     /**
      * @var string
@@ -51,9 +51,9 @@ abstract class AbstractRecord extends AbstractValidator
      *
      * @return UserInterface
      */
-    public function getMapper()
+    public function getUsersCollection()
     {
-        return $this->mapper;
+        return $this->usersCollection;
     }
 
     /**
@@ -62,9 +62,9 @@ abstract class AbstractRecord extends AbstractValidator
      * @param UserInterface $mapper
      * @return AbstractRecord
      */
-    public function setMapper(UserInterface $mapper)
+    public function setUsersCollection(UsersCollection $usersCollection)
     {
-        $this->mapper = $mapper;
+        $this->usersCollection = $usersCollection;
         return $this;
     }
 
@@ -101,11 +101,11 @@ abstract class AbstractRecord extends AbstractValidator
 
         switch ($this->getKey()) {
             case 'email':
-                $result = $this->getMapper()->findByEmail($value);
+                $result = $this->getUsersCollection()->getUserByEmail($value);
                 break;
 
-            case 'username':
-                $result = $this->getMapper()->findByUsername($value);
+            case 'user_name':
+                $result = $this->getUsersCollection()->getUserByName($value);
                 break;
 
             default:

@@ -4,37 +4,7 @@ namespace Users\Entity;
 
 class User implements UserInterface
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * @var string
-     */
-    protected $username;
-
-    /**
-     * @var string
-     */
-    protected $email;
-
-    /**
-     * @var string
-     */
-    protected $displayName;
-
-    /**
-     * @var string
-     */
-    protected $password;
-
-    /**
-     * @var int
-     */
-    protected $state;
-    
-    protected $objectId;
+    protected $userData = array();
     
     /**
      * Get id.
@@ -43,7 +13,7 @@ class User implements UserInterface
      */
     public function getId()
     {
-        return $this->id;
+        return $this->userData['id'];
     }
 
     /**
@@ -54,7 +24,7 @@ class User implements UserInterface
      */
     public function setId($id)
     {
-        $this->id = (int) $id;
+        $this->userData['id'] = (int) $id;
         return $this;
     }
 
@@ -63,9 +33,9 @@ class User implements UserInterface
      *
      * @return string
      */
-    public function getUsername()
+    public function getUserName()
     {
-        return $this->username;
+        return $this->userData['user_name'];
     }
 
     /**
@@ -74,9 +44,9 @@ class User implements UserInterface
      * @param string $username
      * @return UserInterface
      */
-    public function setUsername($username)
+    public function setUsername($userName)
     {
-        $this->username = $username;
+        $this->userData['user_name'] = $userName;
         return $this;
     }
 
@@ -87,7 +57,7 @@ class User implements UserInterface
      */
     public function getEmail()
     {
-        return $this->email;
+        return $this->userData['email'];
     }
 
     /**
@@ -98,7 +68,7 @@ class User implements UserInterface
      */
     public function setEmail($email)
     {
-        $this->email = $email;
+        $this->userData['email'] = $email;
         return $this;
     }
 
@@ -109,7 +79,7 @@ class User implements UserInterface
      */
     public function getDisplayName()
     {
-        return $this->displayName;
+        return $this->userData['display_name'];
     }
 
     /**
@@ -120,7 +90,7 @@ class User implements UserInterface
      */
     public function setDisplayName($displayName)
     {
-        $this->displayName = $displayName;
+        $this->userData['display_name'] = $displayName;
         return $this;
     }
 
@@ -131,7 +101,7 @@ class User implements UserInterface
      */
     public function getPassword()
     {
-        return $this->password;
+        return $this->userData['password'];
     }
 
     /**
@@ -142,7 +112,7 @@ class User implements UserInterface
      */
     public function setPassword($password)
     {
-        $this->password = $password;
+        $this->userData['password'] = $password;
         return $this;
     }
 
@@ -153,7 +123,7 @@ class User implements UserInterface
      */
     public function getState()
     {
-        return $this->state;
+        return $this->userData['state'];
     }
 
     /**
@@ -164,31 +134,29 @@ class User implements UserInterface
      */
     public function setState($state)
     {
-        $this->state = $state;
+        $this->userData['state'] = $state;
         return $this;
     }
     
     public function getObjectId()
     {
-        return $this->objectId;
+        return $this->userData['object_id'];
     }
     
     public function setObjectId($objectId)
     {
-        $this->objectId = $objectId;
+        $this->userData['object_id'] = $objectId;
         return $this;
     }
     
     public function toArray()
     {
-        return array(
-            'state' => $this->state,
-            'password' => $this->password,
-            'displayName' => $this->displayName,
-            'email' => $this->email,
-            'username' => $this->username,
-            'id' => $this->id,
-            'objectId' => $this->objectId,
-        );
+        return $this->userData;
+    }
+    
+    public function setData($data)
+    {
+        $this->userData = $data;
+        return $this;
     }
 }

@@ -24,7 +24,7 @@ class AdapterChain extends EventProvider implements AdapterInterface
     public function authenticate()
     {
         $e = $this->getEvent();
-
+        
         $result = new AuthenticationResult(
             $e->getCode(),
             $e->getIdentity(),

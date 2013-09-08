@@ -2,53 +2,56 @@
 
 namespace App\ObjectType;
 
-use Zend\Form\Form as ZendForm;
-use Zend\ServiceManager\ServiceManagerAwareInterface;
-use Zend\ServiceManager\ServiceManager;
+use Zend\Form\Form;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-class Form extends ZendForm implements ServiceManagerAwareInterface
+class ObjectTypeForm extends Form implements ServiceLocatorAwareInterface
 {
     /**
-     * @var ServiceManager
+     * @var ServiceLocatorInterface
      */
-    protected $serviceManager;
-    
-    protected $objectType;
-    
-    protected $onlyVisible = false;
+    protected $serviceLocator;
+                
+    protected $onlyVisible;
     
     /**
-     * Set service manager
+     * Set service locator
      *
-     * @param ServiceManager $serviceManager
+     * @param ServiceLocatorInterface $serviceLocator
      */
-    public function setServiceManager(ServiceManager $serviceManager)
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
     {
-        $this->serviceManager = $serviceManager;
+        $this->serviceLocator = $serviceLocator;
     }
     
-    public function setObjectType($objectType)
+    /**
+     * Get service locator
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
     {
-        $this->objectType = $objectType;
-        return $this;
+        return $this->serviceLocator;
     }
     
-    public function setOnlyVisible($onlyVisible)
+    public function init()
     {
-        $this->onlyVisible = (bool)$onlyVisible;
-    }
-    
-    public function create()
-    {
-        if (null === $this->objectType) {
-            throw new \Exception('object type is undefined');
+        $objectType = $this->getOption('objectType');
+        
+        $onlyVisible = $this->getOption('onlyVisible');
+        if (null === $onlyVisible) {
+            $onlyVisible = $this->onlyVisible;
         }
         
-        $this->getFormFactory()->setFormElementManager($this->serviceManager->get('FormElementManager'));
         
-        $translator = $this->serviceManager->get('translator');
-        $onlyVisible = $this->onlyVisible;
-        
+        if (null === $objectType) {
+            throw new \Exception('object type is undefined');
+        }
+                
+        $translator = $this->serviceLocator->getServiceLocator()->get('translator');        
+
+/*        
         $this->add(array(
             'name' => 'common',
             'type' => 'fieldset',
@@ -63,9 +66,9 @@ class Form extends ZendForm implements ServiceManagerAwareInterface
                 'label' => $translator->translate('App:ObjectType:Name field'),
             ),
         ));
+*/        
         
-        
-        $fieldGroups = $this->objectType->getFieldGroups();
+        $fieldGroups = $objectType->getFieldGroups();
                 
         foreach ($fieldGroups as $k=>$v) {
             $fields = $v->getFields();

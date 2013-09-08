@@ -2,7 +2,6 @@
 
 namespace Users\Authentication\Adapter;
 
-use DateTime;
 use Zend\Authentication\Result as AuthenticationResult;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
@@ -16,7 +15,7 @@ class Db extends AbstractAdapter implements ServiceManagerAwareInterface
     /**
      * @var UserMapperInterface
      */
-    protected $mapper;
+    protected $usersCollection;
 
     /**
      * @var closure / invokable object
@@ -43,25 +42,25 @@ class Db extends AbstractAdapter implements ServiceManagerAwareInterface
         $identity   = $e->getRequest()->getPost()->get('identity');
         $credential = $e->getRequest()->getPost()->get('credential');
         $credential = $this->preProcessCredential($credential);
-        $userObject = NULL;
+        $userEntity = NULL;
         
         $options = $this->getOptions();
 
         // Cycle through the configured identity sources and test each
         $fields = $options['authIdentityFields'];
-        while ( !is_object($userObject) && count($fields) > 0 ) {
+        while ( !is_object($userEntity) && count($fields) > 0 ) {
             $mode = array_shift($fields);
             switch ($mode) {
                 case 'username':
-                    $userObject = $this->getMapper()->findByUsername($identity);
+                    $userEntity = $this->getUsersCollection()->getUserByName($identity);
                     break;
                 case 'email':
-                    $userObject = $this->getMapper()->findByEmail($identity);
+                    $userEntity = $this->getUsersCollection()->getUserByEmail($identity);
                     break;
             }
         }
 
-        if (!$userObject) {
+        if (!$userEntity) {
             $e->setCode(AuthenticationResult::FAILURE_IDENTITY_NOT_FOUND)
               ->setMessages(array('A record with the supplied identity could not be found.'));
             $this->setSatisfied(false);
@@ -70,7 +69,7 @@ class Db extends AbstractAdapter implements ServiceManagerAwareInterface
 
         if ($options['enableUserState']) {
             // Don't allow user to login if state is not in allowed list
-            if (!in_array($userObject->getState(), $this->getOptions()->getAllowedLoginStates())) {
+            if (!in_array($userEntity->getState(), $this->getOptions()->getAllowedLoginStates())) {
                 $e->setCode(AuthenticationResult::FAILURE_UNCATEGORIZED)
                   ->setMessages(array('A record with the supplied identity is not active.'));
                 $this->setSatisfied(false);
@@ -80,7 +79,7 @@ class Db extends AbstractAdapter implements ServiceManagerAwareInterface
 
         $bcrypt = new Bcrypt();
         $bcrypt->setCost($options['passwordCost']);
-        if (!$bcrypt->verify($credential,$userObject->getPassword())) {
+        if (!$bcrypt->verify($credential,$userEntity->getPassword())) {
             // Password does not match
             $e->setCode(AuthenticationResult::FAILURE_CREDENTIAL_INVALID)
               ->setMessages(array('Supplied credential is invalid.'));
@@ -89,9 +88,9 @@ class Db extends AbstractAdapter implements ServiceManagerAwareInterface
         }
 
         // Success!
-        $e->setIdentity($userObject->getId());
+        $e->setIdentity($userEntity->getId());
         // Update user's password hash if the cost parameter has changed
-        $this->updateUserPasswordHash($userObject, $credential, $bcrypt);
+        $this->updateUserPasswordHash($userEntity, $credential, $bcrypt);
         $this->setSatisfied(true);
         $storage = $this->getStorage()->read();
         $storage['identity'] = $e->getIdentity();
@@ -100,12 +99,12 @@ class Db extends AbstractAdapter implements ServiceManagerAwareInterface
           ->setMessages(array('Authentication successful.'));
     }
 
-    protected function updateUserPasswordHash($userObject, $password, $bcrypt)
+    protected function updateUserPasswordHash($userEntity, $password, $bcrypt)
     {
-        $hash = explode('$', $userObject->getPassword());
+        $hash = explode('$', $userEntity->getPassword());
         if ($hash[2] === $bcrypt->getCost()) return;
-        $userObject->setPassword($bcrypt->create($password));
-        $this->getMapper()->update($userObject);
+        $userEntity->setPassword($bcrypt->create($password));
+        $userEntity->save();
         return $this;
     }
 
@@ -119,28 +118,14 @@ class Db extends AbstractAdapter implements ServiceManagerAwareInterface
     }
 
     /**
-     * getMapper
-     *
-     * @return UserMapperInterface
+     * @return \Users\Collection\Users
      */
-    public function getMapper()
+    public function getUsersCollection()
     {
-        if (null === $this->mapper) {
-            $this->mapper = $this->getServiceManager()->get('users_mapper');
+        if (null === $this->usersCollection) {
+            $this->usersCollection = $this->getServiceManager()->get('Users\Collection\Users');
         }
-        return $this->mapper;
-    }
-
-    /**
-     * setMapper
-     *
-     * @param UserMapperInterface $mapper
-     * @return Db
-     */
-    public function setMapper(UserMapperInterface $mapper)
-    {
-        $this->mapper = $mapper;
-        return $this;
+        return $this->usersCollection;
     }
 
     /**

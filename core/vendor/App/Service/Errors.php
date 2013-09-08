@@ -1,6 +1,6 @@
 <?php
 
-namespace AdminPanel\Service;
+namespace App\Service;
 
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
@@ -25,11 +25,12 @@ class Errors implements ServiceManagerAwareInterface
         $bugHunter = $this->serviceManager->get('bugHunter');  
         $applicationConfig = $this->serviceManager->get('ApplicationConfig');    
         $translator = $this->serviceManager->get('translator');   
+        $rbacAuthService = $this->serviceManager->get('Rbac\Service\Authorize');
         
         $result = array();
         
-        if ($bugHunter->hasLogs()) {            
-            if ($this->isAllowed('get_errors') || true == $applicationConfig['show_errors_to_everybody']) {
+        if ($bugHunter->hasLogs()) {               
+            if ($rbacAuthService->isAllowed('get_errors') || true == $applicationConfig['show_errors_to_everybody']) {
                 $result['access'] = true;
             } else {
                 $result['access'] = false;

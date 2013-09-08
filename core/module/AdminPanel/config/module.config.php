@@ -54,9 +54,6 @@ return array(
     'service_manager' => array(
         'invokables' => array(            
             'AdminPanel\Service\PageData' => 'AdminPanel\Service\PageData',
-            'AdminPanel\Service\UserData' => 'AdminPanel\Service\UserData',
-            'AdminPanel\Service\SystemInfo' => 'AdminPanel\Service\SystemInfo',
-            'AdminPanel\Service\Errors' => 'AdminPanel\Service\Errors',
             'AdminPanel\View\RendererStrategyOptions' => 'AdminPanel\View\RendererStrategyOptions',
             
             'AdminPanel\View\ResultComposer\HtmlComposer' => 'AdminPanel\View\ResultComposer\HtmlComposer',

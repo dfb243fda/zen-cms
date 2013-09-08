@@ -65,12 +65,11 @@ class Users
         $objectTypeId = $this->objectTypeId;      
         
         if ($userId === null) {
-            $formConfig = $this->getBaseFormConfig();  
+            $form = $this->getBaseForm();  
             
             if (null !== $objectTypeId) {
-                $objectType = $this->objectTypesCollection->getType($objectTypeId);            
-                $formConfig = $objectType->getAppFormConfig($formConfig, $onlyVisible);
-                unset($formConfig['fieldsets']['common']['spec']['elements']['name']);
+                $objectType = $this->objectTypesCollection->getType($objectTypeId);                    
+                $this->mergeForms($form, $objectType->getForm($onlyVisible));
             }
             
             $formValues = array();
@@ -139,12 +138,11 @@ class Users
         
         
         return array(
-            'formConfig' => $formConfig,
-            'formValues' => $formValues,
+            'form' => $form,
         );   
     }
     
-    protected function getBaseFormConfig()
+    protected function getBaseForm()
     {
         $guid = 'user-item';
         $parentId = $this->objectTypesCollection->getTypeIdByGuid($guid);
@@ -266,8 +264,8 @@ class Users
                             'NoRecordExists' => array(
                                 'name' => 'Users\Validator\NoRecordExists',
                                 'options' => array(
-                                    'mapper' => $this->serviceManager->get('users_mapper'),
-                                    'key'    => 'username'
+                                    'usersCollection' => $this->serviceManager->get('Users\Collection\Users'),
+                                    'key'    => 'user_name'
                                 ),
                             ),
                         ),
@@ -329,7 +327,7 @@ class Users
                             'NoRecordExists' => array(
                                 'name' => 'Users\Validator\NoRecordExists',
                                 'options' => array(
-                                    'mapper' => $this->serviceManager->get('users_mapper'),
+                                    'usersCollection' => $this->serviceManager->get('Users\Collection\Users'),
                                     'key'    => 'email'
                                 ),
                             ),

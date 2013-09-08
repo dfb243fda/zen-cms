@@ -67,22 +67,12 @@ return array(
         // Resource providers to be used to load all available resources into Zend\Permissions\Acl\Acl
         // Keys are the provider service names, values are the options to be passed to the provider
         'resource_providers'    => array(
-//            'Rbac\Provider\Resource\Config' => array(
-//                'admin_access' => array(),
-//            ),
             'Rbac\Provider\Resource\ZendDb' => array(),
         ),
 
         // Rule providers to be used to load all available rules into Zend\Permissions\Acl\Acl
         // Keys are the provider service names, values are the options to be passed to the provider
         'rule_providers'        => array(
-//            'Rbac\Provider\Rule\Config' => array(
-//                'allow' => array(
-                    // allow guests and users (and admins, through inheritance)
-                    // the "wear" privilege on the resource "pants"
-//                    array(array('id_0'), 'admin_access')
-//                ),
-//            ),
             'Rbac\Provider\Rule\ZendDb' => array(),
         ),
 
@@ -111,6 +101,7 @@ return array(
             'Rbac\Listener\ModulePermissionsCollector' => 'Rbac\Listener\ModulePermissionsCollector',      
             'Rbac\Collection\Permissions' => 'Rbac\Collection\Permissions',
             'Rbac\Collection\Roles' => 'Rbac\Collection\Roles',
+            'Rbac\Provider\Identity\UsersZendDb' => 'Rbac\Provider\Identity\UsersZendDb',
             
             'Rbac\Service\DisplayErrorsSetter' => 'Rbac\Service\DisplayErrorsSetter',
             'Rbac\Service\DynamicConfig' => 'Rbac\Service\DynamicConfig',
@@ -126,7 +117,7 @@ return array(
             'Rbac\RoleProviders'                       => 'Rbac\Service\RoleProvidersServiceFactory',
             'Rbac\ResourceProviders'                   => 'Rbac\Service\ResourceProvidersServiceFactory',
             'Rbac\RuleProviders'                       => 'Rbac\Service\RuleProvidersServiceFactory',
-            'Rbac\Provider\Identity\UsersZendDb'       => 'Rbac\Service\UsersZendDbIdentityProviderServiceFactory',
+            
         ),
     ),
         

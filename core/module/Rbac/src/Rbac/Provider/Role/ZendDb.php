@@ -44,6 +44,8 @@ class ZendDb implements ProviderInterface
      * @var string
      */
     protected $parentRoleFieldName = 'parent';
+    
+//    protected $rolesPrefix = '';
 
     /**
      * @param                         $options
@@ -87,10 +89,10 @@ class ZendDb implements ProviderInterface
 
         // Pass One: Build each object
         foreach ($rowset as $row) {            
-            $roleId = 'id_' . $row[$this->roleIdFieldName];
+            $roleId = $row[$this->roleIdFieldName];
             $parentRoleId = $row[$this->parentRoleFieldName];
             if (0 != $parentRoleId) {
-                $parentRoleId = 'id_' . $parentRoleId;
+                $parentRoleId = $parentRoleId;
             }
             $roles[$roleId] = new Role($roleId, $parentRoleId);
         }

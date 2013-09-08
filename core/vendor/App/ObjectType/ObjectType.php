@@ -333,11 +333,11 @@ class ObjectType implements ServiceManagerAwareInterface
         return $this->fieldGroups;
     }
     
-    public function getForm()
+    public function getForm($onlyVisible = false)
     {
-        $form = $this->serviceManager->get('App\ObjectType\Form');
+        $formElementManager = $this->serviceManager->get('FormElementManager');
         
-        $form->setObjectType($this)->create();      
+        $form = $formElementManager->get('App\ObjectType\ObjectTypeForm', array('objectType' => $this, 'onlyVisible' => $onlyVisible));
         
         return $form;
     }

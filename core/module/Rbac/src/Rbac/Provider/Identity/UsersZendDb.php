@@ -8,45 +8,42 @@
 
 namespace Rbac\Provider\Identity;
 
-use Zend\Db\Adapter\Adapter;
-use Zend\Db\Sql\Where;
-use Zend\Db\Sql\Sql;
-use Users\Service\User;
+use Zend\ServiceManager\ServiceManagerAwareInterface;
+use Zend\ServiceManager\ServiceManager;
 
 /**
  * Identity provider based on {@see \Zend\Db\Adapter\Adapter}
  *
  * @author Ben Youngblood <bx.youngblood@gmail.com>
  */
-class UsersZendDb implements ProviderInterface
+class UsersZendDb implements ProviderInterface, ServiceManagerAwareInterface
 {
-    /**
-     * @var User
-     */
-    protected $userService;
-
-    /**
-     * @var string|\Zend\Permissions\Acl\Role\RoleInterface
-     */
-    protected $defaultRole;
-
     /**
      * @var string
      */
-    protected $tableName = 'user_role_linker';
+    protected $userRoleLinkerTable = 'user_role_linker';
 
     protected $rolesTable = 'roles';
     
     protected $roles;
     
+//    protected $rolesPrefix = '';
+    
     /**
-     * @param \Zend\Db\Adapter\Adapter $adapter
-     * @param \ZfcUser\Service\User    $userService
+     * @var ServiceManager
      */
-    public function __construct(Adapter $adapter, User $userService)
+    protected $serviceManager;
+    
+    /**
+     * Set service manager instance
+     *
+     * @param ServiceManager $serviceManager
+     * @return User
+     */
+    public function setServiceManager(ServiceManager $serviceManager)
     {
-        $this->adapter     = $adapter;
-        $this->userService = $userService;
+        $this->serviceManager = $serviceManager;
+        return $this;
     }
 
     /**
@@ -58,34 +55,31 @@ class UsersZendDb implements ProviderInterface
             return $this->roles;
         }
         
-        $authService = $this->userService->getAuthService();
+        $authService = $this->serviceManager->get('users_auth_service');
+        $db = $this->serviceManager->get('db');
 
-        $roles     = array();
+        $roles = array();
         
-        if ( ! $authService->hasIdentity() || null === $authService->getIdentity()) {
-            $sqlRes = $this->adapter->query('select id from ' . DB_PREF . $this->rolesTable . ' where unauthorized = 1', array())->toArray();
+        if ( ! $authService->hasIdentity()) {
+            $sqlRes = $db->query('
+                select id 
+                from ' . DB_PREF . $this->rolesTable . ' 
+                where unauthorized = 1', array())->toArray();
             
             foreach ($sqlRes as $row) {
-                $roles[] = 'id_' . $row['id'];
+                $roles[] = $row['id'];
             }
+        } else {            
+            $sqlRes = $db->query('
+                select role_id
+                from ' . DB_PREF . $this->userRoleLinkerTable . ' 
+                    where user_id = ?', array($authService->getIdentity()))->toArray();
             
-            return $roles;
+            foreach ($sqlRes as $row) {
+                $roles[] = $row['role_id'];
+            }
         }
 
-        // get roles associated with the logged in user
-        $sql    = new Sql($this->adapter);
-        $select = $sql->select()->from(DB_PREF . $this->tableName);
-        $where  = new Where();
-        
-        $where->equalTo('user_id', $authService->getIdentity()->getId());
-
-        $results = $sql->prepareStatementForSqlObject($select->where($where))->execute();
-        
-
-        foreach ($results as $i) {
-            $roles[] = 'id_' . $i['role_id'];
-        }
-        
         $this->roles = $roles;
 
         return $roles;

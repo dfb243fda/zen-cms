@@ -55,7 +55,7 @@ class NewUserRolesSetter implements
         $db = $this->serviceManager->get('db');
         $configManager = $this->serviceManager->get('configManager');
             
-        $params = $event->getParams();
+        $params = $e->getParams();
 
         $userId = $params['userId'];
 
