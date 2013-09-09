@@ -64,7 +64,7 @@ class EditPage extends AbstractMethod
                 $result['success'] = false;
             }
         }
-                
+        
         $result['contentTemplate'] = array(
             'name' => 'content_template/Pages/page_form_view.phtml',
             'data' => array(

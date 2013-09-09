@@ -2,131 +2,44 @@
 
 namespace App\Field;
 
+use Zend\ServiceManager\ServiceManager;
+use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\Db\Sql\Sql;
-use Zend\Form\Element;
 
-class Field
+class Field implements ServiceManagerAwareInterface
 {
+    /**
+     * @var ServiceManager
+     */
     protected $serviceManager;
     
-    protected $translator;
+    protected $fieldId;
     
-    protected $objectTypesCollection;
-    
-    protected $fieldTypesCollection;
-    
-    protected $db = null;
-    
-    protected $id = null;
-    
-    protected $fieldData = null;
-    
-    protected $isExists = null;
-    
+    protected $fieldData = array();  
+        
     protected $fieldsTable = 'object_fields';
     
     protected $fieldsControllerTable = 'fields_controller';  
     
-    public function __construct($options)
-    {   
-        if ($options instanceof Zend_Config) {
-            $options = $options->toArray();
-        }
-        elseif (!is_array($options)) {
-            throw new Zend_Exception('Invalid options provided; must be location of config file, a config object, or an array');
-        }
-        
-        $this->setOptions($options);  
-        
-        if (null === $this->id) {
-            throw new Zend_Exception('Field id is undefined');
-        }
-        
-        if (null === $this->db) {
-            $this->db = $this->serviceManager->get('db');
-        }
-        
-        $this->translator = $this->serviceManager->get('translator');       
-        $this->objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
-        $this->fieldTypesCollection = $this->serviceManager->get('fieldTypesCollection');
-        
-        $this->init();
-    }
-    
-    protected function init()
-    {        
-        $this->isExists = true;
-        if ($this->fieldData === null) {
-            
-            $query = 'SELECT * FROM ' . DB_PREF . $this->fieldsTable . ' WHERE id = ?';
-
-            $resultSet = $this->db->query($query, array($this->id));
-            $sqlRes = $resultSet->toArray();
-            
-            if (empty($sqlRes)) {
-                $this->isExists = false;
-                $this->fieldData = array();
-            } else {                
-                $this->fieldData = $sqlRes[0];
-            }
-        }
-    }
-    
-    public function isExists()
+    /**
+     * {@inheritDoc}
+     */
+    public function setServiceManager(ServiceManager $serviceManager)
     {
-        return $this->isExists;
-    }
-    
-    public function save()
-    {
-        $fieldData = $this->fieldData;
-        unset($fieldData['id']);
-     
-        if (isset($fieldData['guide_id']) && !$fieldData['guide_id']) {
-            $fieldData['guide_id'] = null;
-        }
-        
-        $sql = new Sql($this->db);        
-        $update = $sql->update(DB_PREF . $this->fieldsTable);        
-        $update->set($fieldData)->where('id = ' . (int)$this->id);        
-        $sql->prepareStatementForSqlObject($update)->execute();
-    }
-    
-    public function setOptions(array $options)
-    {
-        foreach ($options as $key => $value) {
-            $method = 'set' . ucfirst($key);
-
-            if (method_exists($this, $method)) {
-                $this->$method($value);
-            }
-        }
-        return $this;
-    }
-    
-    public function setServiceManager($sm)
-    {
-        $this->serviceManager = $sm;
-        return $this;
-    }
-
-    public function setDb($db)
-    {
-        $this->db = $db;
-        return $this;
+        $this->serviceManager = $serviceManager;
     }
     
     public function getId()
     {
-        return $this->id;
+        return $this->fieldId;
     }
        
     public function setId($id)
     {
-        $this->id = $id;
+        $this->fieldId = $id;
         return $this;
     }    
-        
+    
     public function getFieldData()
     {
         return $this->fieldData;
@@ -180,17 +93,37 @@ class Field
     
     public function getFieldTypeName()
     {
-        return $this->fieldTypesCollection->getFieldType($this->fieldData['field_type_id'])->getName();
+        $fieldTypesCollection = $this->serviceManager->get('fieldTypesCollection');
+        return $fieldTypesCollection->getFieldType($this->fieldData['field_type_id'])->getName();
     }
     
     public function getFieldTypeTitle()
     {
-        return $this->fieldTypesCollection->getFieldType($this->fieldData['field_type_id'])->getTitle();
+        $fieldTypesCollection = $this->serviceManager->get('fieldTypesCollection');
+        return $fieldTypesCollection->getFieldType($this->fieldData['field_type_id'])->getTitle();
     }
     
     public function getFieldTypeIsMultiple()
     {
-        return $this->fieldTypesCollection->getFieldType($this->fieldData['field_type_id'])->getIsMultiple();
+        $fieldTypesCollection = $this->serviceManager->get('fieldTypesCollection');
+        return $fieldTypesCollection->getFieldType($this->fieldData['field_type_id'])->getIsMultiple();
+    }
+    
+    public function save()
+    {
+        $db = $this->serviceManager->get('db');
+        
+        $fieldData = $this->fieldData;
+        unset($fieldData['id']);
+     
+        if (isset($fieldData['guide_id']) && !$fieldData['guide_id']) {
+            $fieldData['guide_id'] = null;
+        }
+        
+        $sql = new Sql($db);        
+        $update = $sql->update(DB_PREF . $this->fieldsTable);        
+        $update->set($fieldData)->where('id = ' . (int)$this->fieldId);        
+        $sql->prepareStatementForSqlObject($update)->execute();
     }
     
     /**
@@ -198,7 +131,10 @@ class Field
      */
     public function getZendFormElement()
     {        
-        $name = 'field_' . $this->getId();
+        $db = $this->serviceManager->get('db');
+        $translator = $this->serviceManager->get('translator');
+        
+        $name = 'field_' . $this->fieldId;
         
         $spec = array(
    //         'type' => 'Zend\Form\Element\\' . ucfirst($this->getFieldTypeName()),
@@ -219,16 +155,16 @@ class Field
         
         
         if (null !== $this->getGuideId()) { 
-            $sqlRes = $this->db->query('select * from ' . DB_PREF . 'objects where type_id = ?', array($this->getGuideId()));
+            $sqlRes = $db->query('select * from ' . DB_PREF . 'objects where type_id = ?', array($this->getGuideId()));
             
             $spec['options']['value_options'] = array();
             foreach ($sqlRes as $row) {
-                $spec['options']['value_options'][$row['id']] = $this->translator->translateI18n($row['name']);
+                $spec['options']['value_options'][$row['id']] = $translator->translateI18n($row['name']);
             }
         }
 
         if ($this->getTip()) {
-            $spec['options']['description'] = $this->translator->translateI18n($this->getTip());
+            $spec['options']['description'] = $translator->translateI18n($this->getTip());
         }        
                 
         $formFactory = new \Zend\Form\Factory($this->serviceManager->get('formElementManager'));
@@ -240,13 +176,15 @@ class Field
     
     public function moveFieldAfter($fieldBeforeId, $currentGroupId, $targetGroupId)
     {
+        $db = $this->serviceManager->get('db');
+        
         if (0 == $fieldBeforeId) {
             $newSorting = 0;
         }
         else {
             $query = 'SELECT sorting FROM ' . DB_PREF . $this->fieldsControllerTable . ' WHERE group_id = ? AND field_id = ?';
 
-            $resultSet = $this->db->query($query, array($targetGroupId, $fieldBeforeId));
+            $resultSet = $db->query($query, array($targetGroupId, $fieldBeforeId));
             $sqlRes = $resultSet->toArray();            
             
             if (empty($sqlRes)) {
@@ -255,14 +193,14 @@ class Field
             $newSorting = $sqlRes[0]['sorting'] + 1;
         }
         
-        $this->db->query('UPDATE ' . DB_PREF . $this->fieldsControllerTable . '
+        $db->query('UPDATE ' . DB_PREF . $this->fieldsControllerTable . '
             SET sorting = (sorting + 1)
             WHERE group_id = ? AND sorting >= ?', array($targetGroupId, $newSorting));
         
-        $this->db->query('UPDATE ' . DB_PREF . $this->fieldsControllerTable . '
+        $db->query('UPDATE ' . DB_PREF . $this->fieldsControllerTable . '
             SET sorting = ?, group_id = ?
-            WHERE group_id = ? AND field_id = ?', array($newSorting, $targetGroupId, $currentGroupId, $this->id));
+            WHERE group_id = ? AND field_id = ?', array($newSorting, $targetGroupId, $currentGroupId, $this->fieldId));
         
         return true;
-    }
+    }    
 }

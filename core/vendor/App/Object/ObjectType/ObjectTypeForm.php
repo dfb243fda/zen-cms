@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ObjectType;
+namespace App\Object\ObjectType;
 
 use Zend\Form\Form;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;

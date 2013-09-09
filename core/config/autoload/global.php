@@ -23,16 +23,24 @@ return array(
             'App\View\Strategy\VarExportStrategy' => 'App\Mvc\Service\ViewVarExportStrategyFactory',    
             'App\View\Strategy\PrintRStrategy' => 'App\Mvc\Service\ViewPrintRStrategyFactory',    
         ),
-        'invokables' => array(
+        'invokables' => array(            
+            'App\Field\Field' => 'App\Field\Field',
+            'App\Field\FieldsCollection' => 'App\Field\FieldsCollection',
+            'App\Field\FieldsGroup' => 'App\Field\FieldsGroup',
+            'App\Field\FieldType' => 'App\Field\FieldType',
+            'App\Field\FieldTypesCollection' => 'App\Field\FieldTypesCollection',
+            
+            
+            'App\Object\Object' => 'App\Object\Object',
+            'App\Object\ObjectsCollection' => 'App\Object\ObjectsCollection',
+            'App\Object\ObjectPropertyCollection' => 'App\Object\ObjectPropertyCollection',
+            'App\Object\ObjectType' => 'App\Object\ObjectType',
+            'App\Object\ObjectTypesCollection' => 'App\Object\ObjectTypesCollection',
+                       
+            
             'App\Service\SystemInfo' => 'App\Service\SystemInfo',
             'App\Service\Errors' => 'App\Service\Errors',
-            
-            'App\ObjectType\ObjectType' => 'App\ObjectType\ObjectType',
-            'App\ObjectPropertyCollection\ObjectPropertyCollection' => 'App\ObjectPropertyCollection\ObjectPropertyCollection',     
-            'App\ObjectsCollection\ObjectsCollection' => 'App\ObjectsCollection\ObjectsCollection',
-            'App\ObjectTypesCollection\ObjectTypesCollection' => 'App\ObjectTypesCollection\ObjectTypesCollection',   
-            'App\FieldsCollection\FieldsCollection' => 'App\FieldsCollection\FieldsCollection',
-            'App\FieldTypesCollection\FieldTypesCollection' => 'App\FieldTypesCollection\FieldTypesCollection',   
+              
             'App\SqlParser\SqlParser' => 'App\SqlParser\SqlParser',
             'App\Log\Writer\ArrayWriter' => 'App\Log\Writer\ArrayWriter',
             'App\View\ResultComposer\JsonComposer' => 'App\View\ResultComposer\JsonComposer',
@@ -51,19 +59,24 @@ return array(
             'Translator' => 'App\I18n\Translator\Translator',
             'FileManager' => 'App\FileManager\FileManager',
             'MethodManager' => 'App\Method\MethodManager',
-            'Logger' => 'Zend\Log\Logger',
-            'ObjectType' => 'App\ObjectType\ObjectType',
-            'ObjectTypeForm' => 'App\ObjectType\Form',
-            'ObjectPropertyCollection' => 'App\ObjectPropertyCollection\ObjectPropertyCollection',
-            'ObjectsCollection' => 'App\ObjectsCollection\ObjectsCollection',
-            'ObjectTypesCollection' => 'App\ObjectTypesCollection\ObjectTypesCollection',
-            'FieldsCollection' => 'App\FieldsCollection\FieldsCollection',
-            'FieldTypesCollection' => 'App\FieldTypesCollection\FieldTypesCollection',
+            'Logger' => 'Zend\Log\Logger',            
             'SqlParser' => 'App\SqlParser\SqlParser',
-            'bugHunter' => 'App\Log\Writer\ArrayWriter',
+            'bugHunter' => 'App\Log\Writer\ArrayWriter',            
+            
+            'ObjectType' => 'App\Object\ObjectType',
+            'ObjectPropertyCollection' => 'App\Object\ObjectPropertyCollection',
+            'ObjectsCollection' => 'App\Object\ObjectsCollection',
+            'ObjectTypesCollection' => 'App\Object\ObjectTypesCollection',
+            'FieldsCollection' => 'App\Field\FieldsCollection',
+            'FieldTypesCollection' => 'App\Field\FieldTypesCollection',
         ),
         'shared' => array(
-            'App\ObjectType\ObjectType' => false,
+            'App\Field\Field' => false,
+            'App\Field\FieldsGroup' => false,
+            'App\Field\FieldType' => false,
+            
+            'App\Object\Object' => false,
+            'App\Object\ObjectType' => false,
         ),
     ),
     'translator' => array(

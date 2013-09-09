@@ -1,21 +1,15 @@
 <?php
 
-namespace App\ObjectsCollection;
-
-use App\Object\Object;
+namespace App\Object;
 
 use Zend\Db\Sql\Sql;
-
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
 
 class ObjectsCollection implements ServiceManagerAwareInterface
 {
     protected $serviceManager;
-    
-    protected $db = null;
-    
-    
+        
     protected $objectTypesTable = 'object_types';
     
     protected $objectsTable = 'objects';
@@ -24,20 +18,8 @@ class ObjectsCollection implements ServiceManagerAwareInterface
     
     protected $fieldsController = 'fields_controller';
     
-    protected $objects = array();
-    
-    protected $initialized = false;
-    
-    
-    protected function init()
-    {
-        if (!$this->initialized) {
-            $this->initialized = true;
+    protected $objects = array();    
             
-            $this->db = $this->serviceManager->get('db');
-        }
-    }
-    
     public function setServiceManager(ServiceManager $serviceManager)
     {
         $this->serviceManager = $serviceManager;
@@ -45,10 +27,14 @@ class ObjectsCollection implements ServiceManagerAwareInterface
     
     public function getGuidedItems($id)
     {
-        $this->init();
+        $db = $this->serviceManager->get('db');
         
         if (!is_numeric($id)) {
-            $sqlRes = $this->db->query('select * from ' . DB_PREF . $this->objectTypesTable . ' where guid = ? limit 1', array($id))->toArray();
+            $sqlRes = $db->query('
+                select * 
+                from ' . DB_PREF . $this->objectTypesTable . ' 
+                where guid = ? 
+                limit 1', array($id))->toArray();
             
             if (empty($sqlRes)) {
                 return array();
@@ -58,7 +44,10 @@ class ObjectsCollection implements ServiceManagerAwareInterface
             }
         }
         
-        $sqlRes = $this->db->query('select * from ' . DB_PREF . $this->objectsTable . ' where type_id = ? and is_deleted = 0', array($id))->toArray();
+        $sqlRes = $db->query('
+            select * 
+            from ' . DB_PREF . $this->objectsTable . ' 
+            where type_id = ? and is_deleted = 0', array($id))->toArray();
         
         $result = array();        
         foreach ($sqlRes as $row) {
@@ -70,18 +59,18 @@ class ObjectsCollection implements ServiceManagerAwareInterface
     
     public function addObject($name, $typeId, $parentId = 0, $sorting = null)
     {
-        $this->init();
+        $db = $this->serviceManager->get('db');
         
         $currentTime = time();
         
         if ($this->serviceManager->get('users_auth_service')->hasIdentity()) {
-            $userId = $this->serviceManager->get('users_auth_service')->getIdentity()->getId();  
+            $userId = $this->serviceManager->get('users_auth_service')->getIdentity();  
         } else {
             $userId = 0;
         }
               
         
-        $sql = new Sql($this->db);
+        $sql = new Sql($db);
         $insert = $sql->insert(DB_PREF . $this->objectsTable)->values(array(
             'name' => $name, 
             'type_id' => $typeId,
@@ -95,7 +84,7 @@ class ObjectsCollection implements ServiceManagerAwareInterface
         ));
         $sql->prepareStatementForSqlObject($insert)->execute();  
         
-        $objectId = $this->db->getDriver()->getLastGeneratedValue();
+        $objectId = $db->getDriver()->getLastGeneratedValue();
         
         return $objectId;
     }
@@ -103,16 +92,21 @@ class ObjectsCollection implements ServiceManagerAwareInterface
     
     public function delObject($objectId, $flagAsDelete = true)
     {
-        $this->init();
+        $db = $this->serviceManager->get('db');
         
         if ($this->isExists($objectId)) {
             if ($flagAsDelete) {
-                $this->db->query('update ' . DB_PREF . $this->objectsTable . ' set is_deleted=1 where id = ?', array($objectId));
+                $db->query('
+                    update ' . DB_PREF . $this->objectsTable . ' 
+                    set is_deleted=1 
+                    where id = ?', array($objectId));
             } else {
-                $this->db->query('delete from ' . DB_PREF . $this->objectsTable . ' where id = ?', array($objectId));
+                $db->query('
+                    delete from ' . DB_PREF . $this->objectsTable . ' 
+                    where id = ?', array($objectId));
             }
             
-            if (isset($this->objects[$objectId])) {
+            if (array_key_exists($objectId, $this->objects)) {
                 unset($this->objects[$objectId]);
             }           
             return true;
@@ -121,28 +115,43 @@ class ObjectsCollection implements ServiceManagerAwareInterface
         }
     }
         
-    public function getObject($id, $objectData = null)
-    {
-        $this->init();
+    public function getObject($objectId, $objectData = null)
+    {        
+        $db = $this->serviceManager->get('db');
         
-        if (isset($this->objects[$id])) {
-            return $this->objects[$id];
+        if (array_key_exists($objectId, $this->objects)) {
+            return $this->objects[$objectId];
         }
         
-        $this->objects[$id] = new Object(array(
-            'serviceManager' => $this->serviceManager,
-            'id' => $id,
-            'objectData' => $objectData,
-        ));
+        if (null === $objectData) {
+            $sqlRes = $db->query('
+                select * 
+                from ' . DB_PREF . $this->objectsTable . ' 
+                where id = ?', array($objectId))->toArray();
+            
+            if (!empty($sqlRes)) {
+                $objectData = $sqlRes[0];
+            }
+        }        
         
-        return $this->objects[$id];
+        $object = null;
+        if (null !== $objectData) {
+            $object = $this->serviceManager->get('App\Object\Object');
+            $object->setId($objectId)->setObjectData($objectData)->init();
+        }        
+        $this->objects[$objectId] = $object;
+        
+        return $object;
     }
     
     public function isExists($objectId)
     {
-        $this->init();
+        $db = $this->serviceManager->get('db');
         
-        $sqlRes = $this->db->query('SELECT count(id) AS cnt FROM ' . DB_PREF . $this->objectsTable . ' WHERE id = ?', array($objectId))->toArray();
+        $sqlRes = $db->query('
+            SELECT count(id) AS cnt 
+            FROM ' . DB_PREF . $this->objectsTable . ' 
+            WHERE id = ?', array($objectId))->toArray();
         
         return ($sqlRes[0]['cnt'] > 0);
     }

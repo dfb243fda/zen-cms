@@ -1,28 +1,20 @@
 <?php
 
-namespace App\FieldsGroup;
+namespace App\Field;
 
 use Zend\Db\Sql\Sql;
+use Zend\ServiceManager\ServiceManagerAwareInterface;
+use Zend\ServiceManager\ServiceManager;
 
-class FieldsGroup
+class FieldsGroup implements ServiceManagerAwareInterface
 {
     protected $serviceManager;
+           
+    protected $groupId;
     
-    protected $db;
-    
-    protected $translator;
-    
-    protected $objectTypesCollection;
-    
-    protected $fieldsCollection;
-    
-    protected $id;
-    
-    protected $groupData;
+    protected $groupData;    
     
     protected $fieldGroupsTable = 'object_field_groups';
-    
-    protected $isExists;
     
     protected $fieldsControllerTable = 'fields_controller';    
     
@@ -34,74 +26,21 @@ class FieldsGroup
     
     protected $objectContentTable = 'object_content';
     
-        
-    
-    public function __construct($options)
-    {           
-        $this->setOptions($options);     
-        
-        if (null === $this->db) {
-            $this->db = $this->serviceManager->get('db');
-        }
-        
-        $this->translator = $this->serviceManager->get('translator');     
-        $this->objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
-        $this->fieldsCollection = $this->serviceManager->get('fieldsCollection');
-        
-        if (null === $this->id) {
-            throw new Zend_Exception('Group id is undefined');
-        }
-        
-        $this->init();
-    }
-    
-    public function setOptions(array $options)
+    public function setServiceManager(ServiceManager $serviceManager)
     {
-        foreach ($options as $key => $value) {
-            $method = 'set' . ucfirst($key);
-
-            if (method_exists($this, $method)) {
-                $this->$method($value);
-            }
-        }
-        return $this;
-    }
-    
-    protected function init()
-    {
-        $this->isExists = true;
-        if (null === $this->groupData) {            
-            $query = 'SELECT * FROM ' . DB_PREF . $this->fieldGroupsTable . ' WHERE id = ?';
-
-            $resultSet = $this->db->query($query, array($this->id));
-            $sqlRes = $resultSet->toArray();
-            
-            if (empty($sqlRes)) {
-                $this->isExists = false;
-                $this->groupData = array();
-            }
-            else {
-                $this->groupData = $sqlRes[0];
-            }
-        }
-    }
-        
-    public function setServiceManager($sm)
-    {
-        $this->serviceManager = $sm;
-        return $this;
+        $this->serviceManager = $serviceManager;
     }
     
     public function getId()
     {
-        return $this->id;
+        return $this->groupId;
     }
-    
-    public function setId($groupId)
+       
+    public function setId($id)
     {
-        $this->id = $groupId;
+        $this->groupId = $id;
         return $this;
-    }
+    }    
     
     public function getGroupData()
     {
@@ -116,28 +55,31 @@ class FieldsGroup
     
     public function loadFields($objectFields = null)
     {
+        $db = $this->serviceManager->get('db');
+        $fieldsCollection = $this->serviceManager->get('fieldsCollection');
+        
         if (null === $objectFields) {
             $query = "SELECT of.* 
                 FROM " . DB_PREF . $this->fieldsControllerTable . " fc, " . DB_PREF . $this->objectFieldsTable . " of 
                 WHERE fc.group_id = ? AND of.id = fc.field_id
                 ORDER BY fc.sorting ASC";
             
-            $resultSet = $this->db->query($query, array($this->id));            
+            $resultSet = $db->query($query, array($this->groupId));            
             $sqlRes = $resultSet->toArray();
             
             foreach ($sqlRes as $row) {
-                $field = $this->fieldsCollection->getField($row['id'], $row);
+                $field = $fieldsCollection->getField($row['id'], $row);
                 $this->fields[$row['id']] = $field;
             }
         } else {
             foreach ($objectFields as $row) {
-                $field = $this->fieldsCollection->getField($row['id'], $row);
+                $field = $fieldsCollection->getField($row['id'], $row);
                 $this->fields[$row['id']] = $field;
             }
         }
     }
     
-    public function getFields()
+     public function getFields()
     {
         return $this->fields;
     }
@@ -190,25 +132,21 @@ class FieldsGroup
         return $this;
     }
     
-    public function isExists() {
-        return $this->isExists;
-    }
-    
     public function save()
     {
-        if ($this->isExists) { 
-            $sql = new Sql($this->db);        
-            $update = $sql->update(DB_PREF . $this->fieldGroupsTable);        
-            $update->set(array(
-                'name' => $this->groupData['name'],
-                'title' => $this->groupData['title'],
-                'object_type_id' => $this->groupData['object_type_id'],
-                'is_locked' => $this->groupData['is_locked'],
-                'sorting' => $this->groupData['sorting'],
-            ))->where('id = ' . (int)$this->id);
+        $db = $this->serviceManager->get('db');
+        
+        $sql = new Sql($db);        
+        $update = $sql->update(DB_PREF . $this->fieldGroupsTable);        
+        $update->set(array(
+            'name' => $this->groupData['name'],
+            'title' => $this->groupData['title'],
+            'object_type_id' => $this->groupData['object_type_id'],
+            'is_locked' => $this->groupData['is_locked'],
+            'sorting' => $this->groupData['sorting'],
+        ))->where('id = ' . (int)$this->groupId);
 
-            $sql->prepareStatementForSqlObject($update)->execute();
-        }        
+        $sql->prepareStatementForSqlObject($update)->execute();
     }
     
     /**
@@ -217,6 +155,8 @@ class FieldsGroup
      */
     public function moveGroupAfter($groupId = 0)
     {  
+        $db = $this->serviceManager->get('db');
+        
         if (0 == $groupId) {
             $newSorting = 0;
         } else {
@@ -232,34 +172,41 @@ class FieldsGroup
             $newSorting = $sqlRes[0]['sorting'] + 1;
         }
 
-        $this->db->query('UPDATE ' . DB_PREF . $this->fieldGroupsTable . '
+        $db->query('UPDATE ' . DB_PREF . $this->fieldGroupsTable . '
             SET sorting = (sorting + 1)
             WHERE object_type_id = ? AND sorting >= ?', array($this->groupData['object_type_id'], $newSorting));
         
-        $this->db->query('UPDATE ' . DB_PREF . $this->fieldGroupsTable . '
+        $db->query('UPDATE ' . DB_PREF . $this->fieldGroupsTable . '
             SET sorting = ?
-            WHERE id = ?', array($newSorting, $this->id));
+            WHERE id = ?', array($newSorting, $this->groupId));
         
         return true;            
     }
     
     public function attachField($fieldId)
     {
+        $db = $this->serviceManager->get('db');
+        $fieldsCollection = $this->serviceManager->get('fieldsCollection');
+        
         if (isset($this->fields[$fieldId])) {
             return;
         }
+        $field = $fieldsCollection->getField($fieldId);
+        if (null === $field) {
+            return;
+        }        
         
         $query = 'SELECT MAX(sorting) AS max_sorting FROM ' . DB_PREF . $this->fieldsControllerTable . ' WHERE group_id = ?';
 
-        $resultSet = $this->db->query($query, array($this->id));
+        $resultSet = $db->query($query, array($this->groupId));
         $sqlRes = $resultSet->toArray();
         $maxSorting = $sqlRes[0]['max_sorting'];
                        
-        $sql = new Sql($this->db);        
+        $sql = new Sql($db);        
         $insert = $sql->insert(DB_PREF . $this->fieldsControllerTable);        
         $insert->values(array(
             'field_id' => $fieldId,
-            'group_id' => $this->id,
+            'group_id' => $this->groupId,
             'sorting' => $maxSorting + 1,
         ));
         
@@ -267,37 +214,45 @@ class FieldsGroup
         $statement->execute();
         
         
-        $this->fields[$fieldId] = $this->fieldsCollection->getField($fieldId);
+        $this->fields[$fieldId] = $field;
         $this->fillInContentTable($fieldId);
     }
 
     protected function fillInContentTable($fieldId)
     {
+        $db = $this->serviceManager->get('db');
         $objectTypeId = $this->getObjectTypeId();
         
-        $this->db->query('INSERT INTO ' . DB_PREF . $this->objectContentTable . '
+        $db->query('
+            INSERT INTO ' . DB_PREF . $this->objectContentTable . '
             (object_id, field_id, int_val, varchar_val, text_val, float_val, object_rel_val, page_rel_val)
-            SELECT id, ' . $fieldId . ', NULL, NULL, NULL, NULL, NULL, NULL FROM ' . DB_PREF . $this->objectsTable . ' WHERE type_id = ' . $objectTypeId);
+                SELECT id, ' . $fieldId . ', NULL, NULL, NULL, NULL, NULL, NULL 
+                FROM ' . DB_PREF . $this->objectsTable . '
+                WHERE type_id = ' . $objectTypeId);
     }
 
     public function detachField($fieldId)
     {
+        $db = $this->serviceManager->get('db');
+        $fieldsCollection = $this->serviceManager->get('fieldsCollection');
+        
         if (!isset($this->fields[$fieldId])) {
             return;
         }
                 
-        $sql = new Sql($this->db);
-        $delete = $sql->delete(DB_PREF . $this->fieldsControllerTable)->where('field_id = ' . (int)$fieldId)->where('group_id = ' . (int)$this->id);        
-        $sql->prepareStatementForSqlObject($delete)->execute();
+        $db->query('
+            delete from ' . DB_PREF . $this->fieldsControllerTable . '
+            where field_id = ? and group_id = ?', array($fieldId, $this->groupId));
                 
         unset($this->fields[$fieldId]);
         
-        $resultSet = $this->db->query('SELECT COUNT(*) AS cnt FROM ' . DB_PREF . $this->fieldsControllerTable . ' WHERE field_id = ?', array($fieldId));
-        $sqlRes = $resultSet->toArray();
+        $sqlRes = $db->query('
+            SELECT COUNT(*) AS cnt 
+            FROM ' . DB_PREF . $this->fieldsControllerTable . ' 
+            WHERE field_id = ?', array($fieldId))->toArray();
         
         if (0 == $sqlRes[0]['cnt']) {
-            $this->fieldsCollection->delField($fieldId);
+            $fieldsCollection->delField($fieldId);
         }
     }
-            
 }

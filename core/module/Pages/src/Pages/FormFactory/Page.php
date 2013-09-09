@@ -173,7 +173,7 @@ class Page implements ServiceManagerAwareInterface
             }
             
             if (null !== $objectTypeId) {
-                $objectType = $objectTypesCollection->getType($objectTypeId);       
+                $objectType = $objectTypesCollection->getType($objectTypeId);
                 $this->mergeForms($form, $objectType->getForm());
             }     
             

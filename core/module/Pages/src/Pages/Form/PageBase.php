@@ -33,7 +33,7 @@ class PageBase extends Form implements ServiceLocatorAwareInterface
         return $this->serviceLocator;
     }
     
-    public function create()
+    public function init()
     {            
         $pageTypeId = $this->getOption('pageTypeId');
         

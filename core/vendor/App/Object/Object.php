@@ -3,16 +3,21 @@
 namespace App\Object;
 
 use Zend\Db\Sql\Sql;
+use Zend\ServiceManager\ServiceManager;
+use Zend\ServiceManager\ServiceManagerAwareInterface;
 
-class Object
+class Object implements ServiceManagerAwareInterface
 {
+    /**
+     * @var ServiceManager
+     */
     protected $serviceManager;
     
-    protected $db;
+    protected $objectId;
     
-    protected $id;
+    protected $properties = array();
     
-    protected $isExists;
+    protected $propGroups = array();
     
     protected $objectData;
     
@@ -20,148 +25,57 @@ class Object
     
     protected $objectTypesTable = 'object_types';
     
-    protected $objectType;
-    
-    protected $properties = array();
-    
-    protected $propGroups = array();
-    
-    
-    
     /**
-     * @var App_Bootstrap 
+     * {@inheritDoc}
      */
-    protected $_bootstrap = null;
-    
-    /**
-     *
-     * @var Zend_Db_Adapter_Abstract 
-     */    
-    protected $_db = null;
-    
-    protected $_isExists = null;
-    
-    protected $_id = null;
-    
-    protected $_objectData = null;
-    
-    protected $_objectsTable = 'objects';
-    
-    protected $_objectTypesTable = 'object_types';
-    
-    protected $_objectType = null;
-    
-    protected $_properties = array();
-    
-    protected $_propGroups = array();
-    
-    public function __construct($options)
-    {   
-        if ($options instanceof Zend_Config) {
-            $options = $options->toArray();
-        }
-        elseif (!is_array($options)) {
-            throw new Zend_Exception('Invalid options provided; must be location of config file, a config object, or an array');
-        }
-        
-        $this->setOptions($options);     
-        
-        if (null === $this->db) {
-            $this->db = $this->serviceManager->get('db');
-        }
-        
-        if (null === $this->id) {
-            throw new Zend_Exception('Object id is undefined');
-        }
-        
-        $this->translator = $this->serviceManager->get('translator');     
-        $this->objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
-        $this->objectsCollection = $this->serviceManager->get('objectsCollection');
-        $this->objectPropertyCollection = $this->serviceManager->get('objectPropertyCollection');
-        
-        $this->init();
+    public function setServiceManager(ServiceManager $serviceManager)
+    {
+        $this->serviceManager = $serviceManager;
     }
     
-    protected function init()
-    {
-        $this->isExists = true;
-        if ($this->objectData === null) {
-            $sqlResult = $this->db->query('
-                SELECT o.*, t.guid AS type_guid
-                FROM ' . DB_PREF . $this->objectsTable . ' o,
-                    ' . DB_PREF . $this->objectTypesTable . ' t
-                WHERE o.id = ?
-                    AND o.is_deleted = 0
-                    AND o.type_id = t.id
-            ', array($this->id))->toArray();
-            
-            if (empty($sqlResult)) {
-                $this->isExists = false;
-            } else {                
-                $this->objectData = $sqlResult[0];
+    public function init()
+    {        
+        $objectType = $this->getType();
+
+        $fieldGroupsList = $objectType->getFieldGroups();
+
+        foreach ($fieldGroupsList as $group) {
+            $fields = $group->getFields();
+
+            $this->propGroups[$group->getId()] = array();
+            foreach ($fields as $field) {
+                $this->properties[$field->getId()] = $field->getName();
+                $this->propGroups[$group->getId()][] = $field->getId();
             }
         }
-        
-        if ($this->isExists) {
-            $this->objectType = $this->objectTypesCollection->getType($this->objectData['type_id']);
-                
-            $fieldGroupsList = $this->objectType->getFieldGroups();
-
-            foreach ($fieldGroupsList as $group) {
-                $fields = $group->getFields();
-
-                $this->propGroups[$group->getId()] = array();
-                foreach ($fields as $field) {
-                    $this->properties[$field->getId()] = $field->getName();
-                    $this->propGroups[$group->getId()][] = $field->getId();
-                }
-            }
-        }
-        
     }
     
-    public function setOptions(array $options)
+    public function getObjectData()
     {
-        foreach ($options as $key => $value) {
-            $method = 'set' . ucfirst($key);
-
-            if (method_exists($this, $method)) {
-                $this->$method($value);
-            }
-        }
-        return $this;
+        return $this->objectData;
     }
     
-    public function setServiceManager($sm)
+    public function setObjectData($objectData)
     {
-        $this->serviceManager = $sm;
-        return $this;
-    }
-
-    public function setDb($db)
-    {
-        $this->db = $db;
+        $this->objectData = $objectData;
         return $this;
     }
     
     public function getId()
     {
-        return $this->id;
+        return $this->objectId;
     }
     
     public function setId($id)
     {
-        $this->id = $id;
+        $this->objectId = $id;
         return $this;
-    }
-    
-    public function isExists()
-    {
-        return $this->isExists;
     }
     
     public function getPropertyByName($name)
     {
+        $objectPropertyCollection = $this->serviceManager->get('objectPropertyCollection');
+        
         $name = strtolower($name);
         
         foreach ($this->properties as $fieldId=>$value) {
@@ -171,7 +85,7 @@ class Object
                 }
             } else {
                 if (strtolower($value) == $name) {                    
-                    $this->properties[$fieldId] = $this->objectPropertyCollection->getProperty($this->id, $fieldId);
+                    $this->properties[$fieldId] = $objectPropertyCollection->getProperty($this->objectId, $fieldId);
                     return $this->properties[$fieldId];
                 }
             }
@@ -182,9 +96,11 @@ class Object
     
     public function getPropertyById($fieldId)
     {
+        $objectPropertyCollection = $this->serviceManager->get('objectPropertyCollection');
+        
         if (isset($this->properties[$fieldId])) {
             if (!is_object($this->properties[$fieldId])) {
-                $this->properties[$fieldId] = $this->objectPropertyCollection->getProperty($this->id, $fieldId);
+                $this->properties[$fieldId] = $objectPropertyCollection->getProperty($this->objectId, $fieldId);
             }
             
             return $this->properties[$fieldId];
@@ -251,14 +167,15 @@ class Object
     
     public function save()
     {
+        $db = $this->serviceManager->get('db');
+        
         $tmp = $this->objectData;
         unset($tmp['id']);
-        unset($tmp['type_guid']);
         
         $tmp['modified_time'] = time();
                 
-        $sql = new Sql($this->db);
-        $update = $sql->update(DB_PREF . $this->objectsTable)->set($tmp)->where('id = ' . (int)$this->id);
+        $sql = new Sql($db);
+        $update = $sql->update(DB_PREF . $this->objectsTable)->set($tmp)->where('id = ' . (int)$this->objectId);
         $statement = $sql->prepareStatementForSqlObject($update);
         $statement->execute();
                 
@@ -280,14 +197,15 @@ class Object
         return $this;
     }
     
+    public function getType()
+    {
+        $objectTypesCollection = $this->serviceManager->get('ObjectTypesCollection');        
+        return $objectTypesCollection->getType($this->objectData['type_id']);
+    }
+    
     public function getTypeId()
     {
         return $this->objectData['type_id'];
-    }
-    
-    public function getObjectData()
-    {
-        return $this->objectData;
     }
     
     public function setTypeId($typeId)
@@ -340,3 +258,4 @@ class Object
         return $this;
     }
 }
+

@@ -33,7 +33,7 @@ class ContentBase extends Form implements ServiceLocatorAwareInterface
         return $this->serviceLocator;
     }
     
-    public function create()
+    public function init()
     {    
         $contentTypeId = $this->getOption('contentTypeId');
         

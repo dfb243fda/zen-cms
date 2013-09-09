@@ -1,59 +1,57 @@
 <?php
 
-namespace App\FieldTypesCollection;
+namespace App\Field;
 
-use App\FieldType\FieldType;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
 
-class FieldTypesCollection implements ServiceManagerAwareInterface
+class FieldTypesCollection implements ServiceManagerAwareInterface, \Zend\Stdlib\InitializableInterface
 {    
     protected $serviceManager;
+    
+    protected $initialized = false;
     
     protected $fieldTypesTable = 'object_field_types';
     
     protected $fieldTypes = null;
-        
-    protected $initialized = false;
     
-    protected function init()
-    {
-        if (!$this->initialized) {
-            $this->initialized = true;
-            
-            $this->db = $this->serviceManager->get('db');
-
-            $this->translator = $this->serviceManager->get('translator');      
-
-            $sqlResult = $this->db->query('select * from ' . DB_PREF . $this->fieldTypesTable, array())->toArray();
-            
-            $this->fieldTypes = array();
-            foreach ($sqlResult as $row) {
-                $this->fieldTypes[$row['id']] = new FieldType(array(
-                    'serviceManager' => $this->serviceManager,
-                    'id' => $row['id'],
-                    'typeData' => $row,
-                ));
-            }
-        }
-    }
     
     public function setServiceManager(ServiceManager $serviceManager)
     {
         $this->serviceManager = $serviceManager;
     }
     
+    public function init()
+    {        
+        if (!$this->initialized) {
+            $this->initialized = true;
+            
+            $db = $this->serviceManager->get('db');
+
+            $translator = $this->serviceManager->get('translator');      
+
+            $sqlResult = $db->query('select * from ' . DB_PREF . $this->fieldTypesTable, array())->toArray();
+            
+            $this->fieldTypes = array();
+            foreach ($sqlResult as $row) {
+                $fieldType = $this->serviceManager->get('App\Field\FieldType');
+                
+                $fieldType->setId($row['id'])->setTypeData($row);
+                
+                $this->fieldTypes[$row['id']] = $fieldType;
+            }
+        }
+    }
+    
     public function getFieldTypes()
-    {
+    {        
         $this->init();
-        
         return $this->fieldTypes;
     }
     
     public function getFieldType($typeId)
-    {
+    {        
         $this->init();
-        
         if (isset($this->fieldTypes[$typeId])) {
             return $this->fieldTypes[$typeId];
         }
@@ -61,7 +59,7 @@ class FieldTypesCollection implements ServiceManagerAwareInterface
     }
     
     public function getFieldTypeByDataType($dataType, $isMultiple = false)
-    {
+    {        
         $this->init();
         
         $fieldType = null;
@@ -76,7 +74,7 @@ class FieldTypesCollection implements ServiceManagerAwareInterface
     }
     
     public function getFieldTypeIdByDataType($dataType, $isMultiple = false)
-    {
+    {        
         $this->init();
         
         $fieldTypeId = null;
@@ -89,6 +87,4 @@ class FieldTypesCollection implements ServiceManagerAwareInterface
         
         return $fieldTypeId;
     }
-    
-    
 }
