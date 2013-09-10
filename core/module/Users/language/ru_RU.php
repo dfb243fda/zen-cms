@@ -70,4 +70,14 @@ return array(
     
     'Users:Login form template' => 'Форма авторизации',
     'Users:Registration form template' => 'Регистрационная форма',
+    
+    'Loginza config tab' => 'Loginza',
+    
+    'Dynamic config allow loginza' => 'Использовать Loginza',
+    'Dynamic config allow loginza description' => 'OpenId провайдер Loginza позволяет авторизовываться через сторонние сайты (Facebook, Google, Yandex и др.)',
+    
+    'Dynamic config loginza_widget_id' => 'Id виджета Loginza',
+    'Dynamic config loginza_widget_id description' => ' ',
+    'Dynamic config loginza_secret' => 'Секретный ключ Loginza',
+    'Dynamic config loginza_secret description' => ' ',
 );

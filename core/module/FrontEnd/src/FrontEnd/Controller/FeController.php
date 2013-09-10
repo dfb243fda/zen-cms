@@ -17,9 +17,9 @@ class FeController extends AbstractActionController
     public function indexAction()
     {
         $page = $this->page = $this->serviceLocator->get('Pages\Entity\Page');
-        $userDataService = $this->serviceLocator->get('FrontEnd\Service\UserData');
-        $systemInfoService = $this->serviceLocator->get('FrontEnd\Service\SystemInfo');
-        $errorsService = $this->serviceLocator->get('FrontEnd\Service\Errors');
+        $userDataService = $this->serviceLocator->get('Users\Service\UserData');
+        $systemInfoService = $this->serviceLocator->get('App\Service\SystemInfo');
+        $errorsService = $this->serviceLocator->get('App\Service\Errors');
         $rendererStrategy = $this->serviceLocator->get('App\View\RendererStrategy');        
         $rendererStrategyOptions = $this->serviceLocator->get('FrontEnd\View\RendererStrategyOptions');    
         $application = $this->serviceLocator->get('application');

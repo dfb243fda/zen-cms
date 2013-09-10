@@ -11,9 +11,6 @@ return array(
     ),
     'service_manager' => array(
         'invokables' => array(
-            'FrontEnd\Service\UserData' => 'FrontEnd\Service\UserData',
-            'FrontEnd\Service\SystemInfo' => 'FrontEnd\Service\SystemInfo',
-            'FrontEnd\Service\Errors' => 'FrontEnd\Service\Errors',
             'FrontEnd\View\RendererStrategyOptions' => 'FrontEnd\View\RendererStrategyOptions',
             
             'FrontEnd\View\ResultComposer\HtmlComposer' => 'FrontEnd\View\ResultComposer\HtmlComposer',

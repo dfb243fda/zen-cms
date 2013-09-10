@@ -54,6 +54,7 @@ class LoginController extends AbstractActionController
             $resultArray['form'] = $loginForm;
             $resultArray['redirect'] = $redirect;
             $resultArray['enableRegistration'] = (bool)$configManager->get('users', 'allow_registration');
+            $resultArray['enableLoginza'] = (bool)$configManager->get('loginza', 'allow_loginza');
         }
         
         $resultArray['systemInfo'] = $systemInfoService->getSystemInfo();
@@ -74,5 +75,18 @@ class LoginController extends AbstractActionController
         $eventManager->trigger('prepare_output', $this, array($resultArray));
                         
         return $rendererStrategy->getResult($resultArray);
+    }
+    
+    public function loginzaAction()
+    {
+        $token = $_POST['token'];
+        $widgetId = '58015';
+        $signature = md5($token . 'a7032b197c14a960e90e44b4d698f5ae');
+        
+        $url = "http://loginza.ru/api/authinfo?token=$token&id=$widgetId&sig=$signature";
+        
+        $content = file_get_contents($url);
+        echo $content;
+        exit();
     }
 }

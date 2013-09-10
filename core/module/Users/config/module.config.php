@@ -78,8 +78,50 @@ return array(
             'registration' => array(
                 'title' => 'i18n::Registration config tab',
             ),
+            'loginza' => array(
+                'title' => 'i18n::Loginza config tab',
+            ),
         ),
         'form' => array(
+            'loginza' => array(
+                'fieldsets' => array(                    
+                    array(
+                        'spec' => array(
+                            'name' => 'loginza',
+                            'elements' => array(
+                                array(
+                                    'spec' => array(
+                                        'type' => 'checkbox',
+                                        'name' => 'allow_loginza',
+                                        'options' => array(
+                                            'label' => 'i18n::Dynamic config allow loginza',
+                                            'description' => 'i18n::Dynamic config allow loginza description',
+                                        ),
+                                    ),
+                                ),
+                                array(
+                                    'spec' => array(
+                                        'name' => 'loginza_widget_id',
+                                        'options' => array(
+                                            'label' => 'i18n::Dynamic config loginza_widget_id',
+                                            'description' => 'i18n::Dynamic config loginza_widget_id description',
+                                        ),
+                                    ),
+                                ),
+                                array(
+                                    'spec' => array(
+                                        'name' => 'loginza_secret',
+                                        'options' => array(
+                                            'label' => 'i18n::Dynamic config loginza_secret',
+                                            'description' => 'i18n::Dynamic config loginza_secret description',
+                                        ),
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
             'registration' => array(
                 'fieldsets' => array(
                     array(
@@ -160,7 +202,7 @@ return array(
             'login' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/login[/][.:format]',
+                    'route' => '/login[/:action{/.}][/][.:format]',
                     'defaults' => array(
                         'controller' => 'Users\Controller\Login',
                         'action'     => 'index',

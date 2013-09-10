@@ -78,3 +78,9 @@ body {
 .b-login_form__register_div a:hover {
     text-decoration: none;
 }
+
+
+.b-login_form__loginza_div {
+    float: right;
+    margin-top: 40px;
+}
