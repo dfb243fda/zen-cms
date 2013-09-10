@@ -40,15 +40,15 @@ class Users
     {
         $items = array();    
         
-        $sqlRes = $this->db->query('select user_id, display_name, username, email from ' . $this->table, array())->toArray();
+        $sqlRes = $this->db->query('select user_id, display_name, login, email from ' . $this->table, array())->toArray();
         
         foreach ($sqlRes as $row) {
             $row['state'] = 'open';
             
             if ($row['display_name'] != '') {
                 $row['name'] = $row['display_name'];
-            } elseif ($row['username'] != '') {
-                $row['name'] = $row['username'];
+            } elseif ($row['login'] != '') {
+                $row['name'] = $row['login'];
             } else {
                 $row['name'] = $row['email'];
             }
@@ -86,7 +86,7 @@ class Users
                 }
             }
         } else {
-            $sqlRes = $this->db->query('select username, email, display_name, object_id from ' . $this->table . ' where user_id = ?', array($userId))->toArray();
+            $sqlRes = $this->db->query('select login, email, display_name, object_id from ' . $this->table . ' where user_id = ?', array($userId))->toArray();
         
             if (empty($sqlRes)) {
                 throw new \Exception('not found user ' . $userId);
@@ -174,11 +174,11 @@ class Users
                             'label' => $this->translator->translate('Common params'),
                         ),
                         'elements' => array(
-                            'username' => array(
+                            'login' => array(
                                 'spec' => array(
-                                    'name' => 'username',
+                                    'name' => 'login',
                                     'options' => array(
-                                        'label' => $this->translator->translate('Users:Username field'),
+                                        'label' => $this->translator->translate('Users:login field'),
                                     ),
                                 ),
                             ),

@@ -38,6 +38,10 @@ class Module
                 'users_auth_service' => function ($sm) {
                     return new Authentication\AuthenticationService($sm);
                 },
+                'Users\Service\AuthenticationAdapters' => function($sm) {
+                    $config = $sm->get('config');                    
+                    return new Service\AuthenticationAdapters($config['Users']['authAdapters']);
+                },                   
             ),
         );
     }

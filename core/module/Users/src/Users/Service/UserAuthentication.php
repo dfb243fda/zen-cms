@@ -13,6 +13,8 @@ class UserAuthentication implements ServiceManagerAwareInterface
      */
     protected $serviceManager;
     
+    protected $adaptersType = 'simple';
+    
     /**
      * {@inheritDoc}
      */
@@ -20,26 +22,29 @@ class UserAuthentication implements ServiceManagerAwareInterface
     {
         $this->serviceManager = $serviceManager;
     }
+    
+    public function setAdaptersType($type)
+    {
+        $this->adaptersType = $type;
+        return $this;
+    }
         
-    public function authenticate($request)
-    {                
-        $formElementManager = $this->serviceManager->get('FormElementManager');
+    public function authenticate($data = null)
+    {    
+        $request = $this->serviceManager->get('request');
         
-        $form = $formElementManager->get('Users\Form\LoginForm');
-        $form->setData($request->getPost());
-
-        if (!$form->isValid()) {
-            return false;
-        }
-
         $authService = $this->serviceManager->get('users_auth_service');
+        
+        $this->serviceManager->get('Users\Service\AuthenticationAdapters')
+                             ->setAdaptersType($this->adaptersType);
+        
         $authService->setAdapter($this->serviceManager->get('Users\Authentication\Adapter\AdapterChain'));
 
        // clear adapters
         $authService->getAdapter()->resetAdapters();
         $authService->clearIdentity();
 
-        $result = $authService->getAdapter()->prepareForAuthentication($request);
+        $result = $authService->getAdapter()->prepareForAuthentication($request, $data);
 
         // Return early if an adapter returned a response
         if ($result instanceof Response) {
@@ -52,5 +57,11 @@ class UserAuthentication implements ServiceManagerAwareInterface
             return false;
         }
         return true;
+    }
+    
+    public function getAdapter()
+    {
+        $authService = $this->serviceManager->get('users_auth_service');
+        return $authService->getAdapter();
     }
 }

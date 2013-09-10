@@ -3,6 +3,8 @@
 namespace Users\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Authentication\Result as AuthenticationResult;
+use Zend\Authentication\Storage\Session;
 
 class LoginController extends AbstractActionController
 {
@@ -32,9 +34,14 @@ class LoginController extends AbstractActionController
         }
         
         if ($request->isPost()) {   
+            $formElementManager = $this->serviceLocator->get('FormElementManager');
+        
+            $form = $formElementManager->get('Users\Form\LoginForm');
+            $form->setData($request->getPost());
+            
             $authService = $this->serviceLocator->get('Users\Service\UserAuthentication');
-                                     
-            if ($authService->authenticate($request)) {
+            
+            if ($form->isValid() && $authService->authenticate()) {
                 if ($redirect) {
                     return $this->redirect()->toUrl($redirect);
                 }
@@ -79,14 +86,167 @@ class LoginController extends AbstractActionController
     
     public function loginzaAction()
     {
-        $token = $_POST['token'];
+        if (null === $this->request->getPost('token')) {
+            $output = 'token does not transferred';
+            
+            $this->response->setContent($output);
+            return $this->response;
+        }
+        
+        $config = $this->serviceLocator->get('config');
+        $usersConfig = $config['Users'];   
+        
+        if ($usersConfig['useRedirectParameterIfPresent'] && $this->params()->fromPost('redirect', $this->params()->fromQuery('redirect'))) {
+            $redirect = $this->params()->fromQuery('redirect');
+        } else {
+            $redirect = false;
+        }
+        
+        $token = (string)$this->request->getPost('token');
         $widgetId = '58015';
         $signature = md5($token . 'a7032b197c14a960e90e44b4d698f5ae');
         
-        $url = "http://loginza.ru/api/authinfo?token=$token&id=$widgetId&sig=$signature";
-        
+  //      $url = "http://loginza.ru/api/authinfo?token=$token&id=$widgetId&sig=$signature";
+        $url = "http://loginza.ru/api/authinfo?token=$token";
+                
         $content = file_get_contents($url);
-        echo $content;
-        exit();
+        
+        $contentArr = json_decode($content, true);
+        
+        if (is_array($contentArr)) {
+            if (isset($contentArr['identity']) && isset($contentArr['provider'])) {
+                $authService = $this->serviceLocator->get('Users\Service\UserAuthentication');                
+                $authService->setAdaptersType('loginza');
+                
+                if ($authService->authenticate($contentArr)) {
+                    if ($redirect) {
+                        return $this->redirect()->toUrl($redirect);
+                    }
+                    return $this->redirect()->toRoute($usersConfig['loginRedirectRoute']);
+                } else {
+                    $adapter = $authService->getAdapter();
+                    $event = $adapter->getEvent();
+                    
+                    if (AuthenticationResult::FAILURE_IDENTITY_NOT_FOUND == $event->getCode()) {
+                        $storage = new Session(get_class());
+                        
+                        $storage->write($event->getData());
+                        
+                        $confirmUrl = $this->url()->fromRoute('login', array(
+                            'action' => 'loginza_confirm',
+                        ));
+                        
+                        $output = 'Вы ещё не зарегистрированы, хотите зарегистрироваться? 
+                            <form type="GET" action="' .$confirmUrl . '">
+                            <input type="submit" value="Зарегистрироваться">
+                            </form>
+                            <a href="' . $this->url()->fromRoute('login') . '">Отменить</a>
+                        ';
+                    } else {
+                        $output = 'errors on registration';
+                    }
+                }
+            } elseif (isset($contentArr['error_message'])) {
+                $output = (string)$contentArr['error_message'];
+            } else {
+                $output = 'loginza bad response';
+            }
+        } else {
+            $output = 'loginza bad response';
+        }
+        
+        $this->response->setContent($output);
+        return $this->response;
+    }
+    
+    public function loginzaConfirmAction()
+    {
+        $storage = new Session(get_class());
+                   
+        if ($storage->isEmpty()) {
+            $output = 'wrong parameters transferred';
+            
+            $this->response->setContent($output);
+            return $this->response;
+        }
+                
+        $data = $storage->read();
+        $storage->clear();
+        
+        $config = $this->serviceLocator->get('config');
+        $usersConfig = $config['Users'];   
+        
+        if ($usersConfig['useRedirectParameterIfPresent'] && $this->params()->fromPost('redirect', $this->params()->fromQuery('redirect'))) {
+            $redirect = $this->params()->fromQuery('redirect');
+        } else {
+            $redirect = false;
+        }
+        
+        if (!isset($data['identity']) || !isset($data['provider'])) {
+            $output = 'wrong parameters transferred';
+            
+            $this->response->setContent($output);
+            return $this->response;
+        }
+        
+        $configManager = $this->serviceLocator->get('configManager');
+        $objectTypeId = $configManager->get('users', 'new_user_object_type');
+        
+        $registrationService = $this->serviceLocator->get('Users\Service\UserRegistration');
+        $registrationService->setObjectTypeId($objectTypeId);
+
+        $userData = array(
+            'loginza_id' => $data['identity'],
+            'loginza_provider' => $data['provider'],
+            'loginza_data' => json_encode($data),
+        );
+        
+        if (isset($data['email'])) {
+            $userData['email'] = $data['email'];
+        }
+        if (isset($data['name'])) {
+            if (isset($data['name']['full_name'])) {
+                $userData['display_name'] = $data['name']['full_name'];
+            } else {
+                $parts = array();
+                if (isset($data['name']['first_name'])) {
+                    $parts[] = $data['name']['first_name'];
+                }
+                if (isset($data['name']['last_name'])) {
+                    $parts[] = $data['name']['last_name'];
+                }
+                $userData['display_name'] = implode(' ', $parts);
+            }
+            
+        }
+        
+        if (isset($userData['email'])) {
+            $usersCollection = $this->serviceLocator->get('Users\Collection\Users');
+            
+            if ($usersCollection->getUserByEmail($userData['email'])) {
+                $output = 'Email ' . $userData['email'] . ' already registrated in system <a href="' . $this->url()->fromRoute('login') . '">Come back</a>';
+                $this->response->setContent($output);
+                return $this->response;
+            }
+        }
+        
+        if ($registrationService->register($userData)) {
+            if ($usersConfig['loginAfterRegistration']) {
+                $authService = $this->serviceLocator->get('Users\Service\UserAuthentication');                
+                $authService->setAdaptersType('loginza');                      
+                $res = $authService->authenticate($data);
+            }
+
+            if ($redirect) {
+                return $this->redirect()->toUrl($redirect);
+            }
+            return $this->redirect()->toRoute($usersConfig['registrationRedirectRoute']);
+        } else {
+            $output = 'При регистрации произошли ошибки';
+        }
+        
+        
+        $this->response->setContent($output);
+        return $this->response;
     }
 }

@@ -10,12 +10,10 @@ class AdapterChainServiceFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $chain = new AdapterChain();
+        
+        $authAdaptersService = $serviceLocator->get('Users\Service\AuthenticationAdapters');
                 
-        $config = $serviceLocator->get('config');
-        
-        $options = $config['Users'];
-        
-        $authAdapters = $options['authAdapters'];
+        $authAdapters = $authAdaptersService->getAdapters();
         
         //iterate and attach multiple adapters and events if offered
         foreach($authAdapters as $priority => $adapterName) {

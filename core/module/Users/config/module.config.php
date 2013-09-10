@@ -9,12 +9,17 @@ return array(
         
         'loginPageTemplate' => 'page_template/Users/login.phtml',
         'registerPageTemplate' => 'page_template/Users/register.phtml',
-        'authIdentityFields' => array('email', 'username'),
+        'authIdentityFields' => array('email', 'login'),
         'authAdapters' => array( 
-            100 => 'Users\Authentication\Adapter\Db',
+            'simple' => array(
+                100 => 'Users\Authentication\Adapter\Db',
+            ),
+            'loginza' => array(
+                100 => 'Users\Authentication\Adapter\Loginza',
+            ),
         ),
         
-        'enableUserName' => false,
+        'enableLogin' => false,
         'enableDisplayName' => true,
         
         'registrationRedirectRoute' => 'admin',
@@ -38,6 +43,7 @@ return array(
             'Users\Service\UserData' => 'Users\Service\UserData',
             
             'Users\Authentication\Adapter\Db' => 'Users\Authentication\Adapter\Db',
+            'Users\Authentication\Adapter\Loginza' => 'Users\Authentication\Adapter\Loginza',
             'Users\Authentication\Storage\Db' => 'Users\Authentication\Storage\Db',
             
             'Users\View\LoginRendererStrategyOptions' => 'Users\View\LoginRendererStrategyOptions',
@@ -47,6 +53,7 @@ return array(
             'Users\View\ResultComposer\RegistrationHtmlComposer' => 'Users\View\ResultComposer\RegistrationHtmlComposer',
         ),
         'factories' => array(
+            'Users\Authentication\Adapter\AdapterChain' => 'Users\Authentication\Adapter\AdapterChainServiceFactory',  
             'Users\Authentication\Adapter\AdapterChain' => 'Users\Authentication\Adapter\AdapterChainServiceFactory',  
         ),
     ),

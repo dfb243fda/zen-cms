@@ -41,15 +41,15 @@ class Users implements ServiceManagerAwareInterface
         return null;
     }
     
-    public function getUserByName($userName)
+    public function getUserByLogin($login)
     {
         $db = $this->serviceManager->get('db');
         
         $sqlRes = $db->query('
             select *
             from ' . DB_PREF . $this->usersTable . '
-            where user_name = ?
-        ', array($userName))->toArray();
+            where login = ?
+        ', array($login))->toArray();
         
         if (!empty($sqlRes)) {
             $userEntity = $this->serviceManager->get('Users\Entity\User');
@@ -69,6 +69,26 @@ class Users implements ServiceManagerAwareInterface
             from ' . DB_PREF . $this->usersTable . '
             where email = ?
         ', array($email))->toArray();
+        
+        if (!empty($sqlRes)) {
+            $userEntity = $this->serviceManager->get('Users\Entity\User');
+            $userEntity->setData($sqlRes[0]);
+            
+            return $userEntity;
+        }
+        return null;
+    }
+    
+    
+    public function getUserByLoginzaId($loginzaId)
+    {
+        $db = $this->serviceManager->get('db');
+        
+        $sqlRes = $db->query('
+            select *
+            from ' . DB_PREF . $this->usersTable . '
+            where loginza_id = ?
+        ', array($loginzaId))->toArray();
         
         if (!empty($sqlRes)) {
             $userEntity = $this->serviceManager->get('Users\Entity\User');

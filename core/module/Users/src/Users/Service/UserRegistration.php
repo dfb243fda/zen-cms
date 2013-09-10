@@ -46,28 +46,28 @@ class UserRegistration implements ServiceManagerAwareInterface
         $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
         $objectPropertyCollection = $this->serviceManager->get('objectPropertyCollection');
         $application = $this->serviceManager->get('application');
-        $db = $this->serviceManager->get('db');
-        $configManager = $this->serviceManager->get('configManager');
-        
+        $db = $this->serviceManager->get('db');        
         
         $insertFields = array();
         $insertBase = array();
 
-        foreach ($data as $groupKey=>$groupData) {
-            foreach ($groupData as $fieldName=>$fieldVal) {
-                if ('field_' == substr($fieldName, 0, 6)) {
-                    $insertFields[substr($fieldName, 6)] = $fieldVal;
-                } else {
-                    $insertBase[$fieldName] = $fieldVal;
-                }
+        foreach ($data as $fieldName=>$fieldVal) {
+            if ('field_' == substr($fieldName, 0, 6)) {
+                $insertFields[substr($fieldName, 6)] = $fieldVal;
+            } else {
+                $insertBase[$fieldName] = $fieldVal;
             }
         }
         
         unset($insertBase['passwordVerify']);
         $bcrypt = new Bcrypt;
         $bcrypt->setCost($usersConfig['passwordCost']);
-        $password = $bcrypt->create($insertBase['password']);
-
+        
+        $password = null;
+        if (isset($insertBase['password'])) {
+            $password = $bcrypt->create($insertBase['password']);
+        }
+        
         $insertBase['password'] = $password;
 
         $objectId = $objectsCollection->addObject('user-item', $objectTypeId);
@@ -101,15 +101,7 @@ class UserRegistration implements ServiceManagerAwareInterface
             }
         }
         
-        $application->getEventManager()->trigger('user_registered.post', $this, array('userId' => $userId));
-        
-        
-        if ($configManager->get('registration', 'send_welcome_email_to_reg_users')) {
-            $subject = $configManager->get('registration', 'welcome_email_subject');
-            $text = $configManager->get('registration', 'welcome_email_text');
-
-            $this->sendWelcomeEmail($insertBase, $subject, $text);
-        }
+        $application->getEventManager()->trigger('user_registered.post', $this, array('userId' => $userId));        
                 
         return $userId;
     }

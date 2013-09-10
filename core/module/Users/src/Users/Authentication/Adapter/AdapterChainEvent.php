@@ -100,4 +100,23 @@ class AdapterChainEvent extends Event
         $this->request = $request;
         return $this;
     }
+    
+    /**
+     * get custom data
+     */
+    public function getData()
+    {
+        return $this->getParam('data');
+    }
+
+    /**
+     * set custom data
+     *
+     * @return AuthEvent
+     */
+    public function setData($data)
+    {
+        $this->setParam('data', $data);
+        return $this;
+    }
 }

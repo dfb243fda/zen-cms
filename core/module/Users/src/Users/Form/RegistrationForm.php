@@ -63,11 +63,11 @@ class RegistrationForm extends Form implements ServiceLocatorAwareInterface
             'type' => 'fieldset',
         ));
         
-        if ($usersConfig['enableUserName']) {
+        if ($usersConfig['enableLogin']) {
             $this->get('common')->add(array(
-                'name' => 'user_name',
+                'name' => 'login',
                 'options' => array(
-                    'label' => $translator->translate('Users:Username field'),
+                    'label' => $translator->translate('Users:Login field'),
                 ),
             ));
         }
@@ -107,11 +107,11 @@ class RegistrationForm extends Form implements ServiceLocatorAwareInterface
         
         
         
-        if ($usersConfig['enableUserName']) {
-            $this->getInputFilter()->get('common')->get('user_name')
+        if ($usersConfig['enableLogin']) {
+            $this->getInputFilter()->get('common')->get('login')
                                                   ->setRequired(true);
 
-            $this->getInputFilter()->get('common')->get('user_name')
+            $this->getInputFilter()->get('common')->get('login')
                                                   ->getValidatorChain()
                                                   ->attachByName('StringLength', array(
                                                       'min' => 3,
@@ -119,7 +119,7 @@ class RegistrationForm extends Form implements ServiceLocatorAwareInterface
                                                   ))
                                                   ->attachByName('Users\Validator\NoRecordExists', array(
                                                       'usersCollection' => $rootServiceManager->get('Users\Collection\Users'),
-                                                      'key' => 'user_name'
+                                                      'key' => 'login'
                                                   ));
         }
         

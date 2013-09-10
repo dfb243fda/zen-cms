@@ -20,19 +20,19 @@ interface UserInterface
     public function setId($id);
 
     /**
-     * Get username.
+     * Get login.
      *
      * @return string
      */
-    public function getUsername();
+    public function getLogin();
 
     /**
-     * Set username.
+     * Set login.
      *
-     * @param string $username
+     * @param string $login
      * @return UserInterface
      */
-    public function setUsername($username);
+    public function setLogin($login);
 
     /**
      * Get email.

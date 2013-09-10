@@ -63,7 +63,7 @@ class UserDisplayName extends AbstractHelper implements ServiceLocatorAwareInter
 
         $displayName = $user->getDisplayName();
         if (null === $displayName) {
-            $displayName = $user->getUsername();
+            $displayName = $user->getLogin();
         }
         if (null === $displayName) {
             $displayName = $user->getEmail();

@@ -33,7 +33,7 @@ abstract class AbstractRecord extends AbstractValidator
 
     /**
      * Required options are:
-     *  - key     Field to use, 'emial' or 'username'
+     *  - key     Field to use, 'emial' or 'login'
      */
     public function __construct(array $options)
     {
@@ -104,8 +104,8 @@ abstract class AbstractRecord extends AbstractValidator
                 $result = $this->getUsersCollection()->getUserByEmail($value);
                 break;
 
-            case 'user_name':
-                $result = $this->getUsersCollection()->getUserByName($value);
+            case 'login':
+                $result = $this->getUsersCollection()->getUserByLogin($value);
                 break;
 
             default:

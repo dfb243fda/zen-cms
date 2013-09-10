@@ -23,7 +23,7 @@ return array(
     'Users:Add user method' => 'Добавление пользователя',
     'Users:Add user method description' => 'Метод, добавляющий пользователей', 
 
-    'Users:Username field' => 'Логин',
+    'Users:Login field' => 'Логин',
     'Users:Email field' => 'Email',
     'Users:Display name field' => 'Отображаемое имя',
     'Users:Roles field' => 'Роли',
@@ -52,7 +52,7 @@ return array(
     'Users:User object type field' => 'Тип данных',
     'Users:User object type field description' => ' ',
     
-    'Users:Identity field:email or username' => 'Email или логин',
+    'Users:Identity field:email or login' => 'Email или логин',
     'Users:Credential field' => 'Пароль',
     'Users:Login btn' => 'Войти',
     'Users:Failed login msg' => 'Неверно введен логин или пароль',

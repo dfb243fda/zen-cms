@@ -36,10 +36,11 @@ class AdapterChain extends EventProvider implements AdapterInterface
         return $result;
     }
     
-    public function prepareForAuthentication(Request $request)
+    public function prepareForAuthentication(Request $request, $data)
     {
         $e = $this->getEvent()
-                  ->setRequest($request);
+                  ->setRequest($request)
+                  ->setData($data);
 
         $this->getEventManager()->trigger('authenticate.pre', $e);
 

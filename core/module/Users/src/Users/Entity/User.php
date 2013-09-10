@@ -29,24 +29,24 @@ class User implements UserInterface
     }
 
     /**
-     * Get username.
+     * Get login.
      *
      * @return string
      */
-    public function getUserName()
+    public function getLogin()
     {
-        return $this->userData['user_name'];
+        return $this->userData['login'];
     }
 
     /**
-     * Set username.
+     * Set login.
      *
-     * @param string $username
+     * @param string $login
      * @return UserInterface
      */
-    public function setUsername($userName)
+    public function setLogin($login)
     {
-        $this->userData['user_name'] = $userName;
+        $this->userData['login'] = $login;
         return $this;
     }
 

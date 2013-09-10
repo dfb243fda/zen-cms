@@ -46,21 +46,36 @@ class RegisterController extends AbstractActionController
                 $registrationService = $this->serviceLocator->get('Users\Service\UserRegistration');
                 $registrationService->setObjectTypeId($objectTypeId);
                 
-                $userData = $form->getData();
+                $formData = $form->getData();
+                
+                $userData = array();
+                foreach ($formData as $fieldsetData) {
+                    foreach ($fieldsetData as $name => $val) {
+                        $userData[$name] = $val;
+                    }
+                }
                 
                 if ($registrationService->register($userData)) {
+                    
+                    if ($configManager->get('registration', 'send_welcome_email_to_reg_users')) {
+                        $subject = $configManager->get('registration', 'welcome_email_subject');
+                        $text = $configManager->get('registration', 'welcome_email_text');
+
+                        $registrationService->sendWelcomeEmail($userData, $subject, $text);
+                    }
+                    
                     if ($usersConfig['loginAfterRegistration']) {
                         $identityFields = $usersConfig['authIdentityFields'];
                         if (in_array('email', $identityFields)) {
                             $post['identity'] = $userData['common']['email'];
-                        } elseif (in_array('user_name', $identityFields)) {
-                            $post['identity'] = $userData['common']['user_name'];
+                        } elseif (in_array('login', $identityFields)) {
+                            $post['identity'] = $userData['common']['login'];
                         }
                         $post['credential'] = $userData['common']['password'];
                         $request->setPost(new Parameters($post));
                         
                         $authenticationService = $this->serviceLocator->get('Users\Service\UserAuthentication');                        
-                        $res = $authenticationService->authenticate($request);
+                        $res = $authenticationService->authenticate();
                     }
 
                     if ($redirect) {
