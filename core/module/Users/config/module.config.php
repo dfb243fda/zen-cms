@@ -9,7 +9,11 @@ return array(
         
         'loginPageTemplate' => 'page_template/Users/login.phtml',
         'registerPageTemplate' => 'page_template/Users/register.phtml',
+        'loginzaPageTemplate' => 'page_template/Users/loginza.phtml',
+        
+        // При авторизации можно будет вводить значения этих полей
         'authIdentityFields' => array('email', 'login'),
+        
         'authAdapters' => array( 
             'simple' => array(
                 100 => 'Users\Authentication\Adapter\Db',
@@ -19,7 +23,10 @@ return array(
             ),
         ),
         
+        // При регистрации будет поле с логином
         'enableLogin' => false,
+        
+        // При регистрации будет поле с отображаемым именем
         'enableDisplayName' => true,
         
         'registrationRedirectRoute' => 'admin',
@@ -46,11 +53,9 @@ return array(
             'Users\Authentication\Adapter\Loginza' => 'Users\Authentication\Adapter\Loginza',
             'Users\Authentication\Storage\Db' => 'Users\Authentication\Storage\Db',
             
-            'Users\View\LoginRendererStrategyOptions' => 'Users\View\LoginRendererStrategyOptions',
-            'Users\View\RegistrationRendererStrategyOptions' => 'Users\View\RegistrationRendererStrategyOptions',
+            'Users\View\RendererStrategyOptions' => 'Users\View\RendererStrategyOptions',
             
-            'Users\View\ResultComposer\LoginHtmlComposer' => 'Users\View\ResultComposer\LoginHtmlComposer',
-            'Users\View\ResultComposer\RegistrationHtmlComposer' => 'Users\View\ResultComposer\RegistrationHtmlComposer',
+            'Users\View\ResultComposer\HtmlComposer' => 'Users\View\ResultComposer\HtmlComposer',
         ),
         'factories' => array(
             'Users\Authentication\Adapter\AdapterChain' => 'Users\Authentication\Adapter\AdapterChainServiceFactory',  
@@ -124,7 +129,32 @@ return array(
                                         ),
                                     ),
                                 ),
+                                array(
+                                    'spec' => array(
+                                        'type' => 'checkbox',
+                                        'name' => 'loginza_secret_is_protected',
+                                        'options' => array(
+                                            'label' => 'i18n::Dynamic config loginza_secret_is_protected',
+                                            'description' => 'i18n::Dynamic config loginza_secret_is_protected description',
+                                        ),
+                                    ),
+                                ),
                             ),
+                        ),
+                    ),
+                ),
+                'input_filter' => array(
+                    'loginza' => array(
+                        'type' => 'Zend\InputFilter\InputFilter',
+                        'loginza_widget_id' => array(
+                            'filters' => array(
+                                array('name' => 'StringTrim',)
+                            )
+                        ),
+                        'loginza_secret' => array(
+                            'filters' => array(
+                                array('name' => 'StringTrim',)
+                            )
                         ),
                     ),
                 ),

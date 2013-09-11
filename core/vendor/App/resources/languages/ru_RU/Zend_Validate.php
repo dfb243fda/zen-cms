@@ -244,4 +244,6 @@ return array(
     "Invalid type given, value should be a string" => "Недопустимый тип данных, значение должно быть строкой",
     "'%value%' is less than %min% characters long" => "'%value%' меньше разрешенной минимальной длины в %min% символов",
     "'%value%' is more than %max% characters long" => "'%value%' больше разрешенной максимальной длины в %max% символов",
+    
+    "A record matching the input was found" => 'Данная запись уже существует в базе',
 );

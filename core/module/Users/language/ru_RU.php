@@ -80,4 +80,6 @@ return array(
     'Dynamic config loginza_widget_id description' => ' ',
     'Dynamic config loginza_secret' => 'Секретный ключ Loginza',
     'Dynamic config loginza_secret description' => ' ',
+    'Dynamic config loginza_secret_is_protected' => 'Безопасный режим проверки token',
+    'Dynamic config loginza_secret_is_protected description' => 'Включение данного режима требует обязательной передачи ID виджета и секретного ключа в API запросе проверки token',
 );

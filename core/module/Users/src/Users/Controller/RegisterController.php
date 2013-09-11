@@ -7,6 +7,8 @@ use Zend\Stdlib\Parameters;
 
 class RegisterController extends AbstractActionController
 {
+    protected $htmlTemplate;
+    
     public function indexAction()
     {
         $request = $this->getRequest();
@@ -15,7 +17,7 @@ class RegisterController extends AbstractActionController
         $systemInfoService = $this->serviceLocator->get('App\Service\SystemInfo');
         $errorsService = $this->serviceLocator->get('App\Service\Errors');
         $rendererStrategy = $this->serviceLocator->get('App\View\RendererStrategy');        
-        $rendererStrategyOptions = $this->serviceLocator->get('Users\View\RegistrationRendererStrategyOptions');    
+        $rendererStrategyOptions = $this->serviceLocator->get('Users\View\RendererStrategyOptions');    
         $formElementManager = $this->serviceLocator->get('FormElementManager');
         $application = $this->serviceLocator->get('application');
         $eventManager = $application->getEventManager();
@@ -61,17 +63,19 @@ class RegisterController extends AbstractActionController
                         $subject = $configManager->get('registration', 'welcome_email_subject');
                         $text = $configManager->get('registration', 'welcome_email_text');
 
-                        $registrationService->sendWelcomeEmail($userData, $subject, $text);
+                        try {
+                            $registrationService->sendWelcomeEmail($userData, $subject, $text);
+                        } catch (\Exception $e) { }                        
                     }
                     
                     if ($usersConfig['loginAfterRegistration']) {
                         $identityFields = $usersConfig['authIdentityFields'];
                         if (in_array('email', $identityFields)) {
-                            $post['identity'] = $userData['common']['email'];
+                            $post['identity'] = $userData['email'];
                         } elseif (in_array('login', $identityFields)) {
-                            $post['identity'] = $userData['common']['login'];
+                            $post['identity'] = $userData['login'];
                         }
-                        $post['credential'] = $userData['common']['password'];
+                        $post['credential'] = $userData['password'];
                         $request->setPost(new Parameters($post));
                         
                         $authenticationService = $this->serviceLocator->get('Users\Service\UserAuthentication');                        
@@ -91,6 +95,8 @@ class RegisterController extends AbstractActionController
         
         $resultArray['form'] = $form;
         
+        $this->setHtmlTemplate($usersConfig['registerPageTemplate']);
+        
         $rendererStrategy->setFormat($rendererStrategyOptions->getFormat())
                          ->setTarget($this)
                          ->setRendererStrategies($rendererStrategyOptions->getRendererStrategies())
@@ -101,6 +107,17 @@ class RegisterController extends AbstractActionController
         $eventManager->trigger('prepare_output', $this, array($resultArray));
                         
         return $rendererStrategy->getResult($resultArray);
+    }
+    
+    public function setHtmlTemplate($template)
+    {
+        $this->htmlTemplate = $template;
+        return $this;
+    }
+    
+    public function getHtmlTemplate()
+    {
+        return $this->htmlTemplate;
     }
         
 }

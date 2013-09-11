@@ -5,7 +5,7 @@ namespace Users\View;
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 
-class LoginRendererStrategyOptions implements ServiceManagerAwareInterface
+class RendererStrategyOptions implements ServiceManagerAwareInterface
 {
     /**
      * @var ServiceManager
@@ -31,7 +31,7 @@ class LoginRendererStrategyOptions implements ServiceManagerAwareInterface
     
     protected $resultComposers = array(
         'json' => 'App\View\ResultComposer\JsonComposer',
-        'html' => 'Users\View\ResultComposer\LoginHtmlComposer',
+        'html' => 'Users\View\ResultComposer\HtmlComposer',
         'xml' => 'App\View\ResultComposer\XmlComposer',
         'var_export' => 'App\View\ResultComposer\VarExportComposer',
         'print_r' => 'App\View\ResultComposer\PrintRComposer',

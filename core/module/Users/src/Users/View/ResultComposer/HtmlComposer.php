@@ -5,19 +5,17 @@ namespace Users\View\ResultComposer;
 use App\View\ResultComposer\ComposerAbstract;
 use Zend\View\Model\ViewModel;
 
-class LoginHtmlComposer extends ComposerAbstract
+class HtmlComposer extends ComposerAbstract
 {    
     public function getResult(array $resultArray)
     {
         $eventManager = $this->serviceManager->get('application')->getEventManager();
         $viewRenderer = $this->serviceManager->get('ViewRenderer');
-        $config = $this->serviceManager->get('config');
-        $usersConfig = $config['Users'];
                                 
-        $loginPageTemplate = $usersConfig['loginPageTemplate'];
+        $pageTemplate = $this->getTarget()->getHtmlTemplate();        
 
         $view = new ViewModel($resultArray);     
-        $view->setTemplate($loginPageTemplate);
+        $view->setTemplate($pageTemplate);
         
         // я не возвращаю view, потому что мне нужно отследить момент,
         // когда она отрисовывается, и вызвать событие prepare_public_resources

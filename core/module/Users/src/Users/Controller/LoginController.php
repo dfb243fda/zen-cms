@@ -10,15 +10,16 @@ class LoginController extends AbstractActionController
 {
     const ROUTE_LOGIN = 'login';
     
+    protected $htmlTemplate;
+    
     public function indexAction()
     {
-        $request = $this->getRequest();
         $translator = $this->serviceLocator->get('translator');
         $configManager = $this->serviceLocator->get('configManager');
         $systemInfoService = $this->serviceLocator->get('App\Service\SystemInfo');
         $errorsService = $this->serviceLocator->get('App\Service\Errors');
         $rendererStrategy = $this->serviceLocator->get('App\View\RendererStrategy');        
-        $rendererStrategyOptions = $this->serviceLocator->get('Users\View\LoginRendererStrategyOptions');    
+        $rendererStrategyOptions = $this->serviceLocator->get('Users\View\RendererStrategyOptions');    
         $formElementManager = $this->serviceLocator->get('FormElementManager');
         $application = $this->serviceLocator->get('application');
         $eventManager = $application->getEventManager();
@@ -33,11 +34,11 @@ class LoginController extends AbstractActionController
             $redirect = false;
         }
         
-        if ($request->isPost()) {   
+        if ($this->request->isPost()) {   
             $formElementManager = $this->serviceLocator->get('FormElementManager');
         
             $form = $formElementManager->get('Users\Form\LoginForm');
-            $form->setData($request->getPost());
+            $form->setData($this->request->getPost());
             
             $authService = $this->serviceLocator->get('Users\Service\UserAuthentication');
             
@@ -71,6 +72,7 @@ class LoginController extends AbstractActionController
             $resultArray['errors'] = $errors;
         }
         
+        $this->setHtmlTemplate($usersConfig['loginPageTemplate']);
         
         $rendererStrategy->setFormat($rendererStrategyOptions->getFormat())
                          ->setTarget($this)
@@ -84,14 +86,38 @@ class LoginController extends AbstractActionController
         return $rendererStrategy->getResult($resultArray);
     }
     
+    public function setHtmlTemplate($template)
+    {
+        $this->htmlTemplate = $template;
+        return $this;
+    }
+    
+    public function getHtmlTemplate()
+    {
+        return $this->htmlTemplate;
+    }
+    
     public function loginzaAction()
     {
+        $translator = $this->serviceLocator->get('translator');
+        $configManager = $this->serviceLocator->get('configManager');
+        $systemInfoService = $this->serviceLocator->get('App\Service\SystemInfo');
+        $errorsService = $this->serviceLocator->get('App\Service\Errors');
+        $rendererStrategy = $this->serviceLocator->get('App\View\RendererStrategy');        
+        $rendererStrategyOptions = $this->serviceLocator->get('Users\View\RendererStrategyOptions'); 
+        $application = $this->serviceLocator->get('application');
+        $eventManager = $application->getEventManager();
+        $config = $this->serviceLocator->get('config');
+        $usersConfig = $config['Users'];    
+        
         if (null === $this->request->getPost('token')) {
             $output = 'token does not transferred';
             
             $this->response->setContent($output);
             return $this->response;
         }
+        
+        $resultArray = array();
         
         $config = $this->serviceLocator->get('config');
         $usersConfig = $config['Users'];   
@@ -103,11 +129,15 @@ class LoginController extends AbstractActionController
         }
         
         $token = (string)$this->request->getPost('token');
-        $widgetId = '58015';
-        $signature = md5($token . 'a7032b197c14a960e90e44b4d698f5ae');
+        $widgetId = $configManager->get('loginza', 'loginza_widget_id');
+        $secret = $configManager->get('loginza', 'loginza_secret');       
+        $signature = md5($token . $secret);
         
-  //      $url = "http://loginza.ru/api/authinfo?token=$token&id=$widgetId&sig=$signature";
-        $url = "http://loginza.ru/api/authinfo?token=$token";
+        if ($configManager->get('loginza', 'loginza_secret_is_protected')) {
+            $url = "http://loginza.ru/api/authinfo?token=$token&id=$widgetId&sig=$signature";
+        } else {
+            $url = "http://loginza.ru/api/authinfo?token=$token";
+        }
                 
         $content = file_get_contents($url);
         
@@ -155,8 +185,18 @@ class LoginController extends AbstractActionController
             $output = 'loginza bad response';
         }
         
-        $this->response->setContent($output);
-        return $this->response;
+        $this->setHtmlTemplate($usersConfig['loginzaPageTemplate']);
+        
+        $rendererStrategy->setFormat($rendererStrategyOptions->getFormat())
+                         ->setTarget($this)
+                         ->setRendererStrategies($rendererStrategyOptions->getRendererStrategies())
+                         ->setResultComposers($rendererStrategyOptions->getResultComposers());
+        
+        $rendererStrategy->registerStrategy();        
+                      
+        $eventManager->trigger('prepare_output', $this, array($resultArray));
+                        
+        return $rendererStrategy->getResult($resultArray);
     }
     
     public function loginzaConfirmAction()
@@ -205,19 +245,7 @@ class LoginController extends AbstractActionController
             $userData['email'] = $data['email'];
         }
         if (isset($data['name'])) {
-            if (isset($data['name']['full_name'])) {
-                $userData['display_name'] = $data['name']['full_name'];
-            } else {
-                $parts = array();
-                if (isset($data['name']['first_name'])) {
-                    $parts[] = $data['name']['first_name'];
-                }
-                if (isset($data['name']['last_name'])) {
-                    $parts[] = $data['name']['last_name'];
-                }
-                $userData['display_name'] = implode(' ', $parts);
-            }
-            
+            $userData['display_name'] = $this->composeDisplayName($data['name']);
         }
         
         if (isset($userData['email'])) {
@@ -248,5 +276,23 @@ class LoginController extends AbstractActionController
         
         $this->response->setContent($output);
         return $this->response;
+    }
+    
+    protected function composeDisplayName($data)
+    {
+        if (isset($data['full_name'])) {
+            $displayName = $data['full_name'];
+        } else {
+            $parts = array();
+            if (isset($data['first_name'])) {
+                $parts[] = $data['first_name'];
+            }
+            if (isset($data['last_name'])) {
+                $parts[] = $data['last_name'];
+            }
+            $displayName = implode(' ', $parts);
+        }
+        
+        return $displayName;
     }
 }
