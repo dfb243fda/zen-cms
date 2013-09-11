@@ -801,6 +801,20 @@ strong {
     width: 200px;
 }
 
+.form-1c fieldset legend,
+.form-2c fieldset legend, 
+.form-3c fieldset legend {
+    font-size: 1.2em;
+}
+
+.form-1c fieldset,
+.form-2c fieldset, 
+.form-3c fieldset {
+    border: 1px dotted #BBBBBB;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
 
 .ace_editor {
     position: absolute;

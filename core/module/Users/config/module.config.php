@@ -95,11 +95,14 @@ return array(
             ),
         ),
         'form' => array(
-            'loginza' => array(
+         /*   'loginza' => array(
                 'fieldsets' => array(                    
                     array(
                         'spec' => array(
                             'name' => 'loginza',
+                            'options' => array(
+                                'label' => 'opa',
+                            ),
                             'elements' => array(
                                 array(
                                     'spec' => array(
@@ -139,6 +142,22 @@ return array(
                                         ),
                                     ),
                                 ),
+                                
+                                array(
+                                    'spec' => array(
+                                        'type' => 'Zend\Form\Element\Collection',
+                                        'name' => 'domains',
+                                        'options' => array(
+                                            'label' => 'Please choose categories for this product',
+                                            'count' => 2,
+                                            'should_create_template' => true,
+                                            'allow_add' => true,
+                      //                      'target_element' => array(
+                      //                          'type' => 'Application\Form\CategoryFieldset'
+                      //                      )
+                                        )
+                                    ),
+                                ),
                             ),
                         ),
                     ),
@@ -158,7 +177,7 @@ return array(
                         ),
                     ),
                 ),
-            ),
+            ),*/
             'registration' => array(
                 'fieldsets' => array(
                     array(
@@ -283,8 +302,7 @@ return array(
         'invokables' => array(
             'Users\Controller\Login' => 'Users\Controller\LoginController',
             'Users\Controller\Logout' => 'Users\Controller\LogoutController',
-            'Users\Controller\Register' => 'Users\Controller\RegisterController',
-            
+            'Users\Controller\Register' => 'Users\Controller\RegisterController',            
             'Users\Controller\Loginza' => 'Users\Controller\LoginzaController',
         ),
     ),

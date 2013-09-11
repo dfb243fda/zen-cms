@@ -27,7 +27,7 @@ class ConfigManager
     
     public function get($namespace, $key, $default=null)
     {        
-        if (array_key_exists($key, $this->config[$namespace])) {
+        if (isset($this->config[$namespace]) && array_key_exists($key, $this->config[$namespace])) {
             if (!isset($this->unserializedConfig[$namespace][$key])) {
                 $this->unserializedConfig[$namespace][$key] = true;
                 $this->config[$namespace][$key] = unserialize($this->config[$namespace][$key]);
@@ -43,7 +43,7 @@ class ConfigManager
     {        
         $serialized_value = serialize($value);
         
-        if (array_key_exists($key, $this->config[$namespace])) {
+        if (isset($this->config[$namespace]) && array_key_exists($key, $this->config[$namespace])) {
             $this->db->query('
                 update ' . DB_PREF . $this->configTable . '
                 set entry_value = ?
@@ -65,6 +65,6 @@ class ConfigManager
 
     public function has($namespace, $key)
     {
-        return array_key_exists($key, $this->config[$namespace]);
+        return (isset($this->config[$namespace]) && array_key_exists($key, $this->config[$namespace]));
     }
 }

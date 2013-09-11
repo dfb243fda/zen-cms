@@ -96,6 +96,9 @@ class Config implements ServiceManagerAwareInterface
         }
         
         foreach ($form->getFieldsets() as $fieldset) {
+            foreach ($fieldset->getFieldsets() as $k=>$subFieldset) {
+                $subFieldset->populateValues($configManager->get($fieldset->getName(), $k));
+            }
             foreach ($fieldset->getElements() as $k=>$element) {
                 $element->setValue($configManager->get($fieldset->getName(), $k));
             }

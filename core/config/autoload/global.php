@@ -151,6 +151,7 @@ return array(
             'translateI18n' => 'App\I18n\View\Helper\TranslateI18n',
             'formElementWrapper' => 'App\Form\View\Helper\FormElementWrapper',
             'formElementWrapper3C' => 'App\Form\View\Helper\FormElementWrapper3C',
+            'FormCollection3C' => 'App\Form\View\Helper\FormCollection3C',
         ),
     ),
 );

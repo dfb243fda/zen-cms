@@ -25,6 +25,9 @@ class DynamicConfig extends AbstractMethod
             $form->setData($request->getPost());
             
             if ($form->isValid()) {
+                print_r($form->getData());
+                exit();
+                
                 if ($configSettings->edit($form->getData())) {
                     if (!$request->isXmlHttpRequest()) {
                         $this->flashMessenger()->addSuccessMessage('Настройки успешно обновлены');
@@ -39,8 +42,9 @@ class DynamicConfig extends AbstractMethod
                     $result['success'] = false;
                     $result['errMsg'] = 'При обновлении настроек произошли ошибки';
                 }
-            } else {
+            } else {                
                 $result['success'] = false;
+                $result['errMsg'] = 'Не все поля формы были заполнены верно';
             }
         }
         

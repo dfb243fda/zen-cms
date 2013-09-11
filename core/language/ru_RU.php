@@ -7,4 +7,6 @@ return array(
     'core:Additional information' => 'Дополнительная информация',
     'core:Critical error' => 'Критическая ошибка',
     'core:Page not found' => 'Страница не найдена',
+    
+    'App:Add collection item' => 'Добавить пункт',
 );
