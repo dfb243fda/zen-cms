@@ -239,9 +239,19 @@ return array(
             'login' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/login[/:action{/.}][/][.:format]',
+                    'route' => '/login[/][.:format]',
                     'defaults' => array(
                         'controller' => 'Users\Controller\Login',
+                        'action'     => 'index',
+                    ),
+                ),
+            ),
+            'loginza' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/loginza[/:action{/.}][/][.:format]',
+                    'defaults' => array(
+                        'controller' => 'Users\Controller\Loginza',
                         'action'     => 'index',
                     ),
                 ),
@@ -274,6 +284,8 @@ return array(
             'Users\Controller\Login' => 'Users\Controller\LoginController',
             'Users\Controller\Logout' => 'Users\Controller\LogoutController',
             'Users\Controller\Register' => 'Users\Controller\RegisterController',
+            
+            'Users\Controller\Loginza' => 'Users\Controller\LoginzaController',
         ),
     ),
 );
