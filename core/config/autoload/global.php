@@ -29,6 +29,7 @@ return array(
             'App\Field\FieldsGroup' => 'App\Field\FieldsGroup',
             'App\Field\FieldType' => 'App\Field\FieldType',
             'App\Field\FieldTypesCollection' => 'App\Field\FieldTypesCollection',
+            'App\Field\FieldsGroupCollection' => 'App\Field\FieldsGroupCollection',
             
             
             'App\Object\Object' => 'App\Object\Object',
@@ -74,6 +75,7 @@ return array(
             'App\Field\Field' => false,
             'App\Field\FieldsGroup' => false,
             'App\Field\FieldType' => false,
+            'App\Field\FieldsGroupCollection' => false,
             
             'App\Object\Object' => false,
             'App\Object\ObjectType' => false,

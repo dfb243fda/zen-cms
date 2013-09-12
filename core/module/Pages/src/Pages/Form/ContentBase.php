@@ -213,5 +213,10 @@ class ContentBase extends Form implements ServiceLocatorAwareInterface
              ->setRequired(true)
              ->getFilterChain()
              ->attachByName('StringTrim');
+        
+        $this->getInputFilter()
+             ->get('additional_params')
+             ->get('template')
+             ->setRequired(true);
     }
 }

@@ -40,7 +40,7 @@ class Installer implements ServiceManagerAwareInterface
             }
             
             if (method_exists($instance, 'getPermissionResources')) {
-                $tmp = call_user_func_array(array($instance, 'getPermissionResources'), array($sm));
+                $tmp = call_user_func_array(array($instance, 'getPermissionResources'), array($this->serviceManager));
                 $permissionResources[$module] = array_merge($permissionResources[$module], $tmp);
             }            
         }

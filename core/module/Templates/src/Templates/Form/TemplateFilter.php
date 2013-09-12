@@ -15,7 +15,7 @@ class TemplateFilter extends InputFilter
                 array(
                     'name' => 'Regex',
                     'options' => array(
-                        'pattern' => '/^[a-z_\-0-9]+\.[a-z]{3,4}$/'
+                        'pattern' => '/^[a-z_\-0-9]+\.[a-z]{3,5}$/'
                     ),
                 )
             ),

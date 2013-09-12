@@ -13,5 +13,5 @@ CREATE TABLE `#__users` (
 	UNIQUE KEY `login` (`login`),
 	UNIQUE KEY `email` (`email`),
     UNIQUE KEY `loginza_id` (`loginza_id`),
-    UNIQUE KEY `loginza_provider` (`loginza_provider`),
+    UNIQUE KEY `loginza_provider` (`loginza_provider`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;

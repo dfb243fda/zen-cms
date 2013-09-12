@@ -164,7 +164,7 @@ class Content implements ServiceManagerAwareInterface
                         $field = $fieldsCollection->getField($fieldId);
                         
                         if ($moduleManager->isModuleActive('Comments') && 
-                            $field->isExists() && 
+                            $field &&
                             $field->getName() == 'allow_comments'
                             ) {                            
                             $commentsService = $this->serviceManager->get('Comments\Service\Comments');

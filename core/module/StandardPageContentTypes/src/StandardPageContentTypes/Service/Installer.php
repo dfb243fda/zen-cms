@@ -45,13 +45,10 @@ class Installer implements ServiceManagerAwareInterface
                 $id = $objectTypesCollection->addType(0, 'i18n::Simple text object type');
                 $objectType = $objectTypesCollection->getType($id);
                 $objectType->setGuid('simple-text-page-content-type')->setPageContentTypeId($pageContentTypeId)->save();
-                
+                                
                 $groupId = $objectType->addFieldsGroup('content', 'i18n::Simple text content fields group');
                 
-                $fieldsGroup = new FieldsGroup(array(
-                    'serviceManager' => $sm,
-                    'id' => $groupId,
-                ));
+                $fieldsGroup = $objectType->getFieldsGroup($groupId);
                                 
                 $fieldTypeId = $fieldTypesCollection->getFieldTypeIdByDataType('ckEditor');
                 
@@ -74,10 +71,7 @@ class Installer implements ServiceManagerAwareInterface
                 /* comments field */
                 $groupId = $objectType->addFieldsGroup('common', 'i18n::Common fields group');
 
-                $fieldsGroup = new FieldsGroup(array(
-                    'serviceManager' => $sm,
-                    'id' => $groupId,
-                ));
+                $fieldsGroup = $objectType->getFieldsGroup($groupId);
 
                 $fieldTypeId = $fieldTypesCollection->getFieldTypeIdByDataType('checkbox');
 

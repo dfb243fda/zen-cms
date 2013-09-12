@@ -39,7 +39,7 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
         $db = $this->serviceManager->get('db');
         
         if (!is_numeric($typeId)) {
-            $typeId = $this->getTypeIdByGUID($typeId);
+            $typeId = $this->getTypeIdByGuid($typeId);
             if (null === $typeId) {
                 return null;
             }

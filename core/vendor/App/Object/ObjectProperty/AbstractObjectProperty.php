@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ObjectProperty;
+namespace App\Object\ObjectProperty;
 
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 

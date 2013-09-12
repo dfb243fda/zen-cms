@@ -4,7 +4,6 @@ namespace App\Object;
 
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
-use App\FieldsGroup\FieldsGroup;
 use Zend\Db\Sql\Sql;
 
 class ObjectType implements ServiceManagerAwareInterface
@@ -33,6 +32,11 @@ class ObjectType implements ServiceManagerAwareInterface
         
     protected $fieldGroups;
     
+    public function init()
+    {        
+        $this->fieldsGroupCollection = $this->serviceManager->get('App\Field\FieldsGroupCollection');        
+        $this->fieldsGroupCollection->setObjectTypeId($this->typeId)->init();
+    }
     
     public function setServiceManager(ServiceManager $serviceManager)
     {
@@ -55,7 +59,7 @@ class ObjectType implements ServiceManagerAwareInterface
             'page_type_id' => $this->pageTypeId,
             'page_content_type_id' => $this->pageContentTypeId,
             'is_locked' => (int)$this->isLocked,
-        ))->where('id = ' . (int)$this->objectId);
+        ))->where('id = ' . (int)$this->typeId);
         
         $statement = $sql->prepareStatementForSqlObject($update);
         $statement->execute();
@@ -75,68 +79,14 @@ class ObjectType implements ServiceManagerAwareInterface
         );
     }
     
-    public function init()
-    {        
-        $translator = $this->serviceManager->get('translator');
-        $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
-        $db = $this->serviceManager->get('db');
-        
-        $query = '
-            SELECT
-                ofg.id as groupId, of.*
-            FROM ' . DB_PREF . $this->objectFieldGroupsTable . ' ofg, ' . DB_PREF . 'fields_controller fc, ' . DB_PREF . 'object_fields of
-            WHERE ofg.object_type_id = ? AND fc.group_id = ofg.id AND of.id = fc.field_id
-            ORDER BY ofg.sorting ASC, fc.sorting ASC
-        ';
-        $resultSet = $db->query($query, array($this->typeId));
-        $sqlRes = $resultSet->toArray();
-
-        $objectFields = array();            
-        foreach ($sqlRes as $row) {
-            if (!isset($objectFields[$row['groupId']])) {
-                $objectFields[$row['groupId']] = array();
-            }
-            $objectFields[$row['groupId']][] = $row;
-        }
-
-        $query = '
-            select * 
-            from ' . DB_PREF . $this->objectFieldGroupsTable . ' 
-            where object_type_id = ? 
-            order by sorting';
-        
-        $sqlRes = $db->query($query, array($this->typeId))->toArray();
-
-        $this->fieldGroups = array();
-        foreach ($sqlRes as $row) {
-            $fieldsGroup = $this->serviceManager->get('App\Field\FieldGroup');
-            
-            if (!isset($objectFields[$row['id']])) {
-                $objectFields[$row['id']] = array();
-            }   
-            
-            $fieldsGroup->setId($row['id'])
-                        ->setGroupData($row)
-                        ->loadFields($objectFields[$row['id']]);
-            
-            $fieldsGroup = new FieldsGroup(array(
-                'serviceManager' => $this->serviceManager,
-                'id' => $row['id'],
-                'groupData' => $row,
-            ));
-
-            $this->fieldGroups[$row['id']] = $fieldsGroup;
-        }
-    }
-        
     public function getId()
     {
-        return $this->objectId;
+        return $this->typeId;
     }
     
     public function setId($typeId)
     {
-        $this->objectId = $typeId;        
+        $this->typeId = $typeId;        
         return $this;
     }
     
@@ -220,96 +170,32 @@ class ObjectType implements ServiceManagerAwareInterface
     
     public function addFieldsGroup($name, $title)
     {
-        $db = $this->serviceManager->get('db');
-        $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
-        
-        if (($fieldsGroup = $this->getFieldsGroupByName($name)) !== null) {
-            return $fieldsGroup->getId();
-        }
-        
-        $query = '
-            SELECT MAX(sorting) AS max_sorting 
-            FROM ' . DB_PREF . $this->objectFieldGroupsTable . ' 
-            WHERE object_type_id = ?';
-        $resultSet = $db->query($query, array($this->typeId));
-        $sqlRes = $resultSet->toArray();
-        
-        $maxSorting = $sqlRes[0]['max_sorting'];
-        if ($maxSorting) {
-            $sorting = (int)$maxSorting + 1;
-        }
-        else {
-            $sorting = 1;
-        }
-        
-        $sql = new Sql($db);        
-        $insert = $sql->insert(DB_PREF . $this->objectFieldGroupsTable);        
-        $insert->values(array(
-            'object_type_id' => $this->typeId,
-            'name' => $name,
-            'title' => $title,
-            'is_locked' => 0,
-            'sorting' => $sorting,
-        ));        
-        $sql->prepareStatementForSqlObject($insert)->execute();        
-        
-        $fieldGroupId = $db->getDriver()->getLastGeneratedValue();
-                
-        $children = $objectTypesCollection->getChildrenTypeIds($this->typeId);
-        
-        if (!empty($children)) {
-            foreach ($children as $id) {
-                $tmpObjectType->addFieldsGroup($name, $title);
-            }            
-        }
-        
-        return $fieldGroupId;
+        return $this->fieldsGroupCollection->addFieldsGroup($name, $title);
     }
     
     public function delFieldsGroup($groupId)
     {
-        $db = $this->serviceManager->get('db');
-        
-        $groupId = (int)$groupId;
-        if ($this->isFieldsGroupExists($groupId)) {            
-            $sql = new Sql($db);
-            $delete = $sql->delete(DB_PREF . $this->objectFieldGroupsTable)->where('id = ' . (int)$groupId);        
-            $sql->prepareStatementForSqlObject($delete)->execute();
-            
-            unset($this->fieldGroups[$groupId]);
-            return true;
-        } else {
-            return false;
-        }
+        return $this->fieldsGroupCollection->delFieldsGroup($groupId);
     }
     
-    private function isFieldsGroupExists($groupId)
+    public function isFieldsGroupExists($groupId)
     {
-        return isset($this->fieldGroups[$groupId]);        
+        return $this->fieldsGroupCollection->isFieldsGroupExists($groupId);
     }
     
     public function getFieldsGroup($groupId)
     {
-        if (isset($this->fieldGroups[$groupId])) {
-            return $this->fieldGroups[$groupId];
-        }
-        return null;
+        return $this->fieldsGroupCollection->getFieldsGroup($groupId);
     }
     
     public function getFieldsGroupByName($name)
     {
-        $fieldGroupsList = $this->getFieldGroups();
-        foreach ($fieldGroupsList as $fieldsGroup) {
-            if ($fieldsGroup->getName() == $name) {
-                return $fieldsGroup;
-            }
-        }
-        return null;
+        return $this->fieldsGroupCollection->getFieldsGroupByName($name);
     }
     
     public function getFieldGroups()
     {
-        return $this->fieldGroups;
+        return $this->fieldsGroupCollection->getFieldGroups();
     }
     
     public function getForm($onlyVisible = false)

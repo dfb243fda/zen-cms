@@ -87,21 +87,23 @@ class HtmlJsCssMinifier implements ServiceManagerAwareInterface
 
                     if ($hasDiff) {
                         $tmp2 = array();
-                        foreach ($tmp as $tmpVal) {
-                            if (empty($tmp2)) {
-                                $tmpVal2 = clone $tmpVal;
-                                unset($tmpVal2->href);
-                                $tmp2 = array(
-                                    'optimize' => true,
-                                    'options' => $tmpVal2,
-                                    'items' => array(),
-                                );
+                        if (!empty($tmp)) {
+                            foreach ($tmp as $tmpVal) {
+                                if (empty($tmp2)) {
+                                    $tmpVal2 = clone $tmpVal;
+                                    unset($tmpVal2->href);
+                                    $tmp2 = array(
+                                        'optimize' => true,
+                                        'options' => $tmpVal2,
+                                        'items' => array(),
+                                    );
+                                }
+
+                                $tmp2['items'][] = $tmpVal->href;
                             }
 
-                            $tmp2['items'][] = $tmpVal->href;
-                        }
-                        
-                        $result[] = $tmp2;
+                            $result[] = $tmp2;
+                        }                
 
                         $prev = null;
                         $tmp = array($v);
@@ -130,7 +132,7 @@ class HtmlJsCssMinifier implements ServiceManagerAwareInterface
                 $tmp2['items'][] = $tmpVal->href;
             }
 
-            $result[] = $tmp2;
+            $result[] = $tmp2;            
         }
         
         $newLinks = array();
@@ -218,22 +220,24 @@ class HtmlJsCssMinifier implements ServiceManagerAwareInterface
                     }
 
                     if ($hasDiff) {
-                        $tmp2 = array();
-                        foreach ($tmp as $tmpVal) {
-                            if (empty($tmp2)) {
-                                $tmpVal2 = clone $tmpVal;
-                                unset($tmpVal2->attributes['src']);
-                                $tmp2 = array(
-                                    'optimize' => true,
-                                    'options' => $tmpVal2,
-                                    'items' => array(),
-                                );
+                        if (!empty($tmp)) {
+                            $tmp2 = array();
+                            foreach ($tmp as $tmpVal) {
+                                if (empty($tmp2)) {
+                                    $tmpVal2 = clone $tmpVal;
+                                    unset($tmpVal2->attributes['src']);
+                                    $tmp2 = array(
+                                        'optimize' => true,
+                                        'options' => $tmpVal2,
+                                        'items' => array(),
+                                    );
+                                }
+
+                                $tmp2['items'][] = $tmpVal->attributes['src'];
                             }
 
-                            $tmp2['items'][] = $tmpVal->attributes['src'];
-                        }
-                        
-                        $result[] = $tmp2;
+                            $result[] = $tmp2;
+                        }                        
 
                         $prev = null;
                         $tmp = array($v);

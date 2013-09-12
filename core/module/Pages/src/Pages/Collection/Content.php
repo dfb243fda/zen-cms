@@ -153,7 +153,6 @@ class Content implements ServiceManagerAwareInterface
             foreach ($fields as $k2=>$v2) {                    
                 if (isset($insertFields[$k2])) {
                     if ($moduleManager->isModuleActive('Comments') && 
-                        $v2->isExists() && 
                         $v2->getName() == 'allow_comments'
                         ) {                            
                         $commentsService = $this->serviceManager->get('Comments\Service\Comments');

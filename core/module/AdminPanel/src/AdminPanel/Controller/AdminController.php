@@ -28,7 +28,7 @@ class AdminController extends AbstractActionController
         if (!$this->isAllowed('admin_access')) {	
             return $this->redirect()->toRoute($this->routeLogin, array(), array('query' => array('redirect' => $this->request->getRequestUri())));
         }  
-           
+        
         $currentTheme = $configManager->get('system', 'default_be_theme');
             
         define('CURRENT_THEME', $currentTheme);

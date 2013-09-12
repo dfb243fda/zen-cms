@@ -8,4 +8,6 @@ return array(
     'Elfinder:Files method description' => 'Метод, отображающий в браузере файловый менеджер elfinder',
     
     'File system access' => 'Доступ к файловой системе',
+    
+    'Media menu group' => 'Медиа',
 );

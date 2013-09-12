@@ -93,10 +93,7 @@ class Installer implements ServiceManagerAwareInterface
 
                 $fieldTypeId = $fieldTypesCollection->getFieldTypeIdByDataType('pageLink');
 
-                $fieldsGroup = new FieldsGroup(array(
-                    'serviceManager' => $sm,
-                    'id' => $groupId,
-                ));
+                $fieldsGroup = $objectType->getFieldsGroup($groupId);
 
                 $fieldId = $fieldsCollection->addField(array(
                     'name' => 'result_page_id',

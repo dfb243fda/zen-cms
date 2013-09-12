@@ -40,7 +40,7 @@ class Installer implements ServiceManagerAwareInterface
         $uri = $request->getUri();     
         $host = $uri->getHost() . $request->getBasePath();
         $db->query('
-            insert into ' . DB_PREF . 'domains
+            insert ignore into ' . DB_PREF . 'domains
                 (host, is_default, default_lang_id)
             values
                 (?, ?, ?)

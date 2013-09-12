@@ -232,7 +232,7 @@ class CmsInstaller implements ServiceManagerAwareInterface
         
         $objectId = $objectsCollection->addObject('user-item', $adminUserObjectTypeId);
         
-        $db->query('insert into ' . DB_PREF . 'users (username, email, display_name, password, object_id) values (?, ?, ?, ?, ?)', array('admin', $email, $displayName, $password, $objectId));
+        $db->query('insert into ' . DB_PREF . 'users (login, email, display_name, password, object_id) values (?, ?, ?, ?, ?)', array('admin', $email, $displayName, $password, $objectId));
         
         $userId = $db->getDriver()->getLastGeneratedValue();
         

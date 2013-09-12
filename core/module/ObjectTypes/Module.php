@@ -29,8 +29,11 @@ class Module
     
     public function onInstall($sm)
     {
+        
         require_once __DIR__ . '/src/' . __NAMESPACE__ . '/Service/Installer.php';
-        $sm->setInvokableClass('ObjectTypes\Service\Installer', 'ObjectTypes\Service\Installer');
+        if (!$sm->has('ObjectTypes\Service\Installer')) {
+            $sm->setInvokableClass('ObjectTypes\Service\Installer', 'ObjectTypes\Service\Installer');
+        }
         $moduleInstaller = $sm->get('ObjectTypes\Service\Installer');
         $moduleInstaller->install();  
     }

@@ -52,6 +52,11 @@ return array(
             ),
         ),
     ),
+    'menu_groups' => array(
+        'media' => array(
+            'title' => 'i18n::Media menu group',
+        ),
+    ),
     'controllers' => array(
         'invokables' => array(
             'Elfinder\Controller\Connector' => 'Elfinder\Controller\ConnectorController',

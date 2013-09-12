@@ -141,7 +141,7 @@ class Field implements ServiceManagerAwareInterface
             'name' => $name,
             'type' => $this->getFieldTypeName(),
             'options' => array(
-                'label' => $this->translator->translateI18n($this->getTitle()),
+                'label' => $translator->translateI18n($this->getTitle()),
             ),
         );
         

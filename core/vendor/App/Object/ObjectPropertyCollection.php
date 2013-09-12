@@ -24,7 +24,7 @@ class ObjectPropertyCollection implements ServiceManagerAwareInterface
         $property->setObjectId($objectId)->setFieldId($fieldId)->init();
         return $property;        
     }
-/*    
+    
     public function getServiceNameByFieldId($fieldId)
     {        
         $fieldsCollection = $this->serviceManager->get('fieldsCollection');
@@ -40,7 +40,5 @@ class ObjectPropertyCollection implements ServiceManagerAwareInterface
         }
         return $this->serviceNames[$fieldId];
     }
- * 
- */
-    
+   
 }

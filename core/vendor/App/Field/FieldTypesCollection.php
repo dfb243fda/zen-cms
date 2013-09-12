@@ -5,7 +5,7 @@ namespace App\Field;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
 
-class FieldTypesCollection implements ServiceManagerAwareInterface, \Zend\Stdlib\InitializableInterface
+class FieldTypesCollection implements ServiceManagerAwareInterface
 {    
     protected $serviceManager;
     
@@ -22,7 +22,7 @@ class FieldTypesCollection implements ServiceManagerAwareInterface, \Zend\Stdlib
     }
     
     public function init()
-    {        
+    {                
         if (!$this->initialized) {
             $this->initialized = true;
             

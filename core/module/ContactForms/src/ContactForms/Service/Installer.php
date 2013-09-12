@@ -62,10 +62,7 @@ class Installer implements ServiceManagerAwareInterface
                 
                 $fieldTypeId = $fieldTypesCollection->getFieldTypeIdByDataType('select');
                 
-                $fieldsGroup = new FieldsGroup(array(
-                    'serviceManager' => $this->serviceManager,
-                    'id' => $groupId,
-                ));
+                $fieldsGroup = $objectType->getFieldsGroup($groupId);
                 
                 $fieldId = $fieldsCollection->addField(array(
                     'name' => 'form_id',

@@ -115,7 +115,7 @@ class Module implements
         
     public function onInstall($sm)
     {
-        $rbacInstaller = $this->serviceManager->get('Rbac\Service\Installer');
+        $rbacInstaller = $sm->get('Rbac\Service\Installer');
         $rbacInstaller->install();
     }
 }
