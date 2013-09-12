@@ -4,7 +4,6 @@ namespace App\Form\View\Helper;
 
 use Zend\Form\View\Helper\FormCollection;
 use Zend\Form\Element\Collection as CollectionElement;
-use Zend\Form\ElementInterface;
 
 class FormCollection3C extends FormCollection
 {

@@ -25,8 +25,9 @@ class DynamicConfig extends AbstractMethod
             $form->setData($request->getPost());
             
             if ($form->isValid()) {
-                print_r($form->getData());
-                exit();
+   //             $tmp = $form->getData();
+   //             var_dump($tmp['loginza']);
+    //            exit();
                 
                 if ($configSettings->edit($form->getData())) {
                     if (!$request->isXmlHttpRequest()) {
@@ -42,7 +43,7 @@ class DynamicConfig extends AbstractMethod
                     $result['success'] = false;
                     $result['errMsg'] = 'При обновлении настроек произошли ошибки';
                 }
-            } else {                
+            } else {
                 $result['success'] = false;
                 $result['errMsg'] = 'Не все поля формы были заполнены верно';
             }
