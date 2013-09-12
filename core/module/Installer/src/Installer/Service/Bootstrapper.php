@@ -60,7 +60,9 @@ class Bootstrapper implements ServiceManagerAwareInterface
                     $response->getHeaders()->addHeaderLine('Location', $url);
                     $response->setStatusCode(302);
                     
-                    $event->setResponse($response);
+        //            $event->setResponse($response);
+                    
+                    return $response;
                 }
             }, -4000);
         }
