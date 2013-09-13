@@ -9,4 +9,5 @@ return array(
     'core:Page not found' => 'Страница не найдена',
     
     'App:Add collection item' => 'Добавить пункт',
+    'App:Delete collection item' => 'Удалить пункт',
 );

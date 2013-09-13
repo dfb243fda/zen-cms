@@ -12,7 +12,6 @@ class LoginzaFieldset extends Fieldset implements InputFilterProviderInterface
         $this->setLabel('opa2');
         
 //        $this->setUseAsBaseFieldset(true);
-        
         $this->add(array(
             'type' => 'checkbox',
             'name' => 'allow_loginza',

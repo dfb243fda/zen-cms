@@ -4,7 +4,6 @@ namespace StandardPageContentTypes\Service;
 
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
-use App\FieldsGroup\FieldsGroup;
 
 /**
  * Класс для отрисовки дерева страниц в админке

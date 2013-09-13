@@ -6,7 +6,7 @@ use Zend\Form\Form;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class DynamicConfigForm extends Form implements ServiceLocatorAwareInterface
+class RegistrationConfigForm extends Form implements ServiceLocatorAwareInterface
 {
     /**
      * @var ServiceLocatorInterface

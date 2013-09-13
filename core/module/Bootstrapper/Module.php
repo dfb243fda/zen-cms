@@ -39,8 +39,15 @@ class Module
     
     public function getDynamicConfig($sm)
     {
-        $dynamicConfigService = $sm->get('Bootstrapper\Service\DynamicConfig');
-        return $dynamicConfigService->getConfig();
+        $formElementManager = $sm->get('FormElementManager');
+        
+        $systemConfigForm = $formElementManager->get('Bootstrapper\Form\SystemConfigForm');  
+        
+        return array(
+            'form' => array(
+                'general' => $systemConfigForm,
+            ),
+        );
     }
     
     public function getAutoloaderConfig()

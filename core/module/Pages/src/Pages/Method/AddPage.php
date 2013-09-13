@@ -34,10 +34,10 @@ class AddPage extends AbstractMethod
             $pageTypeId = (int)$this->params()->fromRoute('pageTypeId');
             $pagesCollection->setPageTypeId($pageTypeId);
         }
-        
-        $form = $pagesCollection->getForm();
                 
         if ($request->isPost()) {
+            $form = $pagesCollection->getForm(false);
+            
             $data = $request->getPost()->toArray();
             if (empty($data['common']['name'])) {
                 $data['common']['name'] = $translator->translate('Pages:(Page without name)');
@@ -66,6 +66,8 @@ class AddPage extends AbstractMethod
             } else {
                 $result['success'] = false;
             }
+        } else {
+            $form = $pagesCollection->getForm(true);
         }
                 
         $result['contentTemplate'] = array(

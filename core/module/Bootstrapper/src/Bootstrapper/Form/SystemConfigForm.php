@@ -1,29 +1,43 @@
 <?php
 
-namespace Bootstrapper\Service;
+namespace Bootstrapper\Form;
 
-use Zend\ServiceManager\ServiceManager;
-use Zend\ServiceManager\ServiceManagerAwareInterface;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\Form\Form;
 
-class DynamicConfig implements ServiceManagerAwareInterface
+class SystemConfigForm extends Form implements ServiceLocatorAwareInterface
 {
     /**
-     * @var ServiceManager
+     * @var ServiceLocatorInterface
      */
-    protected $serviceManager;
+    protected $serviceLocator;
     
     /**
-     * {@inheritDoc}
+     * Set service locator
+     *
+     * @param ServiceLocatorInterface $serviceLocator
      */
-    public function setServiceManager(ServiceManager $serviceManager)
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
     {
-        $this->serviceManager = $serviceManager;
+        $this->serviceLocator = $serviceLocator;
+    }
+
+    /**
+     * Get service locator
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
     }
     
-    public function getConfig()
+    public function init()
     {
-        $db = $this->serviceManager->get('db');
+        $serviceManager = $this->serviceLocator->getServiceLocator();
+        
+        $db = $serviceManager->get('db');
         
 
         $sqlRes = $db->query('select prefix, title from ' . DB_PREF . 'langs', array())->toArray();
@@ -33,9 +47,9 @@ class DynamicConfig implements ServiceManagerAwareInterface
             $languages[$row['prefix']] = $row['title'];
         }
 
-        $translator = $this->serviceManager->get('translator');
+        $translator = $serviceManager->get('translator');
         
-        $configManager = $this->serviceManager->get('configManager');
+        $configManager = $serviceManager->get('configManager');
         
         $continents = array( 'Africa', 'America', 'Antarctica', 'Arctic', 'Asia', 'Atlantic', 'Australia', 'Europe', 'Indian', 'Pacific');
 
@@ -117,17 +131,14 @@ class DynamicConfig implements ServiceManagerAwareInterface
 
         $dateTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         $localTime = $dateTime->format($format);
-
+   
         
-        $form = new Form();
-        $form->getFormFactory()->setFormElementManager($this->serviceManager->get('FormElementManager'));
-        
-        $form->add(array(
+        $this->add(array(
             'name' => 'system',
             'type' => 'fieldset',
         ));
         
-        $form->get('system')->add(array(
+        $this->get('system')->add(array(
             'name' => 'language',
             'type' => 'select',
             'options' => array(
@@ -137,7 +148,7 @@ class DynamicConfig implements ServiceManagerAwareInterface
             ),
         ));
         
-        $form->get('system')->add(array(
+        $this->get('system')->add(array(
             'name' => 'timezone',
             'type' => 'select',
             'options' => array(
@@ -147,15 +158,9 @@ class DynamicConfig implements ServiceManagerAwareInterface
             ),
         ));
         
-        $form->getInputFilter()
+        $this->getInputFilter()
              ->get('system')
              ->get('timezone')
-             ->setRequired(true);
-        
-        return array(
-            'form' => array(
-                'general' => $form,
-            ),            
-        );
+             ->setRequired(true);        
     }    
 }

@@ -42,12 +42,12 @@ class AddContent extends AbstractMethod
         }
         if (null !== $this->params()->fromRoute('pageContentTypeId')) {  
             $contentTypeId = (int)$this->params()->fromRoute('pageContentTypeId');
-            $contentCollection->setContentTypeid($contentTypeId);
+            $contentCollection->setContentTypeId($contentTypeId);
         }
-        
-        $form = $contentCollection->getForm();
              
         if ($request->isPost()) {
+            $form = $contentCollection->getForm(false);
+            
             $data = $request->getPost()->toArray();
             if (empty($data['common']['name'])) {
                 $data['common']['name'] = $translator->translate('Pages:(Page content without name)');
@@ -76,7 +76,9 @@ class AddContent extends AbstractMethod
             } else {
                 $result['success'] = false;
             }            
-        }        
+        } else {
+            $form = $contentCollection->getForm(true);
+        }
         
         $result['contentTemplate'] = array(
             'name' => 'content_template/Pages/content_form_view.phtml',

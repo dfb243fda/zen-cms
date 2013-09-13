@@ -246,4 +246,6 @@ return array(
     "'%value%' is more than %max% characters long" => "'%value%' больше разрешенной максимальной длины в %max% символов",
     
     "A record matching the input was found" => 'Данная запись уже существует в базе',
+    
+    "The input is not a valid email address. Use the basic format local-part@hostname" => "Введенное значение не является email-ом. Используйте формат local-part@hostname",
 );

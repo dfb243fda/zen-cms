@@ -61,14 +61,15 @@ class Pages implements ServiceManagerAwareInterface
         return $this;
     }
     
-    public function getForm()
+    public function getForm($populateForm)
     {                
         $formFactory = $this->serviceManager->get('Pages\FormFactory\Page');
         
         $formFactory->setPageTypeId($this->pageTypeId)
                     ->setObjectTypeId($this->objectTypeId)
                     ->setParentPageId($this->parentPageId)
-                    ->setDomainId($this->domainId);
+                    ->setDomainId($this->domainId)
+                    ->setPopulateForm($populateForm);
         
         $form = $formFactory->getForm();
         

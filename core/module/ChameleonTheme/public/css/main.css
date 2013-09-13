@@ -815,6 +815,9 @@ strong {
     margin-bottom: 15px;
 }
 
+.add-collection-item {
+    margin-bottom: 15px;
+}
 
 .ace_editor {
     position: absolute;

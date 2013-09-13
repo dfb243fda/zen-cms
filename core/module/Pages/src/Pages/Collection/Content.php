@@ -69,12 +69,13 @@ class Content implements ServiceManagerAwareInterface
         return $this;
     }
     
-    public function getForm()
+    public function getForm($populateForm)
     {
         $formFactory = $this->serviceManager->get('Pages\FormFactory\Content');
         
         $formFactory->setContentTypeId($this->contentTypeId)
-                    ->setObjectTypeId($this->objectTypeId);
+                    ->setObjectTypeId($this->objectTypeId)
+                    ->setPopulateForm($populateForm);
         
         $form = $formFactory->getForm();
         

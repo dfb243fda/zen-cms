@@ -80,7 +80,10 @@ class TemplatesFormFactory implements ServiceManagerAwareInterface
      //       $filter = $this->serviceManager->get('Templates\Form\TemplateWithMarkersFilter');            
         } else {
             $form = $formElementManager->get('Templates\Form\TemplateForm');
-            $filter = $this->serviceManager->get('Templates\Form\TemplateFilter');
+            $factory     = new InputFactory();
+            $filter = $factory->createInput(array('type' => 'Templates\Form\TemplateFilter'));
+            
+    //        $filter = $this->serviceManager->get('Templates\Form\TemplateFilter');
         }
         $form->setInputFilter($filter);
         $form->setData($formData);

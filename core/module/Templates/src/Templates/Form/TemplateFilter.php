@@ -7,7 +7,7 @@ use Zend\InputFilter\InputFilter;
 class TemplateFilter extends InputFilter
 {
     public function init()
-    {
+    {        
         $this->add(array(
             'name' => 'name',
             'required' => true,

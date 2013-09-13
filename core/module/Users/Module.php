@@ -53,46 +53,16 @@ class Module
     }
     
     public function getDynamicConfig($sm)
-    {        
-        $loginzaForm = array(
-            'fieldsets' => array(                    
-                array(
-                    'spec' => array(
-                        'name' => 'loginza',
-                        'options' => array(
-                            'label' => 'opa',
-          //                  'use_as_base_fieldset' => false,
-                        ),
-                        'elements' => array(
-                            array(
-                                'spec' => array(
-                                    'type' => 'Zend\Form\Element\Collection',
-                                    'name' => 'domains',
-                                    'options' => array(
-                                        'count' => 2,
-                                        'should_create_template' => true,
-                                        'allow_add' => true,
-                                        'target_element' => array(
-                                            'type' => 'Users\Fieldset\LoginzaFieldset'
-                                        )
-                                    )
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        );
-        
-        
-        
+    {           
         $formElementManager = $sm->get('FormElementManager');
         
-        $form = $formElementManager->get('Users\Form\DynamicConfigForm');
+        $loginzaForm = $formElementManager->get('Users\Form\LoginzaConfigForm');        
+        $registrationForm = $formElementManager->get('Users\Form\RegistrationConfigForm');
+        
         return array(
             'form' => array(
                 'loginza' => $loginzaForm,
-                'registration' => $form,
+                'registration' => $registrationForm,
             ),
         );
     }

@@ -13,14 +13,20 @@ class FormCollection3C extends FormCollection
     {
         $html = parent::renderTemplate($collection);
         
-        $buttonText = $collection->getOption('addBtnText');
-        
-        if (null === $buttonText) {
-            $buttonText = $this->getTranslator()->translate('App:Add collection item');
+        $addButtonText = $collection->getOption('addBtnText');        
+        if (null === $addButtonText) {
+            $addButtonText = $this->getTranslator()->translate('App:Add collection item');
         }        
         
+        $delButtonText = $collection->getOption('delBtnText');        
+        if (null === $delButtonText) {
+            $delButtonText = $this->getTranslator()->translate('App:Delete collection item');
+        }  
+        
         if ($collection->getOption('allow_add')) {
-            $html .= '<button class="add-collection-item" onclick="return zen.currentTheme.forms.addCollectionItem(this)">' . $buttonText . '</button>';
+            $html .= '<button class="add-collection-item" onclick="return zen.currentTheme.forms.addCollectionItem(this)">' . $addButtonText . '</button>';
+            
+            $html .= '<button class="del-collection-item" onclick="return zen.currentTheme.forms.delCollectionItem(this)">' . $delButtonText . '</button>';
         }        
         
         return $html;

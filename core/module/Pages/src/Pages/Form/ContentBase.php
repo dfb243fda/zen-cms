@@ -13,6 +13,8 @@ class ContentBase extends Form implements ServiceLocatorAwareInterface
      */
     protected $serviceLocator;
     
+    protected $contentTypeId;
+    
     /**
      * Set service locator
      *
@@ -31,6 +33,11 @@ class ContentBase extends Form implements ServiceLocatorAwareInterface
     public function getServiceLocator()
     {
         return $this->serviceLocator;
+    }
+    
+    public function getContentTypeId()
+    {
+        return $this->contentTypeId;
     }
     
     public function init()
@@ -66,6 +73,7 @@ class ContentBase extends Form implements ServiceLocatorAwareInterface
                 break;
             }
         }
+        $this->contentTypeId = $contentTypeId;
         
         $sqlRes = $db->query('select * from ' . DB_PREF . 'page_content_types where id = ?', array($contentTypeId))->toArray();
         

@@ -27,6 +27,12 @@ class Page implements ServiceManagerAwareInterface
     protected $parentPageId;
     
     /**
+     * GetForm() method will return form with data or not
+     * @var boolean
+     */
+    protected $populateForm = true;
+    
+    /**
      * Set service manager
      *
      * @param ServiceManager $serviceManager
@@ -71,6 +77,17 @@ class Page implements ServiceManagerAwareInterface
         return $this;
     }
     
+    public function setPopulateForm($populateForm)
+    {
+        $this->populateForm = (bool)$populateForm;
+        return $this;
+    }
+    
+    public function getPopulateForm()
+    {
+        return $this->populateForm;
+    }
+    
     public function getForm()
     {
         $pageId = $this->pageId;
@@ -82,9 +99,14 @@ class Page implements ServiceManagerAwareInterface
         $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
         $objectPropertyCollection = $this->serviceManager->get('objectPropertyCollection');
         
-        if (null === $this->pageId) {            
+        if (null === $pageId) {            
             $form = $this->serviceManager->get('FormElementManager')
                                          ->get('Pages\Form\PageBase', array('pageTypeId' => $pageTypeId));  
+            
+            if (null === $pageTypeId) {
+                $pageTypeId = $form->getPageTypeId();
+                $this->setPageTypeId($pageTypeId);
+            }
             
             if (null === $objectTypeId) {
                 $valueOptions = $form->get('common')->get('object_type_id')->getValueOptions();
@@ -92,6 +114,7 @@ class Page implements ServiceManagerAwareInterface
                 if (!empty($valueOptions)) {
                     reset($valueOptions);
                     $objectTypeId = key($valueOptions);
+                    $this->setObjectTypeId($objectTypeId);
                 }
             }
             
@@ -124,15 +147,17 @@ class Page implements ServiceManagerAwareInterface
                         
             $this->pageData = $pageData;
             
-            foreach ($form->getFieldsets() as $fieldset) {
-                foreach ($fieldset->getElements() as $element) {
-                    $elementName = $element->getName();
-                                        
-                    if (isset($pageData[$elementName])) {
-                        $element->setValue($pageData[$elementName]);
+            if ($this->populateForm) {
+                foreach ($form->getFieldsets() as $fieldset) {
+                    foreach ($fieldset->getElements() as $element) {
+                        $elementName = $element->getName();
+
+                        if (isset($pageData[$elementName])) {
+                            $element->setValue($pageData[$elementName]);
+                        }
                     }
-                }
-            }            
+                }       
+            }                 
         } else {
             
             $sqlRes = $db->query('
@@ -184,21 +209,23 @@ class Page implements ServiceManagerAwareInterface
             
             $this->pageData = $pageData;
             
-            foreach ($form->getFieldsets() as $fieldset) {
-                foreach ($fieldset->getElements() as $element) {
-                    $elementName = $element->getName();
-                    
-                    if ('field_' == substr($elementName, 0, 6)) {
-                        $fieldId = substr($elementName, 6);
-                        $property = $objectPropertyCollection->getProperty($objectId, $fieldId); 
-                        $element->setValue($property->getValue());
-                    } else {
-                        if (isset($pageData[$elementName])) {
-                            $element->setValue($pageData[$elementName]);
-                        }
-                    }      
+            if ($this->populateForm) {
+                foreach ($form->getFieldsets() as $fieldset) {
+                    foreach ($fieldset->getElements() as $element) {
+                        $elementName = $element->getName();
+
+                        if ('field_' == substr($elementName, 0, 6)) {
+                            $fieldId = substr($elementName, 6);
+                            $property = $objectPropertyCollection->getProperty($objectId, $fieldId); 
+                            $element->setValue($property->getValue());
+                        } else {
+                            if (isset($pageData[$elementName])) {
+                                $element->setValue($pageData[$elementName]);
+                            }
+                        }      
+                    }
                 }
-            }
+            }            
         }
         
         return $form;

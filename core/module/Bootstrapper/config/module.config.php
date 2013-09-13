@@ -36,7 +36,6 @@ return array(
         'invokables' => array(
             'Bootstrapper\Service\Constants' => 'Bootstrapper\Service\Constants',
             'Bootstrapper\Service\Logger' => 'Bootstrapper\Service\Logger',
-            'Bootstrapper\Service\DynamicConfig' => 'Bootstrapper\Service\DynamicConfig',
         ),
     ),
     
@@ -52,7 +51,7 @@ return array(
         'form' => array(
             'general' => array(
                 'fieldsets' => array(
-                    'system' => array(
+                    array(
                         'spec' => array(
                             'name' => 'system',
                             'elements' => array(

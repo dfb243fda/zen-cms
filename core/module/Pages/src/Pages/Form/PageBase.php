@@ -14,6 +14,8 @@ class PageBase extends Form implements ServiceLocatorAwareInterface
      */
     protected $serviceLocator;
 
+    protected $pageTypeId;
+    
     /**
      * Set service locator
      *
@@ -34,6 +36,11 @@ class PageBase extends Form implements ServiceLocatorAwareInterface
         return $this->serviceLocator;
     }
 
+    public function getPageTypeId()
+    {
+        return $this->pageTypeId;
+    }
+    
     public function init()
     {
         $pageTypeId = $this->getOption('pageTypeId');
@@ -95,7 +102,7 @@ class PageBase extends Form implements ServiceLocatorAwareInterface
                 break;
             }
         }
-
+        $this->pageTypeId = $pageTypeId;
 
         $sqlRes = $db->query('select id, name from ' . DB_PREF . 'object_types where page_type_id = ?', array($pageTypeId))->toArray();
 

@@ -516,6 +516,12 @@ zen.chameleonTheme = {};
                 $templateSpan.before(template);
                 
                 return false;
+            },
+            delCollectionItem : function(obj) {
+                if ($(obj).parent().find('> fieldset').length > 1) {
+                    $(obj).parent().find('> fieldset:last').remove();
+                }
+                return false;
             }
         }
         

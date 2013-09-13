@@ -31,10 +31,10 @@ class EditPage extends AbstractMethod
             $pageTypeId = (int)$this->params()->fromRoute('pageTypeId');
             $pageEntity->setPageTypeId($pageTypeId);
         }        
-        
-        $form = $pageEntity->getForm();
-                
+                        
         if ($request->isPost()) {
+            $form = $pageEntity->getForm(false);
+            
             $data = $request->getPost()->toArray();
             if (empty($data['common']['name'])) {
                 $data['common']['name'] = $translator->translate('Pages:(Page without name)');
@@ -63,6 +63,8 @@ class EditPage extends AbstractMethod
             } else {
                 $result['success'] = false;
             }
+        } else {
+            $form = $pageEntity->getForm(true);
         }
         
         $result['contentTemplate'] = array(

@@ -83,11 +83,13 @@ class ConfigSettings implements ServiceManagerAwareInterface
         return $tabs;
     }    
     
-    public function getForm()
+    public function getForm($populateForm)
     {
         $formFactory = $this->serviceManager->get('Config\FormFactory\Config');
         
-        $form = $formFactory->setTab($this->currentTab)->getForm();
+        $form = $formFactory->setTab($this->currentTab)
+            ->setPopulateForm($populateForm)
+            ->getForm();
         
         return $form;
     }

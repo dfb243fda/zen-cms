@@ -16,19 +16,16 @@ class DynamicConfig extends AbstractMethod
             $configSettings->setCurrentTab($currentTab);
         }
         
-        $tabs = $configSettings->getTabs();
-        $form = $configSettings->getForm();
+        $tabs = $configSettings->getTabs();        
                 
         $result = array();
         
-        if ($request->isPost()) {            
+        if ($request->isPost()) {          
+            $form = $configSettings->getForm(false);
+            
             $form->setData($request->getPost());
             
-            if ($form->isValid()) {
-   //             $tmp = $form->getData();
-   //             var_dump($tmp['loginza']);
-    //            exit();
-                
+            if ($form->isValid()) {               
                 if ($configSettings->edit($form->getData())) {
                     if (!$request->isXmlHttpRequest()) {
                         $this->flashMessenger()->addSuccessMessage('Настройки успешно обновлены');
@@ -47,6 +44,8 @@ class DynamicConfig extends AbstractMethod
                 $result['success'] = false;
                 $result['errMsg'] = 'Не все поля формы были заполнены верно';
             }
+        } else {
+            $form = $configSettings->getForm(true);
         }
         
         $result['tabs'] = $tabs;

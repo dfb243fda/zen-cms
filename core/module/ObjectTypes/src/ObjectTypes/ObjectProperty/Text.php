@@ -3,7 +3,7 @@
 namespace ObjectTypes\ObjectProperty;
 
 use Zend\Db\Sql\Sql;
-use App\ObjectProperty\AbstractObjectProperty;
+use App\Object\ObjectProperty\AbstractObjectProperty;
 
 class Text extends AbstractObjectProperty
 {

@@ -26,7 +26,7 @@ class Content implements ServiceManagerAwareInterface
      * GetForm() method will return form with data or not
      * @var boolean
      */
-    protected $populateForm;
+    protected $populateForm = true;
     
     /**
      * Set service manager
@@ -89,12 +89,18 @@ class Content implements ServiceManagerAwareInterface
             $form = $this->serviceManager->get('FormElementManager')
                                          ->get('Pages\Form\ContentBase', array('contentTypeId' => $contentTypeId));  
             
+            if (null === $contentTypeId) {
+                $contentTypeId = $form->getContentTypeId();
+                $this->setContentTypeId($contentTypeId);
+            }
+            
             if (null === $objectTypeId) {
                 $valueOptions = $form->get('common')->get('object_type_id')->getValueOptions();
                 
                 if (!empty($valueOptions)) {
                     reset($valueOptions);
                     $objectTypeId = key($valueOptions);
+                    $this->setObjectTypeId($objectTypeId);
                 }
             }
             
