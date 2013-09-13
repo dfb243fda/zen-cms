@@ -32,9 +32,11 @@ class EditContent extends AbstractMethod
             $contentEntity->setContentTypeid($pageContentTypeId);
         }        
         
-        $form = $contentEntity->getForm();
+        
         
         if ($request->isPost()) {
+            $form = $contentEntity->getForm(false);
+            
             $data = $request->getPost()->toArray();
             if (empty($data['common']['name'])) {
                 $data['common']['name'] = $translator->translate('Pages:(Page content without name)');
@@ -60,9 +62,11 @@ class EditContent extends AbstractMethod
                     $result['success'] = false;
                     $result['errMsg'] = 'При обновлении содержимого произошли ошибки';
                 }
-            } else {
+            } else {                
                 $result['success'] = false;
             }            
+        } else {
+            $form = $contentEntity->getForm(true);
         }        
         
         $result['contentTemplate'] = array(

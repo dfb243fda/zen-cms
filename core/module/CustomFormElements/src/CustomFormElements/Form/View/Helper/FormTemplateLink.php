@@ -15,6 +15,8 @@ class FormTemplateLink extends FormSelect
                 
         $options = $element->getOptions();
         
+        $valueOptions = $element->getValueOptions();
+        
         if ($value) {
             $editLink = $this->view->url('admin/method', array(
                 'module' => 'Templates',
@@ -23,7 +25,7 @@ class FormTemplateLink extends FormSelect
             ));
             
             $result .= '<div class="template-edit-link"><a target="_blank" href="' . $editLink . '">' . $this->translator->translate('TemplateLink:Edit template') . '</a></div>';
-        } elseif (isset($options['module']) && $options['module']) {
+        } elseif (isset($options['module']) && $options['module'] && empty($valueOptions)) {
             $addLinkAttr = array(
                 'module' => 'Templates',
                 'method' => 'AddTemplate',

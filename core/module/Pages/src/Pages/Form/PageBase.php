@@ -253,6 +253,11 @@ class PageBase extends Form implements ServiceLocatorAwareInterface
             ->get('additional_params')
             ->get('template')
             ->setRequired(true);
+        
+        $this->getInputFilter()
+             ->get('additional_params')
+             ->get('access')
+             ->setRequired(true);
     }
 
 }

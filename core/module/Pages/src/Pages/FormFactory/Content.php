@@ -23,6 +23,12 @@ class Content implements ServiceManagerAwareInterface
     protected $contentTable = 'pages_content';
     
     /**
+     * GetForm() method will return form with data or not
+     * @var boolean
+     */
+    protected $populateForm;
+    
+    /**
      * Set service manager
      *
      * @param ServiceManager $serviceManager
@@ -53,6 +59,17 @@ class Content implements ServiceManagerAwareInterface
     public function getContentData()
     {
         return $this->contentData;
+    }
+    
+    public function setPopulateForm($populateForm)
+    {
+        $this->populateForm = (bool)$populateForm;
+        return $this;
+    }
+    
+    public function getPopulateForm()
+    {
+        return $this->populateForm;
     }
     
     public function getForm()
@@ -95,15 +112,17 @@ class Content implements ServiceManagerAwareInterface
                         
             $this->contentData = $contentData;
             
-            foreach ($form->getFieldsets() as $fieldset) {
-                foreach ($fieldset->getElements() as $element) {
-                    $elementName = $element->getName();
-                                        
-                    if (isset($contentData[$elementName])) {
-                        $element->setValue($contentData[$elementName]);
+            if ($this->populateForm) {
+                foreach ($form->getFieldsets() as $fieldset) {
+                    foreach ($fieldset->getElements() as $element) {
+                        $elementName = $element->getName();
+
+                        if (isset($contentData[$elementName])) {
+                            $element->setValue($contentData[$elementName]);
+                        }
                     }
-                }
-            }            
+                }     
+            }                   
         } else {
             
             $sqlRes = $db->query('
@@ -155,31 +174,33 @@ class Content implements ServiceManagerAwareInterface
             
             $this->contentData = $contentData;
             
-            foreach ($form->getFieldsets() as $fieldset) {
-                foreach ($fieldset->getElements() as $element) {
-                    $elementName = $element->getName();
-                    
-                    if ('field_' == substr($elementName, 0, 6)) {                        
-                        $fieldId = substr($elementName, 6);                        
-                        $field = $fieldsCollection->getField($fieldId);
-                        
-                        if ($moduleManager->isModuleActive('Comments') && 
-                            $field &&
-                            $field->getName() == 'allow_comments'
-                            ) {                            
-                            $commentsService = $this->serviceManager->get('Comments\Service\Comments');
-                            $element->setValue($commentsService->isAllowedComments($objectId));                            
+            if ($this->populateForm) {
+                foreach ($form->getFieldsets() as $fieldset) {
+                    foreach ($fieldset->getElements() as $element) {
+                        $elementName = $element->getName();
+
+                        if ('field_' == substr($elementName, 0, 6)) {                        
+                            $fieldId = substr($elementName, 6);                        
+                            $field = $fieldsCollection->getField($fieldId);
+
+                            if ($moduleManager->isModuleActive('Comments') && 
+                                $field &&
+                                $field->getName() == 'allow_comments'
+                                ) {                            
+                                $commentsService = $this->serviceManager->get('Comments\Service\Comments');
+                                $element->setValue($commentsService->isAllowedComments($objectId));                            
+                            } else {
+                                $property = $objectPropertyCollection->getProperty($objectId, $fieldId); 
+                                $element->setValue($property->getValue());
+                            }                     
                         } else {
-                            $property = $objectPropertyCollection->getProperty($objectId, $fieldId); 
-                            $element->setValue($property->getValue());
-                        }    
-                    } else {
-                        if (isset($contentData[$elementName])) {
-                            $element->setValue($contentData[$elementName]);
-                        }
-                    }      
+                            if (isset($contentData[$elementName])) {
+                                $element->setValue($contentData[$elementName]);
+                            }
+                        }      
+                    }
                 }
-            }
+            }            
         }
         
         return $form;

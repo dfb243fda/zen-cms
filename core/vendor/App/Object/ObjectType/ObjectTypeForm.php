@@ -82,9 +82,7 @@ class ObjectTypeForm extends Form implements ServiceLocatorAwareInterface
                     ),
                 ));
             }
-                        
-            
-            $inputFilter = array();
+              
             foreach ($fields as $k2=>$v2) {
                 if ($onlyVisible && !$v2->getIsVisible()) {
                     continue;
@@ -92,16 +90,20 @@ class ObjectTypeForm extends Form implements ServiceLocatorAwareInterface
                 $zendFormElement = $v2->getZendFormElement();
                 $this->get($v->getName())->add($zendFormElement);
             }
-            
+        }
+        
+        foreach ($fieldGroups as $k=>$v) {
+            $fields = $v->getFields();
+                        
             foreach ($fields as $k2=>$v2) {
                 if ($onlyVisible && !$v2->getIsVisible()) {
                     continue;
                 }
                 $zendFormElement = $v2->getZendFormElement();
 
-      //          $this->getInputFilter()->get($v->getName())->add(array(
-        //            'required' => $v2->getIsRequired(),
-          //      ), $zendFormElement->getName());
+                $this->getInputFilter()->get($v->getName())->add(array(
+                    'required' => $v2->getIsRequired(),
+                ), $zendFormElement->getName());
             }
         }
     }

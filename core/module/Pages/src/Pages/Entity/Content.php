@@ -51,13 +51,14 @@ class Content implements ServiceManagerAwareInterface
         return $this;
     }
     
-    public function getForm()
+    public function getForm($populateForm)
     {
         $this->formFactory = $formFactory = $this->serviceManager->get('Pages\FormFactory\Content');
         
         $formFactory->setContentTypeId($this->contentTypeId)
                     ->setObjectTypeId($this->objectTypeId)
-                    ->setContentId($this->contentId);
+                    ->setContentId($this->contentId)
+                    ->setPopulateForm($populateForm);
         
         $form = $formFactory->getForm();
         
@@ -67,7 +68,7 @@ class Content implements ServiceManagerAwareInterface
     public function getContentFormData()
     {
         if (null === $this->formFactory) {
-            throw new \Exception('form does not created yet, youy can create it with getForm() method');
+            throw new \Exception('form does not created yet, you can create it with getForm() method');
         }
         
         return $this->formFactory->getContentData();
@@ -125,7 +126,6 @@ class Content implements ServiceManagerAwareInterface
             foreach ($fields as $k2=>$v2) {                    
                 if (isset($insertFields[$k2])) {
                     if ($moduleManager->isModuleActive('Comments') && 
-                        $v2->isExists() && 
                         $v2->getName() == 'allow_comments'
                         ) {                            
                         $commentsService = $this->serviceManager->get('Comments\Service\Comments');
