@@ -1,7 +1,5 @@
 <?php
 
-$sm = $this->getHelperPluginManager()->getServiceLocator();
-
 $this->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/ObjectTypes/object_types.js');
 
 $args = array(
@@ -61,45 +59,34 @@ $this->inlineScript()->appendScript('zen.objectTypes.init(' . json_encode($args)
     <div class="group-block__item-edit">
         <?php
         
-        $factory = new Zend\Form\Factory($sm->get('FormElementManager'));
-            
-        $formConfig = $this->fieldFormConfig;        
+        $form = clone $this->fieldForm;
         
-        $formConfig['fieldsets'] = array(
-            array(
-                'spec' => array(
-                    'name' => 'submit',
-                    'elements' => array(
-                        array(
-                            'spec' => array(
-                                'name' => 'cancel',
-                                'attributes' => array(
-                                    'type'  => 'button',
-                                    'value' => $this->translate('ObjectTypes:Cancel button'),
-                                    'onclick' => 'zen.objectTypes.cancelFieldAdding(this)'
-                                ),
-                            ),
-                        ),
-                        array(
-                            'spec' => array(
-                                'name' => 'submit',
-                                'attributes' => array(
-                                    'type'  => 'submit',
-                                    'value' => $this->translate('ObjectTypes:Save button'),
-                                ),
-                            ),
-                        ),
-                    ),
-                    'options' => array(
-                        'label' => ' ',
-                    ),
-                ),
-            ), 
-        );        
+        $form->add(array(
+            'type' => 'fieldset',
+            'name' => 'submit',
+            'options' => array(
+                'label' => ' ',
+            ),
+        ));
+        $form->get('submit')->add(array(
+            'name' => 'cancel',
+            'attributes' => array(
+                'type'  => 'button',
+                'value' => $this->translate('ObjectTypes:Cancel button'),
+                'onclick' => 'zen.objectTypes.cancelFieldAdding(this)'
+            ),
+        ));
+        $form->get('submit')->add(array(
+            'name' => 'submit',
+            'attributes' => array(
+                'type'  => 'submit',
+                'value' => $this->translate('ObjectTypes:Save button'),
+            ),
+        ));
         
-        $form = $factory->createForm($formConfig);   
+        $form->setData($this->defaultFieldFormData);
+        
         $form->setAttribute('class', 'form-2c');
-        $form->setData($this->fieldFormValues);
         $form->prepare();
 
         echo $this->form()->openTag($form); 
@@ -133,46 +120,35 @@ $this->inlineScript()->appendScript('zen.objectTypes.init(' . json_encode($args)
         </div>                                
         <div class="group-edit-block">
             <?php
-
-            $factory = new Zend\Form\Factory($sm->get('FormElementManager'));
             
-            $formConfig = $this->groupFormConfig;
+            $form = clone $this->groupForm;   
             
-            $formConfig['fieldsets'] = array(
-                array(
-                    'spec' => array(
-                        'name' => 'submit',
-                        'elements' => array(
-                            array(
-                                'spec' => array(
-                                    'name' => 'cancel',
-                                    'attributes' => array(
-                                        'type'  => 'button',
-                                        'value' => $this->translate('ObjectTypes:Cancel button'),
-                                        'onclick' => 'zen.objectTypes.cancelGroupAdding(this)'
-                                    ),
-                                ),
-                            ),
-                            array(
-                                'spec' => array(
-                                    'name' => 'submit',
-                                    'attributes' => array(
-                                        'type'  => 'submit',
-                                        'value' => $this->translate('ObjectTypes:Save button'),
-                                    ),
-                                ),
-                            ),
-                        ),
-                        'options' => array(
-                            'label' => ' ',
-                        ),
-                    ),
-                ), 
-            );
+            $form->add(array(
+                'type' => 'fieldset',
+                'name' => 'submit',
+                'options' => array(
+                    'label' => ' ',
+                ),
+            ));
+            $form->get('submit')->add(array(
+                'name' => 'cancel',
+                'attributes' => array(
+                    'type'  => 'button',
+                    'value' => $this->translate('ObjectTypes:Cancel button'),
+                    'onclick' => 'zen.objectTypes.cancelGroupAdding(this)'
+                ),
+            ));
+            $form->get('submit')->add(array(
+                'name' => 'submit',
+                'attributes' => array(
+                    'type'  => 'submit',
+                    'value' => $this->translate('ObjectTypes:Save button'),
+                ),
+            ));
             
-            $form = $factory->createForm($formConfig);   
-            $form->setAttribute('class', 'form-2c');
-            $form->setData($this->groupFormValues);         
+            $form->setData($this->defaultGroupFormData);
+            
+            $form->setAttribute('class', 'form-2c');    
             $form->prepare();
             
             echo $this->form()->openTag($form); 
@@ -197,12 +173,25 @@ $this->inlineScript()->appendScript('zen.objectTypes.init(' . json_encode($args)
         <div class="block__body">
             <?php    
             
-            $factory = new Zend\Form\Factory($sm->get('FormElementManager'));
+            $form = $this->objectTypeForm;   
             
-            $form = $factory->createForm($this->objectTypeFormConfig);   
+            $form->add(array(
+                'type' => 'fieldset',
+                'name' => 'submit',
+                'options' => array(
+                    'label' => ' ',
+                ),
+            ));
+            
+            $form->get('submit')->add(array(
+                'name' => 'submit',
+                'attributes' => array(
+                    'type' => 'submit',
+                    'value' => $this->translate('ObjectTypes:Save button'),
+                ),
+            ));
+            
             $form->setAttribute('class', 'form-2c');
-            $form->setData($this->objectTypeFormValues);
-            $form->setMessages($this->objectTypeFormMsg);
             $form->prepare();
             
             echo $this->form()->openTag($form); 
@@ -215,8 +204,6 @@ $this->inlineScript()->appendScript('zen.objectTypes.init(' . json_encode($args)
             endforeach;
             
             echo $this->form()->closeTag($form); 
-            
-   //         echo $this->form($form);
             ?>
         </div>    
     </div>   
@@ -266,46 +253,35 @@ $this->inlineScript()->appendScript('zen.objectTypes.init(' . json_encode($args)
                             </div>
                             <div class="group-block__item-edit hidden">
                                 <?php
-
-                                $factory = new Zend\Form\Factory($sm->get('FormElementManager'));
-            
-                                $formConfig = $this->fieldFormConfig;
-                                $formConfig['fieldsets'] = array(
-                                    array(
-                                        'spec' => array(
-                                            'name' => 'submit',
-                                            'elements' => array(
-                                                array(
-                                                    'spec' => array(
-                                                        'name' => 'cancel',
-                                                        'attributes' => array(
-                                                            'type'  => 'button',
-                                                            'value' => $this->translate('ObjectTypes:Cancel button'),
-                                                            'onclick' => 'zen.objectTypes.cancelFieldEditing(this)'
-                                                        ),
-                                                    ),
-                                                ),
-                                                array(
-                                                    'spec' => array(
-                                                        'name' => 'submit',
-                                                        'attributes' => array(
-                                                            'type'  => 'submit',
-                                                            'value' => $this->translate('ObjectTypes:Save button'),
-                                                        ),
-                                                    ),
-                                                ),
-                                            ),
-                                            'options' => array(
-                                                'label' => ' ',
-                                            ),
-                                        ),
-                                    ), 
-                                );
                                 
+                                $form = clone $this->fieldForm; 
                                 
-                                $form = $factory->createForm($formConfig); 
-                                $form->setAttribute('class', 'form-2c');
+                                $form->add(array(
+                                    'type' => 'fieldset',
+                                    'name' => 'submit',
+                                    'options' => array(
+                                        'label' => ' ',
+                                    ),
+                                ));
+                                $form->get('submit')->add(array(
+                                    'name' => 'cancel',
+                                    'attributes' => array(
+                                        'type'  => 'button',
+                                        'value' => $this->translate('ObjectTypes:Cancel button'),
+                                        'onclick' => 'zen.objectTypes.cancelFieldEditing(this)'
+                                    ),
+                                ));
+                                $form->get('submit')->add(array(
+                                    'name' => 'submit',
+                                    'attributes' => array(
+                                        'type'  => 'submit',
+                                        'value' => $this->translate('ObjectTypes:Save button'),
+                                    ),
+                                ));
+                                
                                 $form->setData($field);
+                                
+                                $form->setAttribute('class', 'form-2c');
                                 $form->prepare();
 
                                 echo $this->form()->openTag($form); 
@@ -328,48 +304,35 @@ $this->inlineScript()->appendScript('zen.objectTypes.init(' . json_encode($args)
                 </div>                                
                 <div class="group-edit-block hidden">
                     <?php
-
-                    
-                    $factory = new Zend\Form\Factory($sm->get('FormElementManager'));
-                    
-                    $formConfig = $this->groupFormConfig;
-                    
-                    $formConfig['fieldsets'] = array(
-                        array(
-                            'spec' => array(
-                                'name' => 'submit',
-                                'elements' => array(
-                                    array(
-                                        'spec' => array(
-                                            'name' => 'cancel',
-                                            'attributes' => array(
-                                                'type'  => 'button',
-                                                'value' => $this->translate('ObjectTypes:Cancel button'),
-                                                'onclick' => 'zen.objectTypes.cancelGroupEditing(this)'
-                                            ),
-                                        ),
-                                    ),
-                                    array(
-                                        'spec' => array(
-                                            'name' => 'submit',
-                                            'attributes' => array(
-                                                'type'  => 'submit',
-                                                'value' => $this->translate('ObjectTypes:Save button'),
-                                            ),
-                                        ),
-                                    ),
-                                ),
-                                'options' => array(
-                                    'label' => ' ',
-                                ),
-                            ),
-                        ), 
-                    );
-                    
             
-                    $form = $factory->createForm($formConfig);      
-                    $form->setAttribute('class', 'form-2c');
+                    $form = clone $this->groupForm;  
+                    
+                    $form->add(array(
+                        'type' => 'fieldset',
+                        'name' => 'submit',
+                        'options' => array(
+                            'label' => ' ',
+                        ),
+                    ));
+                    $form->get('submit')->add(array(
+                        'name' => 'cancel',
+                        'attributes' => array(
+                            'type'  => 'button',
+                            'value' => $this->translate('ObjectTypes:Cancel button'),
+                            'onclick' => 'zen.objectTypes.cancelGroupEditing(this)'
+                        ),
+                    ));
+                    $form->get('submit')->add(array(
+                        'name' => 'submit',
+                        'attributes' => array(
+                            'type'  => 'submit',
+                            'value' => $this->translate('ObjectTypes:Save button'),
+                        ),
+                    ));
+                    
                     $form->setData($group);
+                    
+                    $form->setAttribute('class', 'form-2c');
                     $form->prepare();
 
                     echo $this->form()->openTag($form); 

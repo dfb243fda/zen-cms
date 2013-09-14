@@ -23,7 +23,7 @@ class FormCollection3C extends FormCollection
             $delButtonText = $this->getTranslator()->translate('App:Delete collection item');
         }  
         
-        if ($collection->getOption('allow_add')) {
+        if ($collection->allowAdd()) {
             $html .= '<button class="add-collection-item" onclick="return zen.currentTheme.forms.addCollectionItem(this)">' . $addButtonText . '</button>';
             
             $html .= '<button class="del-collection-item" onclick="return zen.currentTheme.forms.delCollectionItem(this)">' . $delButtonText . '</button>';

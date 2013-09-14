@@ -43,6 +43,7 @@ return array(
     'service_manager' => array(
         'invokables' => array(
             'Users\Service\Installer' => 'Users\Service\Installer',
+            'Users\Service\Loginza' => 'Users\Service\Loginza',
             
             'Users\Collection\Users' => 'Users\Collection\Users',
             'Users\Entity\User' => 'Users\Entity\User',

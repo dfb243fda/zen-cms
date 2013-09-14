@@ -132,7 +132,7 @@ class ContentBase extends Form implements ServiceLocatorAwareInterface
             'name' => 'common',
             'type' => 'fieldset',
             'options' => array(
-                'label' => $translator->translate('Pages:Content common params fields group'),
+                'label' => 'Pages:Content common params fields group',
             ),
         ));
         
@@ -142,7 +142,7 @@ class ContentBase extends Form implements ServiceLocatorAwareInterface
                 'name' => 'page_content_type_id',
                 'type' => 'select',
                 'options' => array(
-                    'label' => $translator->translate('Pages:Content type'),
+                    'label' => 'Pages:Content type',
                     'value_options' => $pageContentTypesMultiOptions,
                 ),
                 'attributes' => array(
@@ -153,7 +153,7 @@ class ContentBase extends Form implements ServiceLocatorAwareInterface
                 'name' => 'object_type_id',
                 'type' => 'ObjectTypeLink',
                 'options' => array(
-                    'label' => $translator->translate('Pages:Content data type'),
+                    'label' => 'Pages:Content data type',
                     'value_options' => $objectTypesMultiOptions,
                 ),
                 'attributes' => array(
@@ -164,13 +164,13 @@ class ContentBase extends Form implements ServiceLocatorAwareInterface
                 'name' => 'is_active',
                 'type' => 'Checkbox',
                 'options' => array(
-                    'label' => $translator->translate('Pages:Content is active field'),
+                    'label' => 'Pages:Content is active field',
                 ),
             ))
             ->add(array(
                 'name' => 'name',
                 'options' => array(
-                    'label' => $translator->translate('Pages:Content name'),                                        
+                    'label' => 'Pages:Content name',                                        
                 ),
             ));
                 
@@ -178,7 +178,7 @@ class ContentBase extends Form implements ServiceLocatorAwareInterface
             'name' => 'additional_params',
             'type' => 'fieldset',
             'options' => array(
-                'label' => $translator->translate('Pages:Content additional params fields group'),
+                'label' => 'Pages:Content additional params fields group',
             ),
         ));
         
@@ -187,7 +187,7 @@ class ContentBase extends Form implements ServiceLocatorAwareInterface
                 'name' => 'template',
                 'type' => 'templateLink',
                 'options' => array(
-                    'label' => $translator->translate('Pages:Content template field'),
+                    'label' => 'Pages:Content template field',
                     'value_options' => $templateMultiOptions,
                     'module' => $module,
                     'method' => $method,
@@ -200,7 +200,7 @@ class ContentBase extends Form implements ServiceLocatorAwareInterface
                 'name' => 'access',
                 'type' => 'Select',                                    
                 'options' => array(
-                    'label' => $translator->translate('Pages:Content access field'),
+                    'label' => 'Pages:Content access field',
                     'value_options' => $accessMultOptions,
                 ),
                 'attributes' => array(

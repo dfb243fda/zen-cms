@@ -4,10 +4,109 @@ namespace ObjectTypes\Method;
 
 use App\Method\AbstractMethod;
 
-use Zend\Form\Factory;
-use ObjectTypes\Model\ObjectTypes as ObjectTypesModel;
-
 class EditObjectType extends AbstractMethod
+{    
+    public function main()
+    {                
+        $objectTypesCollection = $this->serviceLocator->get('App\Object\ObjectTypesCollection');
+        $formElementManager = $this->serviceLocator->get('FormElementManager');
+        
+        $result = array();
+        
+        $result['tabs'] = $this->getTabs();
+        
+        if (null === $this->params()->fromRoute('id')) {
+            $result['errMsg'] = 'Не передан id';
+            return $result;
+        }
+        
+        $objectTypeId = (int)$this->params()->fromRoute('id');        
+        
+        if (!$objectTypesCollection->getType($objectTypeId)) {
+            $result['errMsg'] = 'Тип данных ' . $objectTypeId . ' не найден';
+            return $result;
+        }
+                
+        $objectTypeAdminEntity = $this->serviceLocator->get('ObjectTypes\Entity\ObjectTypeAdmin');
+        $objectTypeAdminEntity->setObjectTypeId($objectTypeId);  
+        
+        $objectTypeForm = $objectTypeAdminEntity->getForm();
+        
+        $groupForm = $formElementManager->get('ObjectTypes\Form\FieldsGroupAdminForm');
+        
+        $fieldForm = $formElementManager->get('ObjectTypes\Form\FieldAdminForm');
+        
+        $fieldGroups = $objectTypeAdminEntity->getObjectTypeFieldGroups();
+        
+        $result['contentTemplate'] = array(
+            'name' => 'content_template/ObjectTypes/form_modify.phtml',
+            'data' => array(
+                'objectTypeId'         => $objectTypeId,           
+                'objectTypeForm'       => $objectTypeForm,
+                'groupForm'            => $groupForm,
+                'defaultGroupFormData' => $this->getDefaultGroupFormData(),
+                'fieldForm'            => $fieldForm,
+                'defaultFieldFormData' => $this->getDefaultFieldFormData(),
+                'fieldGroups'          => $fieldGroups,
+            ),            
+        );
+        
+        if ($this->flashMessenger()->hasSuccessMessages()) {
+            $result['msg'] = $this->flashMessenger()->getSuccessMessages();
+        } 
+        if ($this->flashMessenger()->hasErrorMessages()) {
+            $result['errMsg'] = $this->flashMessenger()->getErrorMessages();
+        }
+        
+        return $result;
+    }
+    
+    protected function getDefaultGroupFormData()
+    {
+        $translator = $this->serviceLocator->get('translator');
+        return array(
+            'title' => $translator->translate('ObjectTypes:New group'),
+        );
+    }
+    
+    protected function getDefaultFieldFormData()
+    {
+        $fieldTypesCollection = $this->serviceLocator->get('fieldTypesCollection');
+        $translator = $this->serviceLocator->get('translator');
+        
+        $defaultFieldTypeId = $fieldTypesCollection->getFieldTypeIdByDataType('text');
+        
+        return array(
+            'title' => $translator->translate('ObjectTypes:New field'),
+            'field_type_id' => $defaultFieldTypeId,
+        );
+    }
+    
+    protected function getTabs()
+    {
+        $translator = $this->serviceLocator->get('translator');
+        
+        return array(
+            array(
+                'title' => $translator->translate('ObjectTypes:Object types'),
+                'link' => $this->url()->fromRoute('admin/method', array(
+                    'module' => 'ObjectTypes',
+                    'method' => 'ObjectTypesList',                    
+                )),     
+                'active' => true,
+            ),
+            array(
+                'title' => $translator->translate('ObjectTypes:Guides'),
+                'link' => $this->url()->fromRoute('admin/method', array(
+                    'module' => 'ObjectTypes',
+                    'method' => 'GuidesList',
+                )),
+            ),
+        );
+    }
+}
+
+class EditObjectType2 extends AbstractMethod
 {    
     public function main()
     {

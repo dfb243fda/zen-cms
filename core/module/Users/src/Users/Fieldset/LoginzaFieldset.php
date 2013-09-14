@@ -4,12 +4,36 @@ namespace Users\Fieldset;
 
 use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilterProviderInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
-class LoginzaFieldset extends Fieldset implements InputFilterProviderInterface
+class LoginzaFieldset extends Fieldset implements InputFilterProviderInterface, ServiceLocatorAwareInterface
 {
+    protected $serviceLocator;
+    
+    /**
+     * Set service locator
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     */
+    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->serviceLocator = $serviceLocator;
+    }
+
+    /**
+     * Get service locator
+     *
+     * @return ServiceLocatorInterface
+     */
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
+    }
+    
     public function init()
     {             
-        $this->setLabel('opa2');
+        $this->setLabel('Users:Loginza settings for domain');
         
 //        $this->setUseAsBaseFieldset(true);
         $this->add(array(
@@ -20,9 +44,21 @@ class LoginzaFieldset extends Fieldset implements InputFilterProviderInterface
                 'description' => 'i18n::Dynamic config allow loginza description',
             ),
         ));
+                
+        $request = $this->serviceLocator->getServiceLocator()->get('request');
+        $host = $request->getUri()->getHost() . $request->getBasePath();
+        $translator = $this->serviceLocator->getServiceLocator()->get('translator');
         
         $this->add(array(
-            'name' => 'loginza_widget_id',
+            'name' => 'domain',
+            'options' => array(
+                'label' => 'i18n::Dynamic config loginza domain',
+                'description' => sprintf($translator->translate('i18n::Dynamic config loginza domain description %s'), $host),
+            ),
+        ));
+        
+        $this->add(array(
+            'name' => 'widget_id',
             'options' => array(
                 'label' => 'i18n::Dynamic config loginza_widget_id',
                 'description' => 'i18n::Dynamic config loginza_widget_id description',
@@ -30,7 +66,7 @@ class LoginzaFieldset extends Fieldset implements InputFilterProviderInterface
         ));
         
         $this->add(array(
-            'name' => 'loginza_secret',
+            'name' => 'secret',
             'options' => array(
                 'label' => 'i18n::Dynamic config loginza_secret',
                 'description' => 'i18n::Dynamic config loginza_secret description',
@@ -39,7 +75,7 @@ class LoginzaFieldset extends Fieldset implements InputFilterProviderInterface
         
         $this->add(array(
             'type' => 'checkbox',
-            'name' => 'loginza_secret_is_protected',
+            'name' => 'secret_is_protected',
             'options' => array(
                 'label' => 'i18n::Dynamic config loginza_secret_is_protected',
                 'description' => 'i18n::Dynamic config loginza_secret_is_protected description',
@@ -49,14 +85,27 @@ class LoginzaFieldset extends Fieldset implements InputFilterProviderInterface
    
     public function getInputFilterSpecification()
     {        
+        if ($this->get('secret_is_protected')->isChecked()) {
+            $required = true;
+        } else {
+            $required = false;
+        }
+        
         return array(
-            'loginza_widget_id' => array(
-                'required' => true,
+            'domain' => array(
+                'required' => false,
                 'filters' => array(
                     array('name' => 'StringTrim',)
                 )
             ),
-            'loginza_secret' => array(
+            'widget_id' => array(
+                'required' => $required,
+                'filters' => array(
+                    array('name' => 'StringTrim',)
+                )
+            ),
+            'secret' => array(
+                'required' => $required,
                 'filters' => array(
                     array('name' => 'StringTrim',)
                 )

@@ -14,6 +14,7 @@ class LoginzaController extends AbstractActionController
     
     public function indexAction()
     {
+        $loginzaService = $this->serviceLocator->get('Users\Service\Loginza');
         $translator = $this->serviceLocator->get('translator');
         $configManager = $this->serviceLocator->get('configManager');
         $systemInfoService = $this->serviceLocator->get('App\Service\SystemInfo');
@@ -24,6 +25,7 @@ class LoginzaController extends AbstractActionController
         $eventManager = $application->getEventManager();
         $config = $this->serviceLocator->get('config');
         $usersConfig = $config['Users'];    
+        $loginzaConfig = $loginzaService->getLoginzaConfig();
         
         if (null === $this->request->getPost('token')) {
             $output = 'token does not transferred';
@@ -31,6 +33,13 @@ class LoginzaController extends AbstractActionController
             $this->response->setContent($output);
             return $this->response;
         }
+        if (false === $loginzaConfig) {
+            $output = 'loginza service is disables';
+            
+            $this->response->setContent($output);
+            return $this->response;
+        }
+        
         
         $resultArray = array();
         
@@ -44,11 +53,12 @@ class LoginzaController extends AbstractActionController
         }
         
         $token = (string)$this->request->getPost('token');
-        $widgetId = $configManager->get('loginza', 'loginza_widget_id');
-        $secret = $configManager->get('loginza', 'loginza_secret');       
-        $signature = md5($token . $secret);
         
-        if ($configManager->get('loginza', 'loginza_secret_is_protected')) {
+        if ($loginzaConfig['secret_is_protected']) {
+            $widgetId = $loginzaConfig['widget_id'];
+            $secret = $loginzaConfig['secret'];       
+            $signature = md5($token . $secret);
+            
             $url = "http://loginza.ru/api/authinfo?token=$token&id=$widgetId&sig=$signature";
         } else {
             $url = "http://loginza.ru/api/authinfo?token=$token";
@@ -73,26 +83,32 @@ class LoginzaController extends AbstractActionController
                     $event = $adapter->getEvent();
                     
                     if (AuthenticationResult::FAILURE_IDENTITY_NOT_FOUND == $event->getCode()) {
-                        $storage = new Session(get_class());
                         
-                        $storage->write($event->getData());
+                        if ($configManager->get('users', 'allow_registration')) {
+                            $storage = new Session(get_class());
                         
-                        $confirmUrl = $this->url()->fromRoute('loginza', array(
-                            'action' => 'confirm_reg',
-                        ));
-                        
-                        $redirectInput = '';
-                        if ($redirect) {
-                            $redirectInput = '<input type="hidden" name="redirect" value="' . $redirect . '" />';
+                            $storage->write($event->getData());
+
+                            $confirmUrl = $this->url()->fromRoute('loginza', array(
+                                'action' => 'confirm_reg',
+                            ));
+
+                            $redirectInput = '';
+                            if ($redirect) {
+                                $redirectInput = '<input type="hidden" name="redirect" value="' . $redirect . '" />';
+                            }
+
+                            $resultArray['content'] =  'Вы ещё не зарегистрированы, хотите зарегистрироваться? 
+                                <form type="POST" action="' .$confirmUrl . '">
+                                ' . $redirectInput . '
+                                <input type="submit" value="Зарегистрироваться">
+                                </form>
+                                <a href="' . $this->url()->fromRoute('login', array(), $redirect ? array('query' => array('redirect' => $redirect)) : array()) . '">Отменить</a>
+                            ';
+                        } else {
+                            $resultArray['content'] = 'Вы ещё не зарегистрированы, и к сожалению регистрация на сайте отключена, извините. 
+                                <a href="' . $this->url()->fromRoute('login', array(), $redirect ? array('query' => array('redirect' => $redirect)) : array()) . '">Вернуться</a>';
                         }
-                        
-                        $resultArray['content'] =  'Вы ещё не зарегистрированы, хотите зарегистрироваться? 
-                            <form type="POST" action="' .$confirmUrl . '">
-                            ' . $redirectInput . '
-                            <input type="submit" value="Зарегистрироваться">
-                            </form>
-                            <a href="' . $this->url()->fromRoute('login', array(), $redirect ? array('query' => array('redirect' => $redirect)) : array()) . '">Отменить</a>
-                        ';
                     } else {
                         $resultArray['content'] = 'errors on registration';
                     }
@@ -132,6 +148,13 @@ class LoginzaController extends AbstractActionController
         $eventManager = $application->getEventManager();
         $config = $this->serviceLocator->get('config');
         $usersConfig = $config['Users'];  
+        
+        if (!$configManager->get('users', 'allow_registration')) {
+            $output = 'registration is disabled';
+            
+            $this->response->setContent($output);
+            return $this->response;
+        }
         
         $storage = new Session(get_class());
                    

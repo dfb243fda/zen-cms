@@ -56,27 +56,27 @@ class RolesForm extends Form implements ServiceLocatorAwareInterface
             0 => '',
         );
         foreach ($sqlRes as $row) {
-            $parentRoles[$row['id']] = $row['name'];
+            $parentRoles[$row['id']] = $translator->translateI18n($row['name']);
         }
                 
         $this->add(array(
                 'name' => 'name',
                 'options' => array(
-                    'label' => $translator->translate('Rbac:Name field'),
+                    'label' => 'Rbac:Name field',
                 ),
             ))
             ->add(array(
                 'name' => 'parent',
                 'type' => 'select',
                 'options' => array(
-                    'label' => $translator->translate('Rbac:Parent field'),
+                    'label' => 'Rbac:Parent field',
                     'value_options' => $parentRoles,
                 ),
             ))->add(array(
                 'name' => 'unauthorized',
                 'type' => 'checkbox',
                 'options' => array(
-                    'label' => $translator->translate('Rbac:Unauthorized field'),
+                    'label' => 'Rbac:Unauthorized field',
                     'value' => 1,
                 ),
             ));

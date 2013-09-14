@@ -48,14 +48,14 @@ class Domain extends Form implements ServiceLocatorAwareInterface
         $this->add(array(
                 'name' => 'host',
                 'options' => array(
-                    'label' => $translator->translate('Pages:Domain host field'),
+                    'label' => 'Pages:Domain host field',
                 ),
             ))
             ->add(array(
                 'type' => 'checkbox',
                 'name' => 'is_default',
                 'options' => array(
-                    'label' => $translator->translate('Pages:Domain is default field'),
+                    'label' => 'Pages:Domain is default field',
                     'value' => 1,
                 ),
             ))
@@ -63,7 +63,7 @@ class Domain extends Form implements ServiceLocatorAwareInterface
                 'type' => 'select',
                 'name' => 'default_lang_id',
                 'options' => array(
-                    'label' => $translator->translate('Pages:Domain default lang field'),
+                    'label' => 'Pages:Domain default lang field',
                     'value_options' => $langs,
                 ),
             ))
@@ -71,7 +71,7 @@ class Domain extends Form implements ServiceLocatorAwareInterface
                 'type' => 'textarea',
                 'name' => 'domain_mirrors',
                 'options' => array(
-                    'label' => $translator->translate('Pages:Domain mirrors field'),
+                    'label' => 'Pages:Domain mirrors field',
                 ),
             ));
         

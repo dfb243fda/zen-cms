@@ -124,7 +124,7 @@ class PageBase extends Form implements ServiceLocatorAwareInterface
                 'name' => 'page_type_id',
                 'type' => 'select',
                 'options' => array(
-                    'label' => $translator->translate('Pages:Page type'),
+                    'label' => 'Pages:Page type',
                     'value_options' => $pageTypesMultiOptions,
                 ),
                 'attributes' => array(
@@ -135,7 +135,7 @@ class PageBase extends Form implements ServiceLocatorAwareInterface
                 'name' => 'object_type_id',
                 'type' => 'ObjectTypeLink',
                 'options' => array(
-                    'label' => $translator->translate('Pages:Data type'),
+                    'label' => 'Pages:Data type',
                     'value_options' => $objectTypesMultiOptions,
                 ),
                 'attributes' => array(
@@ -146,19 +146,19 @@ class PageBase extends Form implements ServiceLocatorAwareInterface
                 'name' => 'is_active',
                 'type' => 'Checkbox',
                 'options' => array(
-                    'label' => $translator->translate('Pages:Activity'),
+                    'label' => 'Pages:Activity',
                 ),
             ))
             ->add(array(
                 'name' => 'name',
                 'options' => array(
-                    'label' => $translator->translate('Pages:Page name'),
+                    'label' => 'Pages:Page name',
                 ),
             ))
             ->add(array(
                 'name' => 'alias',
                 'options' => array(
-                    'label' => $translator->translate('Pages:Page alias (For URL)'),
+                    'label' => 'Pages:Page alias (For URL)',
                 ),
             ));
 
@@ -166,7 +166,7 @@ class PageBase extends Form implements ServiceLocatorAwareInterface
             'name' => 'additional_params',
             'type' => 'fieldset',
             'options' => array(
-                'label' => $translator->translate('Pages:Additional params fields group'),
+                'label' => 'Pages:Additional params fields group',
             ),
         ));
 
@@ -175,7 +175,7 @@ class PageBase extends Form implements ServiceLocatorAwareInterface
                 'name' => 'template',
                 'type' => 'templateLink',
                 'options' => array(
-                    'label' => $translator->translate('Pages:Template'),
+                    'label' => 'Pages:Template',
                     'value_options' => $templateMultiOptions,
                     'module' => $feTheme,
                 ),
@@ -187,14 +187,14 @@ class PageBase extends Form implements ServiceLocatorAwareInterface
                 'name' => 'is_default',
                 'type' => 'Checkbox',
                 'options' => array(
-                    'label' => $translator->translate('Pages:Is default field'),
+                    'label' => 'Pages:Is default field',
                 ),
             ))
             ->add(array(
                 'name' => 'access',
                 'type' => 'Select',
                 'options' => array(
-                    'label' => $translator->translate('Pages:Access field'),
+                    'label' => 'Pages:Access field',
                     'value_options' => $accessMultOptions,
                 ),
                 'attributes' => array(
@@ -204,14 +204,14 @@ class PageBase extends Form implements ServiceLocatorAwareInterface
             ->add(array(
                 'name' => 'non_access_url',
                 'options' => array(
-                    'label' => $translator->translate('Pages:Non access url'),
+                    'label' => 'Pages:Non access url',
                 ),
             ))
             ->add(array(
                 'name' => 'lang_id',
                 'type' => 'Select',
                 'options' => array(
-                    'label' => $translator->translate('Pages:Language field'),
+                    'label' => 'Pages:Language field',
                     'value_options' => $langMultiOptions,
                 ),
             ));
@@ -220,7 +220,7 @@ class PageBase extends Form implements ServiceLocatorAwareInterface
             'name' => '403_404',
             'type' => 'fieldset',
             'options' => array(
-                'label' => $translator->translate('Pages:403 404 fields group'),
+                'label' => 'Pages:403 404 fields group',
             ),
         ));
 
@@ -229,7 +229,7 @@ class PageBase extends Form implements ServiceLocatorAwareInterface
                 'type' => 'checkbox',
                 'name' => 'is_403',
                 'options' => array(
-                    'label' => $translator->translate('Pages:Is 403 page field'),
+                    'label' => 'Pages:Is 403 page field',
                     'description' => $translator->translate('Pages:Is 403 page field description'),
                 ),
             ))
@@ -237,7 +237,7 @@ class PageBase extends Form implements ServiceLocatorAwareInterface
                 'type' => 'checkbox',
                 'name' => 'is_404',
                 'options' => array(
-                    'label' => $translator->translate('Pages:Is 404 page field'),
+                    'label' => 'Pages:Is 404 page field',
                     'description' => $translator->translate('Pages:Is 404 page field description'),
                 ),
             ));

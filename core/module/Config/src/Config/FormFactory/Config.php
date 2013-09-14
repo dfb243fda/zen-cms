@@ -139,8 +139,9 @@ class Config implements ServiceManagerAwareInterface
         } else {
             throw new ConfigException('dynamic form config must be \Zend\Form\Form or \Zend\Form\Fieldset object or an array');
         }
-        
-//        $this->mergeFilters($inputFilter, $tmpForm->getInputFilter());
+
+        $tmpForm->setUseInputFilterDefaults(false);
+        $this->mergeFilters($inputFilter, $tmpForm->getInputFilter());
         
         
         foreach ($tmpForm->getFieldsets() as $fieldset) {

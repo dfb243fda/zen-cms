@@ -149,6 +149,8 @@ return array(
             'ObjectTypes\Service\ObjectTypesTree' => 'ObjectTypes\Service\ObjectTypesTree',
             'ObjectTypes\Service\GuidesList' => 'ObjectTypes\Service\GuidesList',
             'ObjectTypes\Service\GuideItemsList' => 'ObjectTypes\Service\GuideItemsList',
+            
+            'ObjectTypes\Entity\ObjectTypeAdmin' => 'ObjectTypes\Entity\ObjectTypeAdmin',
         ),
     ),
     'router' => array(

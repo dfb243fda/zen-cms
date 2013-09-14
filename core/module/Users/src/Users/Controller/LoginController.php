@@ -12,6 +12,7 @@ class LoginController extends AbstractActionController
     
     public function indexAction()
     {
+        $loginzaService = $this->serviceLocator->get('Users\Service\Loginza');
         $translator = $this->serviceLocator->get('translator');
         $configManager = $this->serviceLocator->get('configManager');
         $systemInfoService = $this->serviceLocator->get('App\Service\SystemInfo');
@@ -60,7 +61,7 @@ class LoginController extends AbstractActionController
             $resultArray['form'] = $loginForm;
             $resultArray['redirect'] = $redirect;
             $resultArray['enableRegistration'] = (bool)$configManager->get('users', 'allow_registration');
-            $resultArray['enableLoginza'] = (bool)$configManager->get('loginza', 'allow_loginza');
+            $resultArray['loginza'] = $loginzaService->getLoginzaConfig();
         }
         
         $resultArray['systemInfo'] = $systemInfoService->getSystemInfo();

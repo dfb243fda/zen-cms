@@ -17,27 +17,8 @@ endif;
     $form->prepare();
     
     echo $this->form()->openTag($form);
-    ?>
-    <?php
     
-    foreach ($form->getFieldsets() as $fieldset) :   
-        if ($fieldset->getLabel()) :
-            ?>
-            <fieldset><legend><?php echo $fieldset->getLabel() ?></legend>
-            <?php
-        endif;
-        foreach ($fieldset->getFieldsets() as $subFieldset) {
-            echo $this->formCollection3C($subFieldset);
-        }
-        foreach ($fieldset->getElements() as $el) :
-            echo $this->formElementWrapper3C($el);
-        endforeach;
-        if ($fieldset->getLabel()) :
-            ?>
-            </fieldset>    
-            <?php
-        endif;
-    endforeach;
+    echo $this->formCollection3C($form);
     ?>
     <div class="form-3c-element form-element__submit">
         <input type="submit" value="<?php echo $this->translate('Save button') ?>" />

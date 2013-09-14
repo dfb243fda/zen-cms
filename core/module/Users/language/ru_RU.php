@@ -73,7 +73,7 @@ return array(
     
     'Loginza config tab' => 'Loginza',
     
-    'Dynamic config allow loginza' => 'Использовать Loginza',
+    'Dynamic config allow loginza' => 'Активировать Loginza',
     'Dynamic config allow loginza description' => 'OpenId провайдер Loginza позволяет авторизовываться через сторонние сайты (Facebook, Google, Yandex и др.)',
     
     'Dynamic config loginza_widget_id' => 'Id виджета Loginza',
@@ -82,4 +82,9 @@ return array(
     'Dynamic config loginza_secret description' => ' ',
     'Dynamic config loginza_secret_is_protected' => 'Безопасный режим проверки token',
     'Dynamic config loginza_secret_is_protected description' => 'Включение данного режима требует обязательной передачи ID виджета и секретного ключа в API запросе проверки token',
+
+    'Users:Loginza settings for domain' => 'Настройки для одного домена',
+    
+    'Dynamic config loginza domain' => 'Домен',
+    'i18n::Dynamic config loginza domain description %s' => 'Оставьте это поле пустым, чтобы конфигурация действовала для любого домена. Пример домена "%s"',
 );
