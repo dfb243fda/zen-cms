@@ -105,4 +105,7 @@ return array(
     
     'Delete guide item method' => 'Удаление термина',
     'Delete guide item method description' => 'Метод, удаляющий термины из справочника',
+    
+    'Field with such name was found' => 'Поле с таким именем уже существеут',
+    'Group with such name was found' => 'Группа с таким именем уже существует',
 );

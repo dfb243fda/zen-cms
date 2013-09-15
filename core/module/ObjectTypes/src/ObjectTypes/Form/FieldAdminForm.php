@@ -35,9 +35,13 @@ class FieldAdminForm extends Form implements ServiceLocatorAwareInterface
     
     public function init()
     {
-        $translator = $this->serviceLocator->getServiceLocator()->get('translator');
-        $objectTypesCollection = $this->serviceLocator->getServiceLocator()->get('objectTypesCollection');
-        $fieldTypesCollection = $this->serviceLocator->getServiceLocator()->get('fieldTypesCollection');
+        $fieldsGroup = $this->getOption('fieldsGroup');        
+        
+        $rootServiceManager = $this->serviceLocator->getServiceLocator();
+        
+        $translator = $rootServiceManager->get('translator');
+        $objectTypesCollection = $rootServiceManager->get('objectTypesCollection');
+        $fieldTypesCollection = $rootServiceManager->get('fieldTypesCollection');
         
         $guides = $objectTypesCollection->getGuidesList();
 
@@ -121,6 +125,16 @@ class FieldAdminForm extends Form implements ServiceLocatorAwareInterface
         
         $this->getInputFilter()->get('title')->setRequired(true);
         $this->getInputFilter()->get('name')->setRequired(true);
+        
+        if ($fieldsGroup = $this->getOption('fieldsGroup')) {            
+            $this->getInputFilter()->get('name')
+                                   ->getValidatorChain()
+                                   ->attachByName('ObjectTypes\Validator\NoFieldWithSuchNameExists', array(
+                                       'fieldsGroup' => $fieldsGroup,
+                                   ));
+        }
+        
+        
         $this->getInputFilter()->get('guide_id')->setRequired(false);
 
     }

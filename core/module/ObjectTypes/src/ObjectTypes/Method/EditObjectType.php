@@ -10,6 +10,7 @@ class EditObjectType extends AbstractMethod
     {                
         $objectTypesCollection = $this->serviceLocator->get('App\Object\ObjectTypesCollection');
         $formElementManager = $this->serviceLocator->get('FormElementManager');
+        $request = $this->serviceLocator->get('request');
         
         $result = array();
         
@@ -22,7 +23,7 @@ class EditObjectType extends AbstractMethod
         
         $objectTypeId = (int)$this->params()->fromRoute('id');        
         
-        if (!$objectTypesCollection->getType($objectTypeId)) {
+        if (null === ($objectType = $objectTypesCollection->getType($objectTypeId))) {
             $result['errMsg'] = 'Тип данных ' . $objectTypeId . ' не найден';
             return $result;
         }
@@ -31,6 +32,25 @@ class EditObjectType extends AbstractMethod
         $objectTypeAdminEntity->setObjectTypeId($objectTypeId);  
         
         $objectTypeForm = $objectTypeAdminEntity->getForm();
+        
+        if ($request->isPost()) {  
+            
+            $objectTypeForm->setData($this->params()->fromPost());
+            if ($objectTypeForm->isValid()) {
+                $values = $objectTypeForm->getData();
+                
+                $objectType->setName($values['name']);
+                $objectType->setIsGuidable($values['is_guidable']);
+                $objectType->setPageTypeId($values['page_type_id']);
+                $objectType->setPageContentTypeId($values['page_content_type_id']);
+
+                $objectType->save();
+                
+                $this->flashMessenger()->addSuccessMessage('Тип данных успешно обновлен');
+                return $this->redirect()->refresh();
+            }
+        }
+        
         
         $groupForm = $formElementManager->get('ObjectTypes\Form\FieldsGroupAdminForm');
         

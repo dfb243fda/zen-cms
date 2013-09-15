@@ -11,6 +11,7 @@ zen.objectTypes = zen.objectTypes || {};
                     errHtml += '<li>' + v2 + '</li>';
                 });
                 errHtml += '</ul>';
+                $block.find('[name=' + i + ']').closest('.form-element').addClass('form-element__has_errors');
                 $block.find('[name=' + i + ']').next('ul').remove();
                 $block.find('[name=' + i + ']').after(errHtml);
             });

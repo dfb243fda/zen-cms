@@ -4,16 +4,15 @@ namespace ObjectTypes\Method;
 
 use App\Method\AbstractMethod;
 
-use ObjectTypes\Model\ObjectTypes as ObjectTypesModel;
-
 class AddGroup extends AbstractMethod
 {        
     public function main()
     {
-        $objectTypesModel = new ObjectTypesModel($this->serviceLocator);
+        $objectTypesCollection = $this->serviceLocator->get('objectTypesCollection');
+        $formElementManager = $this->serviceLocator->get('formElementManager');
         
         $result = array(
-            'success' => 0,
+            'success' => false,
         );
         if (null === $this->params()->fromRoute('id')) {
             $result['errMsg'] = 'Не переданы все необходимые параметры';
@@ -21,17 +20,28 @@ class AddGroup extends AbstractMethod
         else {            
             $objectTypeId = (int)$this->params()->fromRoute('id');
             
-            $tmp = $objectTypesModel->addGroup($objectTypeId, $this->params()->fromPost());
+            if (null === ($objectType = $objectTypesCollection->getType($objectTypeId))) {
+                $result['success'] = false;
+                $result['errMsg'] = 'Не найден тип данных ' . $objectTypeId;
+                return $result;
+            }
             
-            if ($tmp['success']) {
-                $result['msg'] = 'Группа успешно создана';
-                $result['groupId'] = $tmp['groupId'];
-                $result['name'] = $tmp['name'];
-                $result['title'] = $tmp['title'];
+            $form = $formElementManager->get('ObjectTypes\Form\FieldsGroupAdminForm', array(
+                'objectType' => $objectType,
+            ));
+            
+            $form->setData($this->params()->fromPost());
+            
+            if ($form->isValid()) {
+                $data = $form->getData();
+                
+                $result['groupId'] = $objectType->addFieldsGroup($data['name'], $data['title']);
+                $result['name'] = $data['name'];
+                $result['title'] = $data['title'];
                 $result['success'] = true;
+                $result['msg'] = 'Группа успешно создана';
             } else {
                 $result['success'] = false;
-                $form = $tmp['form'];
                 $result['formMsg'] = $form->getMessages();
             }
         }

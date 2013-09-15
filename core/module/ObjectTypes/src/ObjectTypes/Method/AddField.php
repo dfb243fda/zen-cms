@@ -4,13 +4,12 @@ namespace ObjectTypes\Method;
 
 use App\Method\AbstractMethod;
 
-use ObjectTypes\Model\ObjectTypes as ObjectTypesModel;
-
 class AddField extends AbstractMethod
 {    
     public function main()
     {
-        $objectTypesModel = new ObjectTypesModel($this->serviceLocator);
+        $objectTypesCollection = $this->serviceLocator->get('objectTypesCollection');
+        $formElementManager = $this->serviceLocator->get('formElementManager');
         
         $result = array();
         
@@ -18,19 +17,48 @@ class AddField extends AbstractMethod
             $objectTypeId = (int)$this->params()->fromRoute('objectTypeId');
             $groupId = (int)$this->params()->fromRoute('groupId');
             
-            $tmp = $objectTypesModel->addField($objectTypeId, $groupId, $this->params()->fromPost());
+            if (null === ($objectType = $objectTypesCollection->getType($objectTypeId))) {
+                $result['success'] = false;
+                $result['errMsg'] = 'Не найден тип данных ' . $objectTypeId;
+                return $result;
+            }
+            if (null === ($fieldsGroup = $objectType->getFieldsGroup($groupId))) {
+                $result['success'] = false;
+                $result['errMsg'] = 'Группа полей ' . $groupId . ' не найдена';
+                return $result;
+            }
             
-            if ($tmp['success']) {
-                $result['id'] = $tmp['id'];
-                $result['name'] = $tmp['name'];
-                $result['title'] = $tmp['title'];
-                $result['fieldTypeName'] = $tmp['fieldTypeName'];
+            $form = $formElementManager->get('ObjectTypes\Form\FieldAdminForm', array(
+                'fieldsGroup' => $fieldsGroup,
+            ));
+            
+            $form->setData($this->params()->fromPost());
+            
+            if ($form->isValid()) {
+                $data = $form->getData();
                 
-                $result['success'] = true;
-                $result['msg'] = 'Поле успешно добавлено';
+                $fieldsAdminCollection = $this->serviceLocator->get('ObjectTypes\Collection\FieldsAdminCollection');
+                
+                $fieldsAdminCollection->setObjectTypeId($objectTypeId)
+                                      ->setFieldsGroupId($groupId);
+                
+                $addResult = $fieldsAdminCollection->addField($data);
+                if ($addResult['success']) {
+                    $result['success'] = true;
+                    $result['msg'] = 'Поле успешно добавлено';
+                    
+                    $field = $addResult['field'];
+                    
+                    $result['id'] = $addResult['fieldId'];
+                    $result['name'] = $data['name'];
+                    $result['title'] = $data['title'];
+                    $result['fieldTypeName'] = $field->getFieldTypeName();
+                } else {
+                    $result['success'] = false;
+                    $result['errMsg'] = $addResult['errMsg'];
+                }                
             } else {
                 $result['success'] = false;
-                $form = $tmp['form'];
                 $result['formMsg'] = $form->getMessages();
             }
         } else {

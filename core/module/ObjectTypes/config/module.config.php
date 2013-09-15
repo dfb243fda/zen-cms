@@ -151,6 +151,11 @@ return array(
             'ObjectTypes\Service\GuideItemsList' => 'ObjectTypes\Service\GuideItemsList',
             
             'ObjectTypes\Entity\ObjectTypeAdmin' => 'ObjectTypes\Entity\ObjectTypeAdmin',
+            'ObjectTypes\Collection\FieldsAdminCollection' => 'ObjectTypes\Collection\FieldsAdminCollection',
+        ),
+        'shared' => array(
+            'ObjectTypes\Entity\ObjectTypeAdmin' => false,
+            'ObjectTypes\Collection\FieldsAdminCollection' => false,
         ),
     ),
     'router' => array(

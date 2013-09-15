@@ -34,7 +34,10 @@ class FieldsGroupAdminForm extends Form implements ServiceLocatorAwareInterface
     }
     
     public function init()
-    {
+    {        
+        $rootServiceManager = $this->serviceLocator->getServiceLocator();
+        $objectTypesCollection = $rootServiceManager->get('objectTypesCollection');
+        
         $this->add(array(
             'name' => 'title',
             'options' => array(
@@ -52,5 +55,13 @@ class FieldsGroupAdminForm extends Form implements ServiceLocatorAwareInterface
         $this->getInputFilter()->get('title')->setRequired(true);
         
         $this->getInputFilter()->get('name')->setRequired(true);
+        
+        if ($objectType = $this->getOption('objectType')) {            
+            $this->getInputFilter()->get('name')
+                                   ->getValidatorChain()
+                                   ->attachByName('ObjectTypes\Validator\NoGroupWithSuchNameExists', array(
+                                       'objectType' => $objectType,
+                                   ));
+        }
     }
 }
