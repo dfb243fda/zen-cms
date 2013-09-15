@@ -168,6 +168,11 @@ class ObjectType implements ServiceManagerAwareInterface
         return $this;
     }
     
+    public function getFieldsGroupCollection()
+    {
+        return $this->fieldsGroupCollection;
+    }
+    
     public function addFieldsGroup($name, $title)
     {
         return $this->fieldsGroupCollection->addFieldsGroup($name, $title);

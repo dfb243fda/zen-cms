@@ -27,7 +27,7 @@ class AddGroup extends AbstractMethod
             }
             
             $form = $formElementManager->get('ObjectTypes\Form\FieldsGroupAdminForm', array(
-                'objectType' => $objectType,
+                'fieldsGroupCollection' => $objectType->getFieldsGroupCollection(),
             ));
             
             $form->setData($this->params()->fromPost());

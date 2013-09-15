@@ -8,10 +8,11 @@ $args = array(
         'method' => 'AddGroup',    
         'id' => $this->objectTypeId,
     )),
-    'editFieldGroupUrl' => $this->url('admin/method', array(
+    'editFieldGroupUrl' => $this->url('admin/EditFieldsGroup', array(
         'module' => 'ObjectTypes',
         'method' => 'EditGroup',                 
-        'id' => '--GROUP_ID--',
+        'groupId' => '--GROUP_ID--',
+        'objectTypeId' => '--TYPE_ID--',
     )),
     'delGroupUrl' => $this->url('admin/method', array(
         'module' => 'ObjectTypes',

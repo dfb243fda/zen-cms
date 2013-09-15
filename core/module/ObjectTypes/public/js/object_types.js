@@ -136,9 +136,10 @@ zen.objectTypes = zen.objectTypes || {};
                 var $block = $(v).closest('.block');
 
                 var groupId = $block.attr('data-group-id');
+                var objectTypeId = $block.closest('.blocks').attr('data-object-type-id');
 
                 $(v).ajaxForm({
-                    url: initParams['editFieldGroupUrl'].replace('--GROUP_ID--', groupId),
+                    url: initParams['editFieldGroupUrl'].replace('--GROUP_ID--', groupId).replace('--TYPE_ID--', objectTypeId),
                     success: function(data) {
                         if (zen.isDefined(data.page.msg)) {
                             $().toastmessage('showSuccessToast', data.page.msg);

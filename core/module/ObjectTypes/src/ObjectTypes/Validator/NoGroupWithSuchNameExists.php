@@ -3,11 +3,13 @@
 namespace ObjectTypes\Validator;
 
 use Zend\Validator\AbstractValidator;
-use App\Object\ObjectType;
+use App\Field\FieldsGroupCollection;
 
 class NoGroupWithSuchNameExists extends AbstractValidator
 {
-    protected $objectType;
+    protected $fieldsGroupCollection;
+    
+    protected $groupId;
     
     const ERROR_GROUP_WITH_SUCH_NAME_FOUND = 'group_with_such_name_found';
     
@@ -24,18 +26,27 @@ class NoGroupWithSuchNameExists extends AbstractValidator
      */
     public function __construct(array $options)
     {        
-        if (!isset($options['objectType']) || !$options['objectType'] instanceof ObjectType) {
-            throw new Exception\InvalidArgumentException('objectType option does not transferred');
+        if (!isset($options['fieldsGroupCollection']) || !$options['fieldsGroupCollection'] instanceof FieldsGroupCollection) {
+            throw new Exception\InvalidArgumentException('fieldsGroup option does not transferred');
         }
 
-        $this->setObjectType($options['objectType']);
+        $this->setFieldsGroupCollection($options['fieldsGroupCollection']);
+        
+        if (isset($options['groupId'])) {
+            $this->setGroupId($options['groupId']);
+        }
         
         parent::__construct($options);
     }
     
-    protected function setObjectType($objectType)
+    protected function setFieldsGroupCollection($fieldsGroupCollection)
     {
-        $this->objectType = $objectType;
+        $this->fieldsGroupCollection = $fieldsGroupCollection;
+    }
+    
+    protected function setGroupId($groupId)
+    {
+        $this->groupId = $groupId;
     }
     
     public function isValid($value)
@@ -43,7 +54,19 @@ class NoGroupWithSuchNameExists extends AbstractValidator
         $valid = true;
         $this->setValue($value);
 
-        $result = $this->objectType->getFieldsGroupByName($value);
+        $group = $this->fieldsGroupCollection->getFieldsGroupByName($value);
+        
+        $result = false;
+        if ($group) {
+            if ($this->groupId) {
+                if ($this->groupId != $group->getId()) {
+                    $result = true;
+                }                
+            } else {
+                $result = true;
+            }
+        }
+        
         if ($result) {
             $valid = false;
             $this->error(self::ERROR_GROUP_WITH_SUCH_NAME_FOUND);

@@ -192,6 +192,16 @@ return array(
                             ),
                         ),
                     ),
+                    'EditFieldsGroup' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route' => 'ObjectTypes/EditGroup/:groupId/:objectTypeId[/][.:format]',
+                            'defaults' => array(
+                                'module' => 'ObjectTypes',
+                                'method' => 'EditGroup',
+                            ),
+                        ),
+                    ),
                     'EditObjectTypeField' => array(
                         'type' => 'segment',
                         'options' => array(

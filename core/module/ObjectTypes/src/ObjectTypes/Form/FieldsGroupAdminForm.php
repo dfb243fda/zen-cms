@@ -56,11 +56,12 @@ class FieldsGroupAdminForm extends Form implements ServiceLocatorAwareInterface
         
         $this->getInputFilter()->get('name')->setRequired(true);
         
-        if ($objectType = $this->getOption('objectType')) {            
+        if ($fieldsGroupCollection = $this->getOption('fieldsGroupCollection')) {            
             $this->getInputFilter()->get('name')
                                    ->getValidatorChain()
                                    ->attachByName('ObjectTypes\Validator\NoGroupWithSuchNameExists', array(
-                                       'objectType' => $objectType,
+                                       'fieldsGroupCollection' => $fieldsGroupCollection,
+                                       'groupId' => $this->getOption('groupId'),
                                    ));
         }
     }
