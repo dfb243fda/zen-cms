@@ -3,26 +3,26 @@
 namespace ObjectTypes\Method;
 
 use App\Method\AbstractMethod;
-use ObjectTypes\Model\Guides;
 
 class GuideItemsList extends AbstractMethod
 {        
-    protected $translator;
-    
-    protected $guidesModel;
-    
-    public function init()
-    {
-        $this->translator = $this->serviceLocator->get('translator');
-        $this->guidesModel = new Guides($this->serviceLocator);
-    }
-
-
     public function main()
     {
+        $objectTypesCollection = $this->serviceLocator->get('objectTypesCollection');
+        
         $guideId = (int)$this->params()->fromRoute('id');
         if (!$guideId) {
             throw new \Exception('parameter id does not transferred');
+        }
+        
+        if (!$objectType = $objectTypesCollection->getType($guideId)) {
+            $result['errMsg'] = 'Не найден тип данных ' . $guideId;
+            return $result;
+        }
+        
+        if (!$objectType->getIsGuidable()) {
+            $result['errMsg'] = 'Тип данных ' . $objectType->getName() . ' не является справочником';
+            return $result;
         }
         
         $guideItemsList = $this->serviceLocator->get('ObjectTypes\Service\GuideItemsList');

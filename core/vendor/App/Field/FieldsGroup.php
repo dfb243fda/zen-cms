@@ -84,6 +84,14 @@ class FieldsGroup implements ServiceManagerAwareInterface
         return $this->fields;
     }
     
+    public function getField($fieldId)
+    {
+        if (isset($this->fields[$fieldId])) {
+            return $this->fields[$fieldId];
+        }
+        return null;
+    }
+    
     public function getFieldByName($name)
     {        
         foreach ($this->fields as $field) {
@@ -130,6 +138,18 @@ class FieldsGroup implements ServiceManagerAwareInterface
     {
         $this->groupData['sorting'] = $sorting;
         return $this;
+    }
+    
+    public function isExists()
+    {
+        $db = $this->serviceManager->get('db');
+        
+        $sqlRes = $db->query('
+            select id 
+            from ' . DB_PREF . $this->fieldGroupsTable . ' 
+            where id = ?', array($this->groupId))->toArray();
+        
+        return !empty($sqlRes);
     }
     
     public function save()

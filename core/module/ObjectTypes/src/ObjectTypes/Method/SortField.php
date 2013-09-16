@@ -11,7 +11,7 @@ class SortField extends AbstractMethod
         $fieldsCollection = $this->serviceLocator->get('fieldsCollection');
         
         $result = array(
-            'success' => 0,
+            'success' => false,
         );
         
         if (null !== $this->params()->fromPost('field') &&
@@ -26,10 +26,8 @@ class SortField extends AbstractMethod
                       
             $field = $fieldsCollection->getField($fieldId);
             
-            if ($field->isExists()) {
-                if ($field->moveFieldAfter($fieldBeforeId, $groupId, $groupTargetId)) {                    
-                    $result['success'] = 1;
-                }                
+            if ($field = $fieldsCollection->getField($fieldId)) {
+                $result['success'] = $field->moveFieldAfter($fieldBeforeId, $groupId, $groupTargetId);
             }
         }
         

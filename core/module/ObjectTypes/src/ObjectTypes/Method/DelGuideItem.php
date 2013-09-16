@@ -3,29 +3,27 @@
 namespace ObjectTypes\Method;
 
 use App\Method\AbstractMethod;
-use ObjectTypes\Model\Guides;
 
 class DelGuideItem extends AbstractMethod
 {
     public function main()
-    {
-        $guidesModel = new Guides($this->serviceLocator);
-        
-        $result = array(
-            'success' => false,
-        );
+    {        
+        $result = array();
         
         if (null === $this->params()->fromPost('id')) {
             $result['errMsg'] = 'Не переданы все необходимые параметры';
             return $result;
         }
         
-        $guideItemId = (int)$this->params()->fromPost('id');
+        $guideItemId = (int)$this->params()->fromPost('id');        
         
-        if ($guidesModel->deleteGuideItem($guideItemId)) {
+        $guideItemsCollection = $this->serviceLocator->get('ObjectTypes\Collection\GuideItemsCollection');
+        
+        if ($guideItemsCollection->deleteGuideItem($guideItemId)) {
             $result['success'] = true;
             $result['msg'] = 'Термин удален';
         } else {
+            $result['success'] = false;
             $result['errMsg'] = 'Не удалось удалить термин';
         }
         

@@ -152,10 +152,15 @@ return array(
             
             'ObjectTypes\Entity\ObjectTypeAdmin' => 'ObjectTypes\Entity\ObjectTypeAdmin',
             'ObjectTypes\Collection\FieldsAdminCollection' => 'ObjectTypes\Collection\FieldsAdminCollection',
+            
+            'ObjectTypes\Collection\GuideItemsCollection' => 'ObjectTypes\Collection\GuideItemsCollection',
+            'ObjectTypes\Entity\GuideItem' => 'ObjectTypes\Entity\GuideItem',
         ),
         'shared' => array(
             'ObjectTypes\Entity\ObjectTypeAdmin' => false,
             'ObjectTypes\Collection\FieldsAdminCollection' => false,
+            'ObjectTypes\Collection\GuideItemsCollection' => false,
+            'ObjectTypes\Entity\GuideItem' => false,
         ),
     ),
     'router' => array(

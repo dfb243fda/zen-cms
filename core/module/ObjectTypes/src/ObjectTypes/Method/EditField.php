@@ -3,13 +3,14 @@
 namespace ObjectTypes\Method;
 
 use App\Method\AbstractMethod;
-use ObjectTypes\Model\ObjectTypes as ObjectTypesModel;
 
 class EditField extends AbstractMethod
 {    
     public function main()
     {
-        $objectTypesModel = new ObjectTypesModel($this->serviceLocator);
+        $objectTypesCollection = $this->serviceLocator->get('objectTypesCollection');
+        $formElementManager = $this->serviceLocator->get('formElementManager');
+        $fieldsCollection = $this->serviceLocator->get('fieldsCollection');
         
         $result = array();
         
@@ -17,18 +18,42 @@ class EditField extends AbstractMethod
             $fieldId = (int)$this->params()->fromRoute('fieldId');
             $groupId = (int)$this->params()->fromRoute('groupId');
             
-            $tmp = $objectTypesModel->editField($fieldId, $groupId, $this->params()->fromPost());
+            $fieldsGroup = $this->serviceLocator->get('App\Field\FieldsGroup');
+            $fieldsGroup->setId($groupId);
             
-            if ($tmp['success']) {
-                $result['name'] = $tmp['name'];
-                $result['title'] = $tmp['title'];
-                $result['fieldTypeName'] = $tmp['fieldTypeName'];
+            if (!$fieldsGroup->isExists()) {
+                $result['success'] = false;
+                $result['errMsg'] = 'Группа ' . $groupId . ' не найдена';
+                return $result;
+            }
+            
+            $fieldsGroup->loadFields();
+            
+            if (null === ($field = $fieldsGroup->getField($fieldId))) {
+                $result['success'] = false;
+                $result['errMsg'] = 'Поле ' . $fieldId . ' не найдено';
+                return $result;
+            }
+            
+            $form = $formElementManager->get('ObjectTypes\Form\FieldAdminForm', array(
+                'fieldsGroup' => $fieldsGroup,
+                'fieldId' => $fieldId,
+            ));
+            
+            $form->setData($this->params()->fromPost());
+            
+            if ($form->isValid()) {
+                $data = $form->getData();
+                
+                $field->setFieldData($data)->save();
+                $result['name'] = $data['name'];
+                $result['title'] = $data['title'];
+                $result['fieldTypeName'] = $field->getFieldTypeName();
                 
                 $result['success'] = true;
                 $result['msg'] = 'Поле успешно изменено';
             } else {
                 $result['success'] = false;
-                $form = $tmp['form'];
                 $result['formMsg'] = $form->getMessages();
             }
         } else {

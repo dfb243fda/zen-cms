@@ -51,22 +51,22 @@ class ObjectTypeForm extends Form implements ServiceLocatorAwareInterface
                 
         $translator = $this->serviceLocator->getServiceLocator()->get('translator');        
 
-/*        
-        $this->add(array(
-            'name' => 'common',
-            'type' => 'fieldset',
-            'options' => array(
-                'label' => $translator->translate('App:ObjectType:Common params fields group'),
-            ),
-        ));
-                
-        $this->get('common')->add(array(
-            'name' => 'name',
-            'options' => array(
-                'label' => $translator->translate('App:ObjectType:Name field'),
-            ),
-        ));
-*/        
+        if ($this->getOption('withName')) {
+            $this->add(array(
+                'name' => 'common',
+                'type' => 'fieldset',
+                'options' => array(
+                    'label' => $translator->translate('App:ObjectType:Common params fields group'),
+                ),
+            ));
+
+            $this->get('common')->add(array(
+                'name' => 'name',
+                'options' => array(
+                    'label' => 'App:ObjectType:Name field',
+                ),
+            ));
+        }
         
         $fieldGroups = $objectType->getFieldGroups();
                 

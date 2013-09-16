@@ -3,13 +3,12 @@
 namespace ObjectTypes\Method;
 
 use App\Method\AbstractMethod;
-use ObjectTypes\Model\Guides;
 
 class AddGuideItem extends AbstractMethod
 {
     public function main()
     {
-        $guidesModel = new Guides($this->serviceLocator);
+        $objectTypesCollection = $this->serviceLocator->get('objectTypesCollection');
         $request = $this->serviceLocator->get('request');
         
         $result = array();
@@ -21,23 +20,34 @@ class AddGuideItem extends AbstractMethod
         
         $guideId = (int)$this->params()->fromRoute('id');
         
-        $guidesModel->setGuideId($guideId);
+        if (!$objectType = $objectTypesCollection->getType($guideId)) {
+            $result['errMsg'] = 'Не найден тип данных ' . $guideId;
+            return $result;
+        }
         
-        $form = $guidesModel->getGuideItemForm();        
-        $formConfig = $form['formConfig'];
-        $formValues = $form['formValues'];
-        $formMessages = array();
+        if (!$objectType->getIsGuidable()) {
+            $result['errMsg'] = 'Тип данных ' . $objectType->getName() . ' не является справочником';
+            return $result;
+        }
+                
+        $form = $objectType->getForm(false, true);    
         
         if ($request->isPost()) {
-            $tmp = $guidesModel->addGuideItem($this->params()->fromPost());
-            if ($tmp['success']) {
+            $form->setData($this->params()->fromPost());
+            if ($form->isValid()) {
+                
+                $guideItemsCollection = $this->serviceLocator->get('ObjectTypes\Collection\GuideItemsCollection');
+                $guideItemsCollection->setGuideId($guideId);
+                
+                $guideItemId = $guideItemsCollection->addGuideItem($form->getData());
+                
                 if (!$request->isXmlHttpRequest()) {
                     $this->flashMessenger()->addSuccessMessage('Термин успешно добавлен');
                     
                     $this->redirect()->toRoute('admin/method', array(
                         'module' => 'ObjectTypes',
                         'method' => 'EditGuideItem',
-                        'id'     => $tmp['guideItemId'],
+                        'id'     => $guideItemId,
                     ));
                 }
 
@@ -47,17 +57,13 @@ class AddGuideItem extends AbstractMethod
                 );         
             } else {
                 $result['success'] = false;
-                $formMessages = $tmp['form']->getMessages();
-                $formValues = $tmp['form']->getData();
             }
         }
         
         $result['contentTemplate'] = array(
             'name' => 'content_template/ObjectTypes/guide_item_form_view.phtml',
             'data' => array(
-                'formConfig' => $formConfig,
-                'formValues' => $formValues,
-                'formMsg'    => $formMessages,
+                'form' => $form,
             ),
         );
         

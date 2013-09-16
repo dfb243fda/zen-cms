@@ -17,12 +17,25 @@ class DelObjectType extends AbstractMethod
             $result['errMsg'] = 'Не передан id типа данных';
         }
         else {
-            $id = (int)$this->params()->fromPost('id');
+            $typeId = (int)$this->params()->fromPost('id');
             
-            $result = $objectTypesCollection->delType($id);
+            if (null === ($objectType = $objectTypesCollection->getType($typeId))) {
+                $result['success'] = false;
+                $result['errMsg'] = 'Не найден тип данных ' . $typeId;
+                return $result;
+            }
+            if ($objectType->getIsLocked()) {
+                $result['success'] = false;
+                $result['errMsg'] = 'Ттип данных ' . $typeId . ' заблокирован';
+                return $result;
+            }
             
-            if (true == $result['success']) {
+            if ($objectTypesCollection->delType($typeId)) {
+                $result['success'] = true;
                 $result['msg'] = 'Тип данных успешно удален';
+            } else {
+                $result['success'] = false;
+                $result['errMsg'] = 'При удалении типа данных произошли ошибки';
             }
         }
         

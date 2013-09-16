@@ -42,13 +42,13 @@ class EditGroup extends AbstractMethod
             if ($form->isValid()) {
                 $data = $form->getData();
                 
-                $result['groupId'] = $fieldsGroup->setName($data['name'])
-                                                 ->setTitle($data['title'])
-                                                 ->save();
+                $fieldsGroup->setName($data['name'])
+                            ->setTitle($data['title'])
+                            ->save();
                 $result['name'] = $data['name'];
                 $result['title'] = $data['title'];
                 $result['success'] = true;
-                $result['msg'] = 'Группа успешно создана';
+                $result['msg'] = 'Группа успешно обновлена';
             } else {
                 $result['success'] = false;
                 $result['formMsg'] = $form->getMessages();

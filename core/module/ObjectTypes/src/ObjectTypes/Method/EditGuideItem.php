@@ -3,13 +3,12 @@
 namespace ObjectTypes\Method;
 
 use App\Method\AbstractMethod;
-use ObjectTypes\Model\Guides;
 
 class EditGuideItem extends AbstractMethod
 {    
     public function main()
     {
-        $guidesModel = new Guides($this->serviceLocator);
+        $guideItemsCollection = $this->serviceLocator->get('ObjectTypes\Collection\GuideItemsCollection');
         $request = $this->serviceLocator->get('request');
         
         $result = array();
@@ -21,16 +20,20 @@ class EditGuideItem extends AbstractMethod
         
         $guideItemId = (int)$this->params()->fromRoute('id');
         
-        $guidesModel->setGuideItemId($guideItemId);
         
-        $form = $guidesModel->getGuideItemForm();        
-        $formConfig = $form['formConfig'];
-        $formValues = $form['formValues'];
-        $formMessages = array();
+        if (null === ($guideItem = $guideItemsCollection->getGuideItem($guideItemId))) {
+            $result['errMsg'] = 'Термин ' . $guideItemId . ' не найден';
+            return $result;
+        }
+        
+        
+        $form = $guideItem->getForm();        
         
         if ($request->isPost()) {
-            $tmp = $guidesModel->editGuideItem($this->params()->fromPost());
-            if ($tmp['success']) {
+            $form->setData($this->params()->fromPost());
+            if ($form->isValid()) {                
+                $guideItem->editGuideItem($form->getData());
+                
                 if (!$request->isXmlHttpRequest()) {
                     $this->flashMessenger()->addSuccessMessage('Термин успешно обновлен');                    
                     return $this->redirect()->refresh();
@@ -42,17 +45,13 @@ class EditGuideItem extends AbstractMethod
                 );         
             } else {
                 $result['success'] = false;
-                $formMessages = $tmp['form']->getMessages();
-                $formValues = $tmp['form']->getData();
             }
         }
         
         $result['contentTemplate'] = array(
             'name' => 'content_template/ObjectTypes/guide_item_form_view.phtml',
             'data' => array(
-                'formConfig' => $formConfig,
-                'formValues' => $formValues,
-                'formMsg'    => $formMessages,
+                'form' => $form,
             ),
         );
         

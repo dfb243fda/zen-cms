@@ -9,6 +9,8 @@ class NoFieldWithSuchNameExists extends AbstractValidator
 {
     protected $fieldsGroup;
     
+    protected $fieldId;
+    
     const ERROR_FIELD_WITH_SUCH_NAME_FOUND = 'field_with_such_name_found';
     
     /**
@@ -30,6 +32,10 @@ class NoFieldWithSuchNameExists extends AbstractValidator
 
         $this->setFieldsGroup($options['fieldsGroup']);
         
+        if (isset($options['fieldId'])) {
+            $this->setFieldId($options['fieldId']);
+        }
+        
         parent::__construct($options);
     }
     
@@ -38,12 +44,29 @@ class NoFieldWithSuchNameExists extends AbstractValidator
         $this->fieldsGroup = $fieldsGroup;
     }
     
+    protected function setFieldId($fieldId)
+    {
+        $this->fieldId = $fieldId;
+    }
+    
     public function isValid($value)
     {        
         $valid = true;
         $this->setValue($value);
 
-        $result = $this->fieldsGroup->getFieldByName($value);
+        $field = $this->fieldsGroup->getFieldByName($value);
+        
+        $result = false;
+        if ($field) {
+            if ($this->fieldId) {
+                if ($this->fieldId != $field->getId()) {
+                    $result = true;
+                }                
+            } else {
+                $result = true;
+            }
+        }
+        
         if ($result) {
             $valid = false;
             $this->error(self::ERROR_FIELD_WITH_SUCH_NAME_FOUND);

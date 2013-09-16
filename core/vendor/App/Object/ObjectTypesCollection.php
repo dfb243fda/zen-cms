@@ -163,51 +163,43 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
     public function delType($typeId)
     {        
         $db = $this->serviceManager->get('db');
-        
-        $result = array();
-        
+                
         $typeId = (int)$typeId;
         $objectType = $this->getType($typeId);
         
-        if (false === $objectType) {
-            $result['errMsg'] = 'There is no object type ' . $objectType;
-            $result['success'] = false;
-            return $result;
+        if (!$objectType) {
+            return false;
         }      
-        
-        if ($objectType->getIsLocked()) {
-            $result['errMsg'] = 'Object type ' . $objectType . ' is locked';
-            $result['success'] = false;
-            return $result;
-        }
         
         $descendantTypeIds = $this->getDescendantTypeIds($typeId);
         
         foreach ($descendantTypeIds as $id) {
-            $sql = new Sql($db);
-            $delete = $sql->delete(DB_PREF . $this->objectsTable)->where('type_id = ' . (int)$id);        
-            $sql->prepareStatementForSqlObject($delete)->execute();
+            $db->query('
+                delete from ' . DB_PREF . $this->objectsTable . ' 
+                where type_id = ?', array($id));
             
-            $delete = $sql->delete(DB_PREF . $this->objectTypesTable)->where('id = ' . (int)$id);        
-            $sql->prepareStatementForSqlObject($delete)->execute();
+            $db->query('
+                delete from ' . DB_PREF . $this->objectTypesTable . '
+                where id = ?', array($id));
+            
             unset($this->types[$id]);
             unset($this->allTypesList[$id]);
             unset($this->childrenTypesList[$id]);
         }
-        $sql = new Sql($this->db);
         
-        $delete = $sql->delete(DB_PREF . $this->objectsTable)->where('type_id = ' . (int)$typeId);        
-        $sql->prepareStatementForSqlObject($delete)->execute();
+        $db->query('
+                delete from ' . DB_PREF . $this->objectsTable . ' 
+                where type_id = ?', array($typeId));
         
-        $delete = $sql->delete(DB_PREF . $this->objectTypesTable)->where('id = ' . (int)$typeId);        
-        $sql->prepareStatementForSqlObject($delete)->execute();
-        
+        $db->query('
+                delete from ' . DB_PREF . $this->objectTypesTable . '
+                where id = ?', array($typeId));
+                
         unset($this->types[$typeId]);
         unset($this->allTypesList[$typeId]);
         unset($this->childrenTypesList[$typeId]);    
         
-        $result['success'] = true;
-        return $result;
+        return true;
     }
         
     public function getParentTypeId($typeId)

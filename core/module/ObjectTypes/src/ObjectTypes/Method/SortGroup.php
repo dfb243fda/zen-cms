@@ -4,8 +4,6 @@ namespace ObjectTypes\Method;
 
 use App\Method\AbstractMethod;
 
-use App\FieldsGroup\FieldsGroup;
-
 class SortGroup extends AbstractMethod
 {
     public function main()
@@ -17,14 +15,12 @@ class SortGroup extends AbstractMethod
         if (null !== $this->params()->fromPost('group') && null !== $this->params()->fromPost('groupBefore')) {
             $groupId = (int)$this->params()->fromPost('group');   
             $groupBeforeId = (int)$this->params()->fromPost('groupBefore');
-            
-            $fieldsGroup = new FieldsGroup(array(
-                'serviceManager' => $this->serviceLocator,
-                'id' => $groupId,
-            )); 
+                        
+            $fieldsGroup = $this->serviceLocator->get('App\Field\FieldsGroup');
+            $fieldsGroup->setId($groupId);
             
             if ($fieldsGroup->isExists()) {
-                $result['success'] = (int)$fieldsGroup->moveGroupAfter($groupBeforeId);                
+                $result['success'] = $fieldsGroup->moveGroupAfter($groupBeforeId);  
             }
         }
         

@@ -7,27 +7,39 @@ use App\Method\AbstractMethod;
 class DelField extends AbstractMethod
 {
     public function main()
-    {
-        $objectTypesCollection = $this->serviceLocator->get('objectTypesCollection');
-        
-        $result = array(
-            'success' => 0,
-        );
+    {        
+        $result = array();
         
         if (null !== $this->params()->fromPost('fieldId') &&
-                null !== $this->params()->fromPost('objectTypeId') && 
                 null !== $this->params()->fromPost('groupId'))
         {        
             $fieldId = (int)$this->params()->fromPost('fieldId');
-            $objectTypeId = (int)$this->params()->fromPost('objectTypeId');
-            $groupId = (int)$this->params()->fromPost('groupId');            
+            $groupId = (int)$this->params()->fromPost('groupId');  
+            
+            $fieldsGroup = $this->serviceLocator->get('App\Field\FieldsGroup');
+            $fieldsGroup->setId($groupId);
+            
+            if (!$fieldsGroup->isExists()) {
+                $result['success'] = false;
+                $result['errMsg'] = 'Группа ' . $groupId . ' не найдена';
+                return $result;
+            }
+            
+            $fieldsGroup->loadFields();
+            
+            if (!$fieldsGroup->getField($fieldId)) {
+                $result['success'] = false;
+                $result['errMsg'] = 'Поле ' . $fieldId . ' не найдено';
+                return $result;
+            }
 
-            $objectTypesCollection->getType($objectTypeId)->getFieldsGroup($groupId)->detachField($fieldId);
+            $fieldsGroup->detachField($fieldId);
             
             $result['msg'] = 'Поле успешно удалено';
-            $result['success'] = 1;
+            $result['success'] = true;
         } else {
             $result['errMsg'] = 'Не переданы все необходимые параметры';
+            $result['success'] = false;
         }
         
         return $result;

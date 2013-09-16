@@ -131,6 +131,7 @@ class FieldAdminForm extends Form implements ServiceLocatorAwareInterface
                                    ->getValidatorChain()
                                    ->attachByName('ObjectTypes\Validator\NoFieldWithSuchNameExists', array(
                                        'fieldsGroup' => $fieldsGroup,
+                                       'fieldId' => $this->getOption('fieldId'),
                                    ));
         }
         
