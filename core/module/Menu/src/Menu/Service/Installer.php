@@ -1,35 +1,23 @@
 <?php
 
-namespace Menu;
+namespace Menu\Service;
 
-use App\FieldsGroup\FieldsGroup;
+use Zend\ServiceManager\ServiceManagerAwareInterface;
+use Zend\ServiceManager\ServiceManager;
 
-class Module
+class Installer implements ServiceManagerAwareInterface
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function getAutoloaderConfig()
+    protected $serviceManager;
+    
+    public function setServiceManager(ServiceManager $serviceManager)
     {
-        return array(
-            'Zend\Loader\StandardAutoloader' => array(
-                'namespaces' => array(
-                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-                ),
-            ),
-        );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getConfig()
-    {
-        return include __DIR__ . '/config/module.config.php';
+        $this->serviceManager = $serviceManager;
     }
     
-    public function onInstall($sm)
+    public function install()
     {
+        $sm = $this->serviceManager;
+        
         $objectTypesCollection = $sm->get('objectTypesCollection');
         $fieldsCollection = $sm->get('fieldsCollection');
         $fieldTypesCollection = $sm->get('fieldTypesCollection');
@@ -52,10 +40,7 @@ class Module
                 
             $fieldTypeId = $fieldTypesCollection->getFieldTypeIdByDataType('pageLink');
 
-            $fieldsGroup = new FieldsGroup(array(
-                'serviceManager' => $sm,
-                'id' => $groupId,
-            ));
+            $fieldsGroup = $objectType->getFieldsGroup($groupId);
 
             $fieldId = $fieldsCollection->addField(array(
                 'name' => 'page',
@@ -95,11 +80,8 @@ class Module
 
                 $fieldTypeId = $fieldTypesCollection->getFieldTypeIdByDataType('select');
 
-                $fieldsGroup = new FieldsGroup(array(
-                    'serviceManager' => $sm,
-                    'id' => $groupId,
-                ));
-
+                $fieldsGroup = $objectType->getFieldsGroup($groupId);
+                                
                 $fieldId = $fieldsCollection->addField(array(
                     'name' => 'menu_id',
                     'title' => 'i18n::Menu:Menu id',
@@ -118,7 +100,6 @@ class Module
                 $objectType->setPageContentTypeId($contentTypeId)->save();
             }
         }    
-        
         
     }
 }

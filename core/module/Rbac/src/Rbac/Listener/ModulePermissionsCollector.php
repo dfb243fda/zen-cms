@@ -51,12 +51,12 @@ class ModulePermissionsCollector implements
         $this->serviceManager = $serviceManager;
     }
     
-    public function onModuleInstalled(EventInterface $e)
+    public function onModuleInstalled(EventInterface $event)
     {
         $moduleManager = $this->serviceManager->get('moduleManager');
         $db = $this->serviceManager->get('db');
         
-        $params = $e->getParams();
+        $params = $event->getParams();
             
         $module = $params['module'];
 
@@ -85,7 +85,7 @@ class ModulePermissionsCollector implements
         }
     }
     
-    public function onModuleUninstalled(EventInterface $e)
+    public function onModuleUninstalled(EventInterface $event)
     {
         $db = $this->serviceManager->get('db');
             

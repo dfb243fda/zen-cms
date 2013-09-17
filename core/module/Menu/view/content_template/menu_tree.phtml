@@ -1,0 +1,32 @@
+<?php
+
+$this->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/Menu/menu.js');
+
+$data = array(
+    'createBtn' => array(
+        'text' => 'Добавить меню',
+        'link' => $this->url('admin/method', array(
+            'module' => 'Menu',
+            'method' => 'AddMenu',
+        )),
+    ),
+    'url' => $this->url('admin/MenuList', array(
+        'task'   => 'get_data',
+    )),  
+    'columns' => array(
+        array(
+            array(                        
+                'title' => $this->translate('Menu:Name field'),
+                'field' => 'name',
+                'width' => '200',
+            ),
+            array(                        
+                'title' => '',
+                'field' => 'icons',
+                'width' => '200',
+            )
+        )                    
+    ),
+);
+
+echo $this->partial('content_template/' . CURRENT_THEME . '/tree_grid.phtml', $data);

@@ -32,13 +32,15 @@ class Loginza implements ServiceManagerAwareInterface
         
         $host = $request->getUri()->getHost() . $request->getBasePath();
         
-        foreach ($domainsConfig as $value) {
-            if ($value['allow_loginza']) {
-                if (!$value['domain']) {
-                    $allDomainsConfig = $value;
-                } elseif ($value['domain'] == $host) {
-                    $currentDomainConfig = $value;
-                    break;
+        if (!empty($domainsConfig)) {
+            foreach ($domainsConfig as $value) {
+                if ($value['allow_loginza']) {
+                    if (!$value['domain']) {
+                        $allDomainsConfig = $value;
+                    } elseif ($value['domain'] == $host) {
+                        $currentDomainConfig = $value;
+                        break;
+                    }
                 }
             }
         }

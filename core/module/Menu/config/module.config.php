@@ -60,6 +60,17 @@ return array(
         ),
     ),
     
+    'service_manager' => array(
+        'invokables' => array(
+            'Menu\Service\Installer' => 'Menu\Service\Installer',
+            'Menu\Service\MenuTree' => 'Menu\Service\MenuTree',
+            'Menu\Service\Menu' => 'Menu\Service\Menu',
+            'Menu\Collection\MenuCollection' => 'Menu\Collection\MenuCollection',
+            
+            'Menu\FormFactory\MenuFormFactory' => 'Menu\FormFactory\MenuFormFactory',
+        ),
+    ),
+    
     'translator' => array(
         'translation_file_patterns' => array(
             array(
