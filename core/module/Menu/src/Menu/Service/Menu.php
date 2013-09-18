@@ -61,9 +61,7 @@ class Menu implements ServiceManagerAwareInterface
     {            
         $objectsCollection = $this->serviceManager->get('objectsCollection');
         
-        $object = $objectsCollection->getObject($objectId);
-        
-        if ($object->isExists()) {
+        if ($object = $objectsCollection->getObject($objectId)) {
             $objectTypeId = $object->getTypeId();            
             $typeIds = $this->getRubricTypeIds();            
             return in_array($objectTypeId, $typeIds);
@@ -75,9 +73,7 @@ class Menu implements ServiceManagerAwareInterface
     {            
         $objectsCollection = $this->serviceManager->get('objectsCollection');
         
-        $object = $objectsCollection->getObject($objectId);
-        
-        if ($object->isExists()) {
+        if ($object = $objectsCollection->getObject($objectId)) {
             $objectTypeId = $object->getTypeId();            
             $typeIds = $this->getItemTypeIds();            
             return in_array($objectTypeId, $typeIds);

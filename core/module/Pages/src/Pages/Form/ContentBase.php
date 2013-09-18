@@ -132,7 +132,7 @@ class ContentBase extends Form implements ServiceLocatorAwareInterface
             'name' => 'common',
             'type' => 'fieldset',
             'options' => array(
-                'label' => 'Pages:Content common params fields group',
+                'label' => $translator->translate('Pages:Content common params fields group'),
             ),
         ));
         
@@ -178,7 +178,7 @@ class ContentBase extends Form implements ServiceLocatorAwareInterface
             'name' => 'additional_params',
             'type' => 'fieldset',
             'options' => array(
-                'label' => 'Pages:Content additional params fields group',
+                'label' => $translator->translate('Pages:Content additional params fields group'),
             ),
         ));
         

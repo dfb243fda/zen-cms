@@ -2,18 +2,7 @@
 
 $this->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/Menu/menu.js');
 
-$params = array(
-    'objectTypeId' => '--OBJECT_TYPE--',    
-);
-if (0 != $this->parentObjectId) {
-    $params['id'] = $this->parentObjectId;
-}
-
-$jsArgs = array(
-    'changeObjectTypeUrlTemplate' => $this->url('admin/AddMenu', $params),
-);
-
-$this->inlineScript()->appendScript('zen.menu.initMenuForm(' . json_encode($jsArgs) . ');');  
+$this->inlineScript()->appendScript('zen.menu.initMenuForm(' . json_encode($this->jsArgs) . ');');  
 
 ?>
 

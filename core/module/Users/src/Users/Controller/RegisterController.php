@@ -39,7 +39,14 @@ class RegisterController extends AbstractActionController
         
         
         $objectTypeId = $configManager->get('users', 'new_user_object_type');
-        $form = $formElementManager->get('Users\Form\RegistrationForm', array('objectTypeId' => $objectTypeId));
+        
+        $formFactory = $this->serviceLocator->get('Users\FormFactory\RegistrationFormFactory');
+        $formFactory->setObjectTypeId($objectTypeId);
+        
+//        $form = $formElementManager->get('Users\Form\RegistrationForm', array('objectTypeId' => $objectTypeId));
+        
+        $form = $formFactory->getForm();
+        
         
         if ($request->isPost()) {
             $form->setData($request->getPost());

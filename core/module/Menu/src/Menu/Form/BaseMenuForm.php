@@ -6,7 +6,7 @@ use Zend\Form\Form;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class MenuForm extends Form implements ServiceLocatorAwareInterface
+class BaseMenuForm extends Form implements ServiceLocatorAwareInterface
 {
     /**
      * @var ServiceLocatorInterface
@@ -64,5 +64,7 @@ class MenuForm extends Form implements ServiceLocatorAwareInterface
                 'id' => 'object_type_id',
             ),
         ));
+        
+        $this->getInputFilter()->get('common')->get('type_id')->setRequired(true);
     }
 }

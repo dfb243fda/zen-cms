@@ -89,7 +89,9 @@ class Page implements ServiceManagerAwareInterface
     }
     
     public function getForm()
-    {
+    {        
+        $formsMerger = $this->serviceManager->get('App\Form\FormsMerger');
+        
         $pageId = $this->pageId;
         $pageTypeId = $this->pageTypeId;
         $objectTypeId = $this->objectTypeId;
@@ -100,16 +102,16 @@ class Page implements ServiceManagerAwareInterface
         $objectPropertyCollection = $this->serviceManager->get('objectPropertyCollection');
         
         if (null === $pageId) {            
-            $form = $this->serviceManager->get('FormElementManager')
+            $baseForm = $this->serviceManager->get('FormElementManager')
                                          ->get('Pages\Form\PageBase', array('pageTypeId' => $pageTypeId));  
-            
+                        
             if (null === $pageTypeId) {
-                $pageTypeId = $form->getPageTypeId();
+                $pageTypeId = $baseForm->getPageTypeId();
                 $this->setPageTypeId($pageTypeId);
             }
             
             if (null === $objectTypeId) {
-                $valueOptions = $form->get('common')->get('object_type_id')->getValueOptions();
+                $valueOptions = $baseForm->get('common')->get('object_type_id')->getValueOptions();
                 
                 if (!empty($valueOptions)) {
                     reset($valueOptions);
@@ -118,9 +120,11 @@ class Page implements ServiceManagerAwareInterface
                 }
             }
             
+            $formsMerger->addForm($baseForm);
+            
             if (null !== $objectTypeId) {
-                $objectType = $objectTypesCollection->getType($objectTypeId);       
-                $this->mergeForms($form, $objectType->getForm());
+                $objectType = $objectTypesCollection->getType($objectTypeId);   
+                $formsMerger->addForm($objectType->getForm());
             }  
             
             $pageData = array();
@@ -146,6 +150,8 @@ class Page implements ServiceManagerAwareInterface
             }
                         
             $this->pageData = $pageData;
+            
+            $form = $formsMerger->getForm();
             
             if ($this->populateForm) {
                 foreach ($form->getFieldsets() as $fieldset) {
@@ -184,11 +190,11 @@ class Page implements ServiceManagerAwareInterface
                 $this->setObjectTypeId($objectTypeId);
             }              
             
-            $form = $this->serviceManager->get('FormElementManager')
+            $baseForm = $this->serviceManager->get('FormElementManager')
                                          ->get('Pages\Form\PageBase', array('pageTypeId' => $pageTypeId));  
             
             if (null === $objectTypeId) {
-                $valueOptions = $form->get('common')->get('object_type_id')->getValueOptions();
+                $valueOptions = $baseForm->get('common')->get('object_type_id')->getValueOptions();
                 
                 if (!empty($valueOptions)) {
                     reset($valueOptions);
@@ -197,9 +203,11 @@ class Page implements ServiceManagerAwareInterface
                 }
             }
             
+            $formsMerger->addForm($baseForm);
+            
             if (null !== $objectTypeId) {
                 $objectType = $objectTypesCollection->getType($objectTypeId);
-                $this->mergeForms($form, $objectType->getForm());
+                $formsMerger->addForm($objectType->getForm());
             }     
             
             $pageData['name'] = $object->getName();
@@ -208,6 +216,8 @@ class Page implements ServiceManagerAwareInterface
             $pageData['access'] = explode(',', $pageData['access']);
             
             $this->pageData = $pageData;
+            
+            $form = $formsMerger->getForm();
             
             if ($this->populateForm) {
                 foreach ($form->getFieldsets() as $fieldset) {
@@ -229,30 +239,5 @@ class Page implements ServiceManagerAwareInterface
         }
         
         return $form;
-    }
-    
-    protected function mergeForms(\Zend\Form\Form $form1, \Zend\Form\Form $form2)
-    {
-        foreach ($form2->getFieldsets() as $fieldset) {
-            if ($form1->has($fieldset->getName())) {
-                foreach ($fieldset->getElements() as $element) {
-                    if (!$form1->get($fieldset->getName())->has($element->getName())) {
-                        $form1->get($fieldset->getName())->add($element);
-                    }                    
-                }                
-            } else {
-                $form1->add($fieldset);
-            }            
-        }
-        
-        foreach ($form2->getInputFilter()->getInputs() as $inputFilterKey=>$inputFilter) {            
-            if (!$form1->getInputFilter()->has($inputFilterKey)) {                
-                $form1->getInputFilter()->add($inputFilter, $inputFilterKey);                
-            } else {
-                foreach ($inputFilter->getInputs() as $inputKey=>$input) {
-                    $form1->getInputFilter()->get($inputFilterKey)->add($input, $inputKey);
-                }  
-            }                      
-        }      
     }
 }

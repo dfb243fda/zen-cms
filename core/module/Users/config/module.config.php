@@ -59,6 +59,8 @@ return array(
             'Users\View\RendererStrategyOptions' => 'Users\View\RendererStrategyOptions',
             
             'Users\View\ResultComposer\HtmlComposer' => 'Users\View\ResultComposer\HtmlComposer',
+            
+            'Users\FormFactory\RegistrationFormFactory' => 'Users\FormFactory\RegistrationFormFactory',
         ),
         'factories' => array(
             'Users\Authentication\Adapter\AdapterChain' => 'Users\Authentication\Adapter\AdapterChainServiceFactory',  
@@ -149,6 +151,31 @@ return array(
                                             'label' => 'i18n::Users:Dynamic config welcome email text',
                                             'description' => 'i18n::Users:Dynamic config welcome email text description',
                                         ),
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+            'loginza' => array(
+                'fieldsets' => array(
+                    array(
+                        'spec' => array(
+                            'name' => 'loginza',
+                            'elements' => array(
+                                array(
+                                    'spec' => array(
+                                        'type' => 'Collection',
+                                        'name' => 'domains',
+                                        'options' => array(
+                                            'count' => 1,
+                                            'should_create_template' => true,
+                                            'allow_add' => true,
+                                            'target_element' => array(
+                                                'type' => 'Users\Fieldset\LoginzaFieldset'
+                                            )
+                                        ),      
                                     ),
                                 ),
                             ),

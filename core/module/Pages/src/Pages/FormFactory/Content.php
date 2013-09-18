@@ -74,6 +74,8 @@ class Content implements ServiceManagerAwareInterface
     
     public function getForm()
     {
+        $formsMerger = $this->serviceManager->get('App\Form\FormsMerger');
+        
         $contentId = $this->contentId;
         $contentTypeId = $this->contentTypeId;
         $objectTypeId = $this->objectTypeId;
@@ -86,16 +88,16 @@ class Content implements ServiceManagerAwareInterface
         $moduleManager = $this->serviceManager->get('moduleManager');
         
         if (null === $this->contentId) {            
-            $form = $this->serviceManager->get('FormElementManager')
+            $baseForm = $this->serviceManager->get('FormElementManager')
                                          ->get('Pages\Form\ContentBase', array('contentTypeId' => $contentTypeId));  
             
             if (null === $contentTypeId) {
-                $contentTypeId = $form->getContentTypeId();
+                $contentTypeId = $baseForm->getContentTypeId();
                 $this->setContentTypeId($contentTypeId);
             }
             
             if (null === $objectTypeId) {
-                $valueOptions = $form->get('common')->get('object_type_id')->getValueOptions();
+                $valueOptions = $baseForm->get('common')->get('object_type_id')->getValueOptions();
                 
                 if (!empty($valueOptions)) {
                     reset($valueOptions);
@@ -104,9 +106,11 @@ class Content implements ServiceManagerAwareInterface
                 }
             }
             
+            $formsMerger->addForm($baseForm);
+            
             if (null !== $objectTypeId) {
-                $objectType = $objectTypesCollection->getType($objectTypeId);       
-                $this->mergeForms($form, $objectType->getForm());
+                $objectType = $objectTypesCollection->getType($objectTypeId);    
+                $formsMerger->addForm($objectType->getForm());
             }  
             
             $contentData = array();
@@ -117,6 +121,8 @@ class Content implements ServiceManagerAwareInterface
             
                         
             $this->contentData = $contentData;
+            
+            $form = $formsMerger->getForm();
             
             if ($this->populateForm) {
                 foreach ($form->getFieldsets() as $fieldset) {
@@ -155,11 +161,11 @@ class Content implements ServiceManagerAwareInterface
                 $this->setObjectTypeId($objectTypeId);
             }               
             
-            $form = $this->serviceManager->get('FormElementManager')
+            $baseForm = $this->serviceManager->get('FormElementManager')
                                          ->get('Pages\Form\ContentBase', array('contentTypeId' => $contentTypeId));  
             
             if (null === $objectTypeId) {
-                $valueOptions = $form->get('common')->get('object_type_id')->getValueOptions();
+                $valueOptions = $baseForm->get('common')->get('object_type_id')->getValueOptions();
                 
                 if (!empty($valueOptions)) {
                     reset($valueOptions);
@@ -168,9 +174,11 @@ class Content implements ServiceManagerAwareInterface
                 }
             }            
             
+            $formsMerger->addForm($baseForm);
+            
             if (null !== $objectTypeId) {
                 $objectType = $objectTypesCollection->getType($objectTypeId);       
-                $this->mergeForms($form, $objectType->getForm());
+                $formsMerger->addForm($objectType->getForm());
             }     
             
             $contentData['name'] = $object->getName();
@@ -179,6 +187,8 @@ class Content implements ServiceManagerAwareInterface
             $contentData['access'] = explode(',', $contentData['access']);
             
             $this->contentData = $contentData;
+            
+            $form = $formsMerger->getForm();
             
             if ($this->populateForm) {
                 foreach ($form->getFieldsets() as $fieldset) {
@@ -210,30 +220,5 @@ class Content implements ServiceManagerAwareInterface
         }
         
         return $form;
-    }
-    
-    protected function mergeForms(\Zend\Form\Form $form1, \Zend\Form\Form $form2)
-    {
-        foreach ($form2->getFieldsets() as $fieldset) {
-            if ($form1->has($fieldset->getName())) {
-                foreach ($fieldset->getElements() as $element) {
-                    if (!$form1->get($fieldset->getName())->has($element->getName())) {
-                        $form1->get($fieldset->getName())->add($element);
-                    }                    
-                }                
-            } else {
-                $form1->add($fieldset);
-            }            
-        }
-        
-        foreach ($form2->getInputFilter()->getInputs() as $inputFilterKey=>$inputFilter) {            
-            if (!$form1->getInputFilter()->has($inputFilterKey)) {                
-                $form1->getInputFilter()->add($inputFilter, $inputFilterKey);                
-            } else {
-                foreach ($inputFilter->getInputs() as $inputKey=>$input) {
-                    $form1->getInputFilter()->get($inputFilterKey)->add($input, $inputKey);
-                }  
-            }                      
-        }      
     }
 }

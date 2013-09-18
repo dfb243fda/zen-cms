@@ -55,6 +55,7 @@ return array(
             
             'App\View\RendererStrategy' => 'App\View\RendererStrategy',
             
+            'App\Form\FormsMerger' => 'App\Form\FormsMerger',
         ),
         'aliases' => array(
             'Translator' => 'App\I18n\Translator\Translator',

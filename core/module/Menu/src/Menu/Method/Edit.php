@@ -3,28 +3,12 @@
 namespace Menu\Method;
 
 use App\Method\AbstractMethod;
-use Menu\Model\Menu;
 
 class Edit extends AbstractMethod
 {
-    protected $rootServiceLocator;
-    
-    protected $translator;
-    
-    protected $db;
-    
-    protected $menuModel;
-    
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->menuModel = new Menu($this->rootServiceLocator);        
-        $this->request = $this->rootServiceLocator->get('request');
-    }
-
     public function main()
-    {
-        $result = array();
+    {        
+        $menuService = $this->serviceLocator->get('Menu\Service\Menu');
         
         if (null === $this->params()->fromRoute('id')) {
             $result['errMsg'] = 'Не переданы все необходимые параметры';
@@ -33,31 +17,36 @@ class Edit extends AbstractMethod
         
         $objectId = (int)$this->params()->fromRoute('id');
   
-        if ($this->menuModel->isObjectRubric($objectId)) {
-            $menuType = Menu::RUBRIC;
-        } elseif ($this->menuModel->isObjectItem($objectId)) {
-            $menuType = Menu::ITEM;
+        if ($menuService->isObjectRubric($objectId)) {
+            $result = $this->editRubric($objectId);
+        } elseif ($menuService->isObjectItem($objectId)) {
+            $result = $this->editItem($objectId);
         } else {
             $result['errMsg'] = 'Объект ' . $objectId . ' не является ни меню, ни пунктом меню';
             return $result;
         }
+    }
+    
+    public function editRubric($objectId)
+    {
+        $menuRubric = $this->serviceLocator->get('Menu\Entity\MenuRubric');
+        $menuService = $this->serviceLocator->get('Menu\Service\Menu');
         
-        $this->menuModel->setMenuType($menuType)->setObjectId($objectId);
+        $menuRubric->setObjectId($objectId);
+        
+        $result = array();
         
         if (null !== $this->params()->fromRoute('objectTypeId')) {
             $objectTypeId = (int)$this->params()->fromRoute('objectTypeId');
-            $this->menuModel->setObjectTypeId($objectTypeId);
+            $menuRubric->setObjectTypeId($objectTypeId);
             
-            if (!$this->menuModel->isObjectTypeCorrect($objectTypeId)) {
+            if (!$menuService->isObjectTypeCorrect($objectTypeId)) {
                 $result['errMsg'] = 'Передан неверный тип объекта ' . $objectTypeId;
                 return $result;
             }
         }
         
-        $form = $this->menuModel->getForm();        
-        $formConfig = $form['formConfig'];
-        $formValues = $form['formValues'];
-        $formMessages = array();
+        $form = $menuRubric->getForm();        
         
         if ($this->request->isPost()) {
             $tmp = $this->menuModel->edit($this->request->getPost());
@@ -83,7 +72,7 @@ class Edit extends AbstractMethod
         }
         
         $result['contentTemplate'] = array(
-            'name' => 'content_template/Menu/form_view.phtml',
+            'name' => 'content_template/Menu/menu_form.phtml',
             'data' => array(
                 'jsArgs' => array(
                     'changeObjectTypeUrlTemplate' => $this->url()->fromRoute('admin/EditMenu', array(
@@ -91,9 +80,7 @@ class Edit extends AbstractMethod
                         'objectTypeId' => '--OBJECT_TYPE--',            
                     )),
                 ),
-                'formConfig' => $formConfig,
-                'formValues' => $formValues,
-                'formMsg' => $formMessages,
+                'form' => $form,
             ),
         );
         

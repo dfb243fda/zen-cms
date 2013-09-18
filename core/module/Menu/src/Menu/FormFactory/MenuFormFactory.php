@@ -36,51 +36,28 @@ class MenuFormFactory implements ServiceManagerAwareInterface
     
     public function getForm()
     {
-        $form = $this->serviceManager->get('FormElementManager')
-                                     ->get('Menu\Form\MenuForm');  
+        $formsMerger = $this->serviceManager->get('App\Form\FormsMerger');
+        
+        $baseForm = $this->serviceManager->get('FormElementManager')
+                                     ->get('Menu\Form\BaseMenuForm');  
+        
+        $formsMerger->addForm($baseForm);
         
         $formData = array();
         
         if (null !== $this->objectTypeId) {
             $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
             
-            $objectType = $objectTypesCollection->getType($this->objectTypeId);       
-            $this->mergeForms($form, $objectType->getForm(false, true));
+            $objectType = $objectTypesCollection->getType($this->objectTypeId);     
+            
+            $formsMerger->addForm($objectType->getForm(false, true));
         }  
-        
+               
         $formData['common']['type_id'] = $this->objectTypeId;
         
+        $form = $formsMerger->getForm();
         $form->setData($formData);
         
         return $form;
     }
-    
-    protected function mergeForms(\Zend\Form\Form $form1, \Zend\Form\Form $form2)
-    {
-        $form1->setUseInputFilterDefaults(false);
-        
-        foreach ($form2->getFieldsets() as $fieldset) {
-            if ($form1->has($fieldset->getName())) {
-                foreach ($fieldset->getElements() as $element) {
-                    if (!$form1->get($fieldset->getName())->has($element->getName())) {
-                        $form1->get($fieldset->getName())->add($element);
-                    }                    
-                }                
-            } else {
-                $form1->add($fieldset);
-            }            
-        }
-        
-        foreach ($form2->getInputFilter()->getInputs() as $inputFilterKey=>$inputFilter) {            
-            if (!$form1->getInputFilter()->has($inputFilterKey)) {                
-                $form1->getInputFilter()->add($inputFilter, $inputFilterKey);                
-            } else {
-                foreach ($inputFilter->getInputs() as $inputKey=>$input) {
-                    $form1->getInputFilter()->get($inputFilterKey)->add($input, $inputKey);
-                }  
-            }                      
-        }  
-    }
-    
-    
 }

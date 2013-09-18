@@ -55,13 +55,11 @@ class Module
     public function getDynamicConfig($sm)
     {           
         $formElementManager = $sm->get('FormElementManager');
-        
-        $loginzaForm = $formElementManager->get('Users\Form\LoginzaConfigForm');        
+             
         $registrationForm = $formElementManager->get('Users\Form\RegistrationConfigForm');
         
         return array(
             'form' => array(
-                'loginza' => $loginzaForm,
                 'registration' => $registrationForm,
             ),
         );

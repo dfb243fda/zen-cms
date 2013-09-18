@@ -166,7 +166,7 @@ class PageBase extends Form implements ServiceLocatorAwareInterface
             'name' => 'additional_params',
             'type' => 'fieldset',
             'options' => array(
-                'label' => 'Pages:Additional params fields group',
+                'label' => $translator->translate('Pages:Additional params fields group'),
             ),
         ));
 
@@ -220,7 +220,7 @@ class PageBase extends Form implements ServiceLocatorAwareInterface
             'name' => '403_404',
             'type' => 'fieldset',
             'options' => array(
-                'label' => 'Pages:403 404 fields group',
+                'label' => $translator->translate('Pages:403 404 fields group'),
             ),
         ));
 
