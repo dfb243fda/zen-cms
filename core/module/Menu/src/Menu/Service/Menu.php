@@ -9,10 +9,10 @@ class Menu implements ServiceManagerAwareInterface
 {
     protected $serviceManager;
     
-    protected $rubricTypeIds;
+    protected $menuTypeIds;
     protected $itemTypeIds;
     
-    protected $rubricGuid = 'menu';
+    protected $menuGuid = 'menu';
     protected $itemGuid   = 'menu-item';
     
     public function setServiceManager(ServiceManager $serviceManager)
@@ -20,20 +20,20 @@ class Menu implements ServiceManagerAwareInterface
         $this->serviceManager = $serviceManager;
     }
     
-    public function getRubricTypeIds()
+    public function getMenuTypeIds()
     {
-        if (null === $this->rubricTypeIds) {
+        if (null === $this->menuTypeIds) {
             $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
             
             $typeIds = array();
-            $objectType = $objectTypesCollection->getType($this->rubricGuid);
+            $objectType = $objectTypesCollection->getType($this->menuGuid);
             $typeIds[] = $objectType->getId();
             $descendantTypeIds = $objectTypesCollection->getDescendantTypeIds($objectType->getId());
             $typeIds = array_merge($typeIds, $descendantTypeIds);
             
-            $this->rubricTypeIds = $typeIds;
+            $this->menuTypeIds = $typeIds;
         }
-        return $this->rubricTypeIds;
+        return $this->menuTypeIds;
     }
     
     public function getItemTypeIds()
@@ -54,16 +54,16 @@ class Menu implements ServiceManagerAwareInterface
     
     public function getTypeIds()
     {
-        return array_merge($this->getRubricTypeIds(), $this->getItemTypeIds());
+        return array_merge($this->getMenuTypeIds(), $this->getItemTypeIds());
     }
     
-    public function isObjectRubric($objectId)
+    public function isObjectMenu($objectId)
     {            
         $objectsCollection = $this->serviceManager->get('objectsCollection');
         
         if ($object = $objectsCollection->getObject($objectId)) {
             $objectTypeId = $object->getTypeId();            
-            $typeIds = $this->getRubricTypeIds();            
+            $typeIds = $this->getMenuTypeIds();            
             return in_array($objectTypeId, $typeIds);
         }
         return false;        
@@ -81,9 +81,9 @@ class Menu implements ServiceManagerAwareInterface
         return false;        
     }
     
-    public function getRubricGuid()
+    public function getMenuGuid()
     {
-        return $this->rubricGuid;
+        return $this->menuGuid;
     }
     
     public function getItemGuid()

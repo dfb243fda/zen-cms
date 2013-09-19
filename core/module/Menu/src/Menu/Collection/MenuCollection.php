@@ -9,19 +9,11 @@ class MenuCollection implements ServiceManagerAwareInterface
 {
     protected $serviceManager;
     
-    protected $parentObjectId;
-    
     protected $objectTypeId;
     
     public function setServiceManager(ServiceManager $serviceManager)
     {
         $this->serviceManager = $serviceManager;
-    }
-    
-    public function setParentObjectId($parentObjectId)
-    {
-        $this->parentObjectId = $parentObjectId;
-        return $this;
     }
     
     public function setObjectTypeId($objectTypeId)
@@ -38,7 +30,6 @@ class MenuCollection implements ServiceManagerAwareInterface
         $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
         
         $objectTypeId = $this->objectTypeId;
-        $parentObjectId = $this->parentObjectId;
         $objectType = $objectTypesCollection->getType($objectTypeId);
         
         $insertFields = array();
@@ -57,7 +48,7 @@ class MenuCollection implements ServiceManagerAwareInterface
         $sqlRes = $db->query('
             select max(sorting) as max_sorting 
             from ' . DB_PREF . 'objects 
-            where parent_id = ? AND type_id = ?', array($parentObjectId, $objectTypeId))->toArray();
+            where type_id = ?', array($objectTypeId))->toArray();
 
         if (empty($sqlRes)) {
             $sorting = 0;
@@ -65,7 +56,7 @@ class MenuCollection implements ServiceManagerAwareInterface
             $sorting = $sqlRes[0]['max_sorting'] + 1;
         }
 
-        $objectId = $objectsCollection->addObject($insertBase['name'], $objectTypeId, $parentObjectId, $sorting);
+        $objectId = $objectsCollection->addObject($insertBase['name'], $objectTypeId, 0, $sorting);
 
         $tmpFieldGroups = $objectType->getFieldGroups();
         foreach ($tmpFieldGroups as $k=>$v) {

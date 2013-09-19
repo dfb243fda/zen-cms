@@ -68,6 +68,8 @@ return array(
             'Menu\Collection\MenuCollection' => 'Menu\Collection\MenuCollection',
             
             'Menu\FormFactory\MenuFormFactory' => 'Menu\FormFactory\MenuFormFactory',
+            
+            'Menu\Entity\MenuEntity' => 'Menu\Entity\MenuEntity',
         ),
     ),
     

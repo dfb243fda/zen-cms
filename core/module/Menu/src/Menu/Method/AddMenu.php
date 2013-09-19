@@ -3,7 +3,6 @@
 namespace Menu\Method;
 
 use App\Method\AbstractMethod;
-use Menu\Model\Menu;
 
 class AddMenu extends AbstractMethod
 {
@@ -17,25 +16,15 @@ class AddMenu extends AbstractMethod
         
         $result = array();
         
-        $parentObjectId = (int)$this->params()->fromRoute('id', 0); 
-        if ($parentObjectId) {
-            if (!$menuService->isObjectRubric($parentObjectId)) {
-                $result['errMsg'] = 'Объект ' . $parentObjectId . ' не является меню';
-                return $result;
-            }
-        }     
-        
-        $menuCollection->setParentObjectId($parentObjectId);
-        
         if (null === $this->params()->fromRoute('objectTypeId')) {
-            $objectTypeId = $objectTypesCollection->getTypeIdByGuid($menuService->getRubricGuid());  
+            $objectTypeId = $objectTypesCollection->getTypeIdByGuid($menuService->getMenuGuid());  
             $menuCollection->setObjectTypeId($objectTypeId);
         } else {
             $objectTypeId = (int)$this->params()->fromRoute('objectTypeId');
             $menuCollection->setObjectTypeId($objectTypeId);
             
-            if (!in_array($objectTypeId, $menuService->getRubricTypeIds())) {
-                $result['errMsg'] = 'Тип данных ' . $objectTypeId . ' не является рубрикой';
+            if (!in_array($objectTypeId, $menuService->getMenuTypeIds())) {
+                $result['errMsg'] = 'Тип данных ' . $objectTypeId . ' не является меню';
                 return $result;
             }
         }       
@@ -51,7 +40,6 @@ class AddMenu extends AbstractMethod
             
             if ($form->isValid()) {
                 $form->getData();
-                exit('ok');
                 
                 if ($menuId = $menuCollection->addMenu($form->getData())) {
                     if (!$request->isXmlHttpRequest()) {
@@ -72,25 +60,19 @@ class AddMenu extends AbstractMethod
                     $result['errMsg'] = 'При создании меню произошли ошибки';
                 }
             } else {
-                exit('*');
                 $result['success'] = false;
             }
         } else {
             $form = $menuCollection->getForm(true);
         }
         
-        $params = array(
-            'objectTypeId' => '--OBJECT_TYPE--',    
-        );
-        if (0 != $parentObjectId) {
-            $params['id'] = $parentObjectId;
-        }
-        
         $result['contentTemplate'] = array(
             'name' => 'content_template/Menu/menu_form.phtml',
             'data' => array(
                 'jsArgs' => array(
-                    'changeObjectTypeUrlTemplate' => $this->url()->fromRoute('admin/AddMenu', $params),
+                    'changeObjectTypeUrlTemplate' => $this->url()->fromRoute('admin/AddMenu', array(
+                        'objectTypeId' => '--OBJECT_TYPE--',    
+                    )),
                 ),
                 'form' => $form,
             ),

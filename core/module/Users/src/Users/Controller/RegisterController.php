@@ -43,8 +43,6 @@ class RegisterController extends AbstractActionController
         $formFactory = $this->serviceLocator->get('Users\FormFactory\RegistrationFormFactory');
         $formFactory->setObjectTypeId($objectTypeId);
         
-//        $form = $formElementManager->get('Users\Form\RegistrationForm', array('objectTypeId' => $objectTypeId));
-        
         $form = $formFactory->getForm();
         
         

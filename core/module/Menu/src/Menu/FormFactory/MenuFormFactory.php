@@ -11,6 +11,8 @@ class MenuFormFactory implements ServiceManagerAwareInterface
     
     protected $objectTypeId;
     
+    protected $objectId;
+    
     /**
      * GetForm() method will return form with data or not
      * @var boolean
@@ -28,6 +30,12 @@ class MenuFormFactory implements ServiceManagerAwareInterface
         return $this;
     }
     
+    public function setObjectId($objectId)
+    {
+        $this->objectId = $objectId;
+        return $this;
+    }
+    
     public function setPopulateForm($populateForm)
     {
         $this->populateForm = (bool)$populateForm;
@@ -42,21 +50,59 @@ class MenuFormFactory implements ServiceManagerAwareInterface
                                      ->get('Menu\Form\BaseMenuForm');  
         
         $formsMerger->addForm($baseForm);
-        
-        $formData = array();
-        
+                
         if (null !== $this->objectTypeId) {
             $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
             
             $objectType = $objectTypesCollection->getType($this->objectTypeId);     
             
-            $formsMerger->addForm($objectType->getForm(false, true));
+            $formsMerger->addForm($objectType->getForm());
         }  
-               
-        $formData['common']['type_id'] = $this->objectTypeId;
         
         $form = $formsMerger->getForm();
-        $form->setData($formData);
+        
+        if ($this->populateForm) {
+            if (null === $this->objectId) {
+                $data = array(
+                    'type_id' => $this->objectTypeId,
+                );
+
+                foreach ($form->getFieldsets() as $fieldset) {
+                    foreach ($fieldset->getElements() as $element) {
+                        $elName = $element->getName();
+                        if (isset($data[$elName])) {
+                            $element->setValue($data[$elName]);
+                        }
+                    }
+                }
+            } else {            
+                $objectPropertyCollection = $this->serviceManager->get('objectPropertyCollection');
+                $objectsCollection = $this->serviceManager->get('objectsCollection');
+                
+                $object = $objectsCollection->getObject($this->objectId);
+                $data = array(
+                    'name' => $object->getName(),
+                    'type_id' => $this->objectTypeId,
+                );
+
+                foreach ($form->getFieldsets() as $fieldset) {
+                    foreach ($fieldset->getElements() as $element) {
+                        $elName = $element->getName();
+
+                        if ('field_' == substr($elName, 0, 6)) {
+                            $fieldId = substr($elName, 6);
+                            $property = $objectPropertyCollection->getProperty($this->objectId, $fieldId);                         
+                            $element->setValue($property->getValue());
+                        } else {
+                            if (isset($data[$elName])) {
+                                $element->setValue($data[$elName]);
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
         
         return $form;
     }

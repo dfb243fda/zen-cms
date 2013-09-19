@@ -40,7 +40,7 @@ class BaseMenuForm extends Form implements ServiceLocatorAwareInterface
         $menuService = $serviceManager->get('Menu\Service\Menu');
         $objectTypesCollection = $serviceManager->get('objectTypesCollection');
         
-        $typeIds = $menuService->getRubricTypeIds();
+        $typeIds = $menuService->getMenuTypeIds();
         
         $objectTypesMultiOptions = array();
         foreach ($typeIds as $id) {
@@ -51,6 +51,13 @@ class BaseMenuForm extends Form implements ServiceLocatorAwareInterface
         $this->add(array(
             'type' => 'fieldset',
             'name' => 'common',
+        ));
+        
+        $this->get('common')->add(array(
+            'name' => 'name',
+            'options' => array(
+                'label' => 'Menu:Name field',
+            ),
         ));
         
         $this->get('common')->add(array(
