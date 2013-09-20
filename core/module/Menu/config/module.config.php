@@ -66,10 +66,13 @@ return array(
             'Menu\Service\MenuTree' => 'Menu\Service\MenuTree',
             'Menu\Service\Menu' => 'Menu\Service\Menu',
             'Menu\Collection\MenuCollection' => 'Menu\Collection\MenuCollection',
+            'Menu\Collection\MenuItemsCollection' => 'Menu\Collection\MenuItemsCollection',
             
             'Menu\FormFactory\MenuFormFactory' => 'Menu\FormFactory\MenuFormFactory',
+            'Menu\FormFactory\MenuItemFormFactory' => 'Menu\FormFactory\MenuItemFormFactory',
             
             'Menu\Entity\MenuEntity' => 'Menu\Entity\MenuEntity',
+            'Menu\Entity\MenuItemEntity' => 'Menu\Entity\MenuItemEntity',
         ),
     ),
     

@@ -50,22 +50,19 @@ class AddMenuItem extends AbstractMethod
             $form->setData($data);
             
             if ($form->isValid()) {
-                $form->getData();
-                exit('ok');
-                
-                if ($menuId = $menuItemsCollection->addMenuItem($form->getData())) {
+                if ($menuItemId = $menuItemsCollection->addMenuItem($form->getData())) {
                     if (!$request->isXmlHttpRequest()) {
-                        $this->flashMessenger()->addSuccessMessage('Меню создано');
+                        $this->flashMessenger()->addSuccessMessage('Пункт меню создан');
                         $this->redirect()->toRoute('admin/method',array(
                             'module' => 'Menu',
                             'method' => 'Edit',
-                            'id' => $menuId,
+                            'id' => $menuItemId,
                         ));
                     }
                     
                     return array(
                         'success' => true,
-                        'msg' => 'Меню создано',
+                        'msg' => 'Пункт меню создан',
                     );    
                 } else {
                     $result['success'] = false;
@@ -86,7 +83,7 @@ class AddMenuItem extends AbstractMethod
         }
         
         $result['contentTemplate'] = array(
-            'name' => 'content_template/Menu/menu_form.phtml3',
+            'name' => 'content_template/Menu/menu_form.phtml',
             'data' => array(
                 'jsArgs' => array(
                     'changeObjectTypeUrlTemplate' => $this->url()->fromRoute('admin/AddMenu', $params),

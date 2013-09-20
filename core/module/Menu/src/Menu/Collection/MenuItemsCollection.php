@@ -5,11 +5,13 @@ namespace Menu\Collection;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
 
-class MenuCollection implements ServiceManagerAwareInterface
+class MenuItemsCollection implements ServiceManagerAwareInterface
 {
     protected $serviceManager;
     
     protected $objectTypeId;
+    
+    protected $parentObjectId;
     
     public function setServiceManager(ServiceManager $serviceManager)
     {
@@ -22,13 +24,21 @@ class MenuCollection implements ServiceManagerAwareInterface
         return $this;
     }
     
-    public function addMenu($data)
+    public function setParentObjectId($parentObjectId)
+    {
+        $this->parentObjectId = $parentObjectId;
+        return $this;
+    }
+    
+    public function addMenuItem($data)
     {
         $db = $this->serviceManager->get('db');
         $objectsCollection = $this->serviceManager->get('objectsCollection');
         $objectPropertyCollection = $this->serviceManager->get('objectPropertyCollection');
         $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
         $menuService = $this->serviceManager->get('Menu\Service\Menu');
+        
+        $parentObjectId = $this->parentObjectId;
         
         $objectTypeId = $this->objectTypeId;
         $objectType = $objectTypesCollection->getType($objectTypeId);
@@ -45,26 +55,27 @@ class MenuCollection implements ServiceManagerAwareInterface
                 }
             }
         }
-        
-        $typeIds = $menuService->getMenuTypeIds();
+
+        $typeIds = $menuService->getItemTypeIds();
         $typeIds = array_map(function ($id) use ($db) {
             return $db->getPlatform()->quoteValue($id);
         }, $typeIds);
         
         $typeIdsStr = implode($typeIds);
-
+        
         $sqlRes = $db->query('
             select max(sorting) as max_sorting 
             from ' . DB_PREF . 'objects 
-            where type_id IN (' . $typeIdsStr . ')', array())->toArray();
+            where parent_id = ? and type_id IN (' . $typeIdsStr . ')', array($parentObjectId))->toArray();
 
+        
         if (empty($sqlRes)) {
             $sorting = 0;
         } else {
             $sorting = $sqlRes[0]['max_sorting'] + 1;
         }
-
-        $objectId = $objectsCollection->addObject($insertBase['name'], $objectTypeId, 0, $sorting);
+        
+        $objectId = $objectsCollection->addObject($insertBase['name'], $objectTypeId, $parentObjectId, $sorting);
 
         $tmpFieldGroups = $objectType->getFieldGroups();
         foreach ($tmpFieldGroups as $k=>$v) {
@@ -83,7 +94,7 @@ class MenuCollection implements ServiceManagerAwareInterface
     
     public function getForm($populateForm)
     {
-        $formFactory = $this->serviceManager->get('Menu\FormFactory\MenuFormFactory');
+        $formFactory = $this->serviceManager->get('Menu\FormFactory\MenuItemFormFactory');
         $formFactory->setObjectTypeId($this->objectTypeId)
                     ->setPopulateForm($populateForm);
         return $formFactory->getForm();

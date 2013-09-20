@@ -38,9 +38,7 @@ class AddMenu extends AbstractMethod
             }
             $form->setData($data);
             
-            if ($form->isValid()) {
-                $form->getData();
-                
+            if ($form->isValid()) {                
                 if ($menuId = $menuCollection->addMenu($form->getData())) {
                     if (!$request->isXmlHttpRequest()) {
                         $this->flashMessenger()->addSuccessMessage('Меню создано');

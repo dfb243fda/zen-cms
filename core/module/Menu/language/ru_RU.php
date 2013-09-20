@@ -38,6 +38,7 @@ return array(
     'Menu:Page id' => 'Страница',
     
     'Menu:Name field' => 'Название меню',
+    'Menu:Item name field' => 'Название пункта меню',
     
     'Menu:(Without name)' => '(Без названия)',
 );

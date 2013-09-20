@@ -41,14 +41,7 @@ class Edit extends AbstractMethod
         
         $result = array();
         
-        if (null === ($object = $objectsCollection->getObject($objectId))) {
-            $result['errMsg'] = 'Меню ' . $objectId . ' не найдено';
-            return $result;
-        }
-        if (!$menuService->isObjectMenu($object->getTypeId())) {
-            $result['errMsg'] = 'Меню ' . $objectId . ' не найдено';
-            return $result;
-        }
+        $object = $objectsCollection->getObject($objectId);
         
         $menuEntity->setObjectId($objectId);
                 
@@ -130,14 +123,7 @@ class Edit extends AbstractMethod
         
         $result = array();
         
-        if (null === ($object = $objectsCollection->getObject($objectId))) {
-            $result['errMsg'] = 'Пункт меню ' . $objectId . ' не найден';
-            return $result;
-        }
-        if (!$menuService->isObjectItem($object->getTypeId())) {
-            $result['errMsg'] = 'Пункт меню ' . $objectId . ' не найден';
-            return $result;
-        }
+        $object = $objectsCollection->getObject($objectId);
         
         $menuItemEntity->setObjectId($objectId);
                 
