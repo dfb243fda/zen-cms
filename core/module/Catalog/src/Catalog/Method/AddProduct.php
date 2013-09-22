@@ -3,91 +3,91 @@
 namespace Catalog\Method;
 
 use App\Method\AbstractMethod;
-use Catalog\Model\Catalog;
 
 class AddProduct extends AbstractMethod
 {
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->db = $this->rootServiceLocator->get('db');
-        $this->objectTypesCollection = $this->rootServiceLocator->get('objectTypesCollection');
-        $this->objectsCollection = $this->rootServiceLocator->get('objectsCollection');
-        $this->catalogModel = new Catalog($this->rootServiceLocator);        
-        $this->request = $this->rootServiceLocator->get('request');
-    }
-
     public function main()
     {
+        $catService = $this->serviceLocator->get('Catalog\Service\Catalog');
+        $prodCollection = $this->serviceLocator->get('Catalog\Collection\ProductsCollection');
+        $objectTypesCollection = $this->serviceLocator->get('objectTypesCollection');
+        $request = $this->serviceLocator->get('request');
+        $translator = $this->serviceLocator->get('translator');
+        
         $result = array();
-                
-        if (null === $this->params()->fromRoute('id')) {
-            $result['errMsg'] = 'Не передана рубрика для добавления';
-            return $result;
-        }
         
-        $parentObjectId = (int)$this->params()->fromRoute('id'); 
-        if (!$this->catalogModel->isObjectRubric($parentObjectId)) {
-            $result['errMsg'] = 'Тип объекта ' . $parentObjectId . ' не является рубрикой новостей';
-            return $result;
-        }
+        $parentObjectId = (int)$this->params()->fromRoute('id', 0); 
+        if ($parentObjectId) {
+            if (!$catService->isObjectCategory($parentObjectId)) {
+                $result['errMsg'] = 'Объект ' . $parentObjectId . ' не является категорией';
+                return $result;
+            }
+        }     
         
-        $this->catalogModel->setCatalogType(Catalog::ITEM)->setParentObjectId($parentObjectId);
+        $prodCollection->setParentObjectId($parentObjectId);
         
         if (null === $this->params()->fromRoute('objectTypeId')) {
-            $objectType = $this->objectTypesCollection->getType($this->catalogModel->getItemGuid());        
-            $objectTypeId = $objectType->getId();
-            $this->catalogModel->setObjectTypeId($objectTypeId);
+            $objectTypeId = $objectTypesCollection->getTypeIdByGuid($catService->getProductGuid());  
+            $prodCollection->setObjectTypeId($objectTypeId);
         } else {
             $objectTypeId = (int)$this->params()->fromRoute('objectTypeId');
-            $this->catalogModel->setObjectTypeId($objectTypeId);
+            $prodCollection->setObjectTypeId($objectTypeId);
             
-            if (!$this->catalogModel->isObjectTypeCorrect($objectTypeId)) {
-                $result['errMsg'] = 'Передан неверный тип объекта ' . $objectTypeId;
+            if (!in_array($objectTypeId, $catService->getProductTypeIds())) {
+                $result['errMsg'] = 'Тип данных ' . $objectTypeId . ' не является товаром';
                 return $result;
             }
         }       
         
-        $form = $this->catalogModel->getForm();        
-        $formConfig = $form['formConfig'];
-        $formValues = $form['formValues'];
-        $formMessages = array();
-        
-        if ($this->request->isPost()) {
-            $tmp = $this->catalogModel->add($this->request->getPost());
-            if ($tmp['success']) {
-                if (!$this->request->isXmlHttpRequest()) {
-                    $this->flashMessenger()->addSuccessMessage('Продукт успешно добавлен');
-                    $this->redirect()->toRoute('admin/method',array(
-                        'module' => 'Catalog',
-                        'method' => 'Edit',
-                        'id' => $tmp['objectId'],
-                    ));
-                }
-
-                return array(
-                    'success' => 1,
-                    'msg' => 'Продукт успешно добавлен',
-                );         
-            } else {
-                $formMessages = $tmp['form']->getMessages();
-                $formValues = $tmp['form']->getData();
+        if ($request->isPost()) {
+            $form = $prodCollection->getForm(false);
+            
+            $data = $request->getPost()->toArray();
+            if (empty($data['common']['name'])) {
+                $data['common']['name'] = $translator->translate('Catalog:(Product without name)');
             }
+            $form->setData($data);
+            
+            if ($form->isValid()) {
+                if ($menuItemId = $prodCollection->addMenuItem($form->getData())) {
+                    if (!$request->isXmlHttpRequest()) {
+                        $this->flashMessenger()->addSuccessMessage('Товар добавлен');
+                        $this->redirect()->toRoute('admin/method',array(
+                            'module' => 'Catalog',
+                            'method' => 'EditProduct',
+                            'id' => $menuItemId,
+                        ));
+                    }
+                    
+                    return array(
+                        'success' => true,
+                        'msg' => 'Товар добавлен',
+                    );    
+                } else {
+                    $result['success'] = false;
+                    $result['errMsg'] = 'При добавлении товара произошли ошибки';
+                }
+            } else {
+                $result['success'] = false;
+            }
+        } else {
+            $form = $prodCollection->getForm(true);
+        }
+        
+        $params = array(
+            'objectTypeId' => '--OBJECT_TYPE--',    
+        );
+        if (0 != $parentObjectId) {
+            $params['id'] = $parentObjectId;
         }
         
         $result['contentTemplate'] = array(
-            'name' => 'content_template/Catalog/form_view.phtml',
+            'name' => 'content_template/Catalog/catalog_form.phtml',
             'data' => array(
                 'jsArgs' => array(
-                    'changeObjectTypeUrlTemplate' => $this->url()->fromRoute('admin/AddProduct', array(
-                        'id' => $parentObjectId,
-                        'objectTypeId' => '--OBJECT_TYPE--',            
-                    )),
+                    'changeObjectTypeUrlTemplate' => $this->url()->fromRoute('admin/AddProduct', $params),
                 ),
-                'formConfig' => $formConfig,
-                'formValues' => $formValues,
-                'formMsg' => $formMessages,
+                'form' => $form,
             ),
         );
         

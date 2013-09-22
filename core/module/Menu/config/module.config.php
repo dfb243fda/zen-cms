@@ -8,8 +8,8 @@ return array(
         
         'default_templates' => array(
             array(
-                'title' => 'i18n::Menu:Menu template',
-                'name' => 'menu.phtml',
+                'title' => 'i18n::Menu:Menu tagCloud template',
+                'name' => 'tagCloud.phtml',
                 'type' => 'content_template',
                 'method' => 'SingleMenu',
             ),
@@ -23,31 +23,44 @@ return array(
                 'type' => 'be',
                 'menu_group' => 'menu',
             ),
-            'Edit' => array(
-                'service' => 'Menu\Method\Edit',
-                'title' => 'i18n::Menu edit method',
-                'description' => 'i18n::Menu edit method description',
+            'EditMenu' => array(
+                'service' => 'Menu\Method\EditMenu',
+                'title' => 'i18n::Menu:EditMenu method',
+                'description' => 'i18n::Menu:EditMenu method description',
+                'type' => 'be',
+                'breadcrumbPrevMethod' => 'MenuList',
+            ),
+            'EditMenuItem' => array(
+                'service' => 'Menu\Method\EditMenuItem',
+                'title' => 'i18n::Menu:EditMenuItem method',
+                'description' => 'i18n::Menu:EditMenuItem method description',
                 'type' => 'be',
                 'breadcrumbPrevMethod' => 'MenuList',
             ),
             'AddMenu' => array(
                 'service' => 'Menu\Method\AddMenu',
-                'title' => 'i18n::Add menu method',
-                'description' => 'i18n::Add menu method description',
+                'title' => 'i18n::Menu:AddMenu method',
+                'description' => 'i18n::Menu:AddMenuu method description',
                 'type' => 'be',
                 'breadcrumbPrevMethod' => 'MenuList',
             ),
             'AddMenuItem' => array(
                 'service' => 'Menu\Method\AddMenuItem',
-                'title' => 'i18n::Add menu item method',
-                'description' => 'i18n::Add menu item method description',
+                'title' => 'i18n::Menu:AddMenuItem method',
+                'description' => 'i18n::Menu:AddMenuItem method description',
                 'type' => 'be',
                 'breadcrumbPrevMethod' => 'MenuList',
             ),
-            'Delete' => array(
-                'service' => 'Menu\Method\Delete',
-                'title' => 'i18n::Menu delete method',
-                'description' => 'i18n::Menu delete method description',
+            'DeleteMenu' => array(
+                'service' => 'Menu\Method\DeleteMenu',
+                'title' => 'i18n::Menu:DeleteMenu method',
+                'description' => 'i18n::Menu:DeleteMenu method description',
+                'type' => 'be',
+            ),
+            'DeleteMenuItem' => array(
+                'service' => 'Menu\Method\DeleteMenuItem',
+                'title' => 'i18n::Menu:DeleteMenuItem method',
+                'description' => 'i18n::Menu:DeleteMenuItem method description',
                 'type' => 'be',
             ),
             'SingleMenu' => array(
@@ -104,6 +117,26 @@ return array(
                             ),
                         ),
                     ),
+                    'EditMenu' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route' => 'Menu/EditMenu[/id_:id{/.}][/object_type_:objectTypeId{/.}][/][.:format]',
+                            'defaults' => array(
+                                'module' => 'Menu',
+                                'method' => 'EditMenu',
+                            ),
+                        ),
+                    ),
+                    'EditMenuItem' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route' => 'Menu/EditMenuItem[/id_:id{/.}][/object_type_:objectTypeId{/.}][/][.:format]',
+                            'defaults' => array(
+                                'module' => 'Menu',
+                                'method' => 'EditMenuItem',
+                            ),
+                        ),
+                    ),
                     'AddMenu' => array(
                         'type' => 'segment',
                         'options' => array(
@@ -113,17 +146,7 @@ return array(
                                 'method' => 'AddMenu',
                             ),
                         ),
-                    ),
-                    'EditMenu' => array(
-                        'type' => 'segment',
-                        'options' => array(
-                            'route' => 'Menu/EditMenu[/id_:id{/.}][/object_type_:objectTypeId{/.}][/][.:format]',
-                            'defaults' => array(
-                                'module' => 'Menu',
-                                'method' => 'Edit',
-                            ),
-                        ),
-                    ),
+                    ),                   
                     'AddMenuItem' => array(
                         'type' => 'segment',
                         'options' => array(

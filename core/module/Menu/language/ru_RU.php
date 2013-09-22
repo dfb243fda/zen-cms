@@ -7,17 +7,23 @@ return array(
     'Menu list method' => 'Меню',
     'Menu list method description' => 'Метод для отображения списка меню',
     
-    'Menu edit method' => 'Редактирование меню',
-    'Menu edit method description' => 'Метод для редактирования меню',
+    'Menu:EditMenu method' => 'Редактирование меню',
+    'Menu:EditMenu method description' => 'Метод для редактирования меню',
     
-    'Add menu method' => 'Добавление меню',
-    'Add menu method description' => 'Метод для добавления меню',
+    'Menu:EditMenuItem method' => 'Редактирование пункта меню',
+    'Menu:EditMenuItem method description' => 'Метод для редактирования рункта меню',
     
-    'Add menu item method' => 'Добавление пункта меню',
-    'Add menu item method description' => 'Метод для добавления пункта меню',
+    'Menu:AddMenu method' => 'Добавление меню',
+    'Menu:AddMenu method description' => 'Метод для добавления меню',
     
-    'Menu delete method' => 'Удаление меню',
-    'Menu delete method description' => 'Метод для удаления меню',
+    'Menu:AddMenuItem method' => 'Добавление пункта меню',
+    'Menu:AddMenuItem method description' => 'Метод для добавления пункта меню',
+    
+    'Menu:DeleteMenu method' => 'Удаление меню',
+    'Menu:DeleteMenu method description' => 'Метод для удаления меню',
+    
+    'Menu:DeleteMenuItem method' => 'Удаление пункта меню',
+    'Menu:DeleteMenuItem method description' => 'Метод для удаления пункта меню',
     
     'Single menu method' => 'Меню',
     'Single menu method description' => 'Метод для отображения меню',
@@ -28,7 +34,7 @@ return array(
     'Menu:Menu item object type' => 'Пункт меню',
     'Menu:Menu content object type' => 'Меню (содержимое страницы)',
     
-    'Menu:Menu template' => 'Шаблон меню',
+    'Menu:Menu tagCloud template' => 'Облако тегов',
     'Menu:Menu id' => 'Меню',
     
     'Menu:Single menu method' => 'Меню',

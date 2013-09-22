@@ -9,77 +9,86 @@ class Catalog implements ServiceManagerAwareInterface
 {
     protected $serviceManager;
     
-    protected $singleProductPage;
+    protected $categoryTypeIds;
+    protected $productTypeIds;
+    
+    protected $categoryGuid = 'category';
+    protected $productGuid   = 'product';
     
     public function setServiceManager(ServiceManager $serviceManager)
     {
         $this->serviceManager = $serviceManager;
     }
     
-    public function getSingleProductUrl($objectId)
+    public function getCategoryTypeIds()
     {
-        $urlQuery = $this->getSingleProductUrlQuery($objectId);
-        if (null !== $urlQuery) {
-            $urlQuery = ROOT_URL_SEGMENT . $urlQuery;
+        if (null === $this->categoryTypeIds) {
+            $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
+            
+            $typeIds = array();
+            $objectType = $objectTypesCollection->getType($this->categoryGuid);
+            $typeIds[] = $objectType->getId();
+            $descendantTypeIds = $objectTypesCollection->getDescendantTypeIds($objectType->getId());
+            $typeIds = array_merge($typeIds, $descendantTypeIds);
+            
+            $this->categoryTypeIds = $typeIds;
         }
-        return $urlQuery;
+        return $this->categoryTypeIds;
     }
     
-    public function getSingleProductUrlQuery($objectId)
+    public function getProductTypeIds()
     {
-        if (null !== $this->singleProductPage) {
-            $pageService = $this->serviceManager->get('Pages\Service\Page');            
-            $urlParams = $pageService->getPageUrlParams($this->singleProductPage);
+        if (null === $this->productTypeIds) {
+            $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
             
-            if (is_array($urlParams)) {
-                $urlParams['itemId'] = $objectId;
-                
-                $urlPlugin = $this->serviceManager->get('ControllerPluginManager')->get('url');
-        
-                $url = $urlPlugin->fromRoute('fe/page', $urlParams);
-                
-                $url = substr($url, strlen(ROOT_URL_SEGMENT));
-                
-                return $url;
-            }
-            return null;
+            $typeIds = array();
+            $objectType = $objectTypesCollection->getType($this->productGuid);
+            $typeIds[] = $objectType->getId();
+            $descendantTypeIds = $objectTypesCollection->getDescendantTypeIds($objectType->getId());
+            $typeIds = array_merge($typeIds, $descendantTypeIds);
+            
+            $this->productTypeIds = $typeIds;
         }
-        
-        $db = $this->serviceManager->get('db');
-        
-        $sqlRes = $db->query('
-            select id from ' . DB_PREF . 'page_content_types 
-            where module = ? and method = ?', array('Catalog', 'FeProductItem'))->toArray();
-        
-        if (!empty($sqlRes)) {
-            $typeId = $sqlRes[0]['id'];
-            
-            $sqlRes = $db->query('
-                select page_id from ' . DB_PREF . 'pages_content
-                where page_content_type_id = ?', array($typeId))->toArray();
-            
-            if (!empty($sqlRes)) {
-                $this->singleProductPage = $sqlRes[0]['page_id'];
-            }
-        }
-        
-        if (null !== $this->singleProductPage) {
-            $pageService = $this->serviceManager->get('Pages\Service\Page');            
-            $urlParams = $pageService->getPageUrlParams($this->singleProductPage);
-            
-            if (is_array($urlParams)) {
-                $urlParams['itemId'] = $objectId;
-                
-                $urlPlugin = $this->serviceManager->get('ControllerPluginManager')->get('url');
-        
-                $url = $urlPlugin->fromRoute('fe/page', $urlParams);
-                
-                $url = substr($url, strlen(ROOT_URL_SEGMENT));
-                
-                return $url;
-            }
-        }
-        
-        return null;
+        return $this->productTypeIds;
     }
+    
+    public function getTypeIds()
+    {
+        return array_merge($this->getCategoryTypeIds(), $this->getProductTypeIds());
+    }
+    
+    public function isObjectCategory($objectId)
+    {            
+        $objectsCollection = $this->serviceManager->get('objectsCollection');
+        
+        if ($object = $objectsCollection->getObject($objectId)) {
+            $objectTypeId = $object->getTypeId();            
+            $typeIds = $this->getCategoryTypeIds();            
+            return in_array($objectTypeId, $typeIds);
+        }
+        return false;        
+    }
+    
+    public function isObjectProduct($objectId)
+    {            
+        $objectsCollection = $this->serviceManager->get('objectsCollection');
+        
+        if ($object = $objectsCollection->getObject($objectId)) {
+            $objectTypeId = $object->getTypeId();            
+            $typeIds = $this->getProductTypeIds();            
+            return in_array($objectTypeId, $typeIds);
+        }
+        return false;        
+    }
+    
+    public function getCategoryGuid()
+    {
+        return $this->categoryGuid;
+    }
+    
+    public function getProductGuid()
+    {
+        return $this->productGuid;
+    }
+    
 }

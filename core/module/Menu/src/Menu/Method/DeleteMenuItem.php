@@ -4,31 +4,23 @@ namespace Menu\Method;
 
 use App\Method\AbstractMethod;
 
-class Delete extends AbstractMethod
+class DeleteMenuItem extends AbstractMethod
 {
     public function main()
     {        
         $menuService = $this->serviceLocator->get('Menu\Service\Menu');
         $objectsCollection = $this->serviceLocator->get('objectsCollection');
         
+        $result = array();
+        
         if (null === $this->params()->fromPost('id')) {
-            $result = array(
-                'errMsg' => 'Не переданы все необходимые параметры',
-            );
+            $result['errMsg'] = 'Не переданы все необходимые параметры';            
             return $result;
         } 
         
         $objectId = (int)$this->params()->fromPost('id');
           
-        if ($menuService->isObjectMenu($objectId)) {
-            if ($objectsCollection->delObject($objectId)) {
-                $result['msg'] = 'Меню удалено';
-                $result['success'] = true;
-            } else {
-                $result['errMsg'] = 'Не удалось удалить меню';
-                $result['success'] = false;
-            }
-        } elseif ($menuService->isObjectItem($objectId)) {
+        if ($menuService->isObjectItem($objectId)) {
             if ($objectsCollection->delObject($objectId)) {
                 $result['msg'] = 'Пункт меню удален';
                 $result['success'] = true;
@@ -38,7 +30,7 @@ class Delete extends AbstractMethod
             }
         } else {
             $result = array(
-                'errMsg' => 'Объект ' . $objectId . ' не является ни меню, ни пунктом меню',
+                'errMsg' => 'Пункт меню ' . $objectId . ' не найден',
             );
         }
         

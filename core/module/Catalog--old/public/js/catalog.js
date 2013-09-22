@@ -2,7 +2,7 @@ zen.catalog = zen.catalog || {};
 
 zen.apply(zen.catalog, {
     delProduct: function(url, id) {
-        jConfirm('Вы собираетесь удалить товар <strong>после удаления его нельзя будет восстановить</strong>',
+        jConfirm('Вы собираетесь удалить товар <strong>после удаления её нельзя будет восстановить</strong>',
             'Вы действительно хотите удалить товар?', 
             function(r) {
                 if (r) {
@@ -27,9 +27,9 @@ zen.apply(zen.catalog, {
             }
        );
     },
-    delCategory: function(url, id) {
-        jConfirm('Вы собираетесь удалить катеогрию товаров <strong>после удаления её нельзя будет восстановить</strong>',
-            'Вы действительно хотите удалить категорию товаров?', 
+    delCatalog: function(url, id) {
+        jConfirm('Вы собираетесь удалить каталог <strong>после удаления его нельзя будет восстановить</strong>',
+            'Вы действительно хотите удалить каталог?', 
             function(r) {
                 if (r) {
                     $.ajax({

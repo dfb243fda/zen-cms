@@ -1,15 +1,15 @@
 <?php
 
-namespace Menu\Method;
+namespace Catalog\Method;
 
 use App\Method\AbstractMethod;
 
-class AddMenu extends AbstractMethod
+class AddCategory extends AbstractMethod
 {
     public function main()
     {
-        $menuService = $this->serviceLocator->get('Menu\Service\Menu');
-        $menuCollection = $this->serviceLocator->get('Menu\Collection\MenuCollection');
+        $catalogService = $this->serviceLocator->get('Catalog\Service\Catalog');
+        $categoriesCollection = $this->serviceLocator->get('Catalog\Collection\CategoriesCollection');
         $objectTypesCollection = $this->serviceLocator->get('objectTypesCollection');
         $request = $this->serviceLocator->get('request');
         $translator = $this->serviceLocator->get('translator');
@@ -17,20 +17,20 @@ class AddMenu extends AbstractMethod
         $result = array();
         
         if (null === $this->params()->fromRoute('objectTypeId')) {
-            $objectTypeId = $objectTypesCollection->getTypeIdByGuid($menuService->getMenuGuid());  
-            $menuCollection->setObjectTypeId($objectTypeId);
+            $objectTypeId = $objectTypesCollection->getTypeIdByGuid($catalogService->getCategoryGuid());  
+            $categoriesCollection->setObjectTypeId($objectTypeId);
         } else {
             $objectTypeId = (int)$this->params()->fromRoute('objectTypeId');
-            $menuCollection->setObjectTypeId($objectTypeId);
+            $categoriesCollection->setObjectTypeId($objectTypeId);
             
-            if (!in_array($objectTypeId, $menuService->getMenuTypeIds())) {
-                $result['errMsg'] = 'Тип данных ' . $objectTypeId . ' не является меню';
+            if (!in_array($objectTypeId, $catalogService->getCategoryTypeIds())) {
+                $result['errMsg'] = 'Тип данных ' . $objectTypeId . ' не является категорией товаров';
                 return $result;
             }
         }       
         
         if ($request->isPost()) {
-            $form = $menuCollection->getForm(false);
+            $form = $categoriesCollection->getForm(false);
             
             $data = $request->getPost()->toArray();
             if (empty($data['common']['name'])) {
@@ -39,36 +39,36 @@ class AddMenu extends AbstractMethod
             $form->setData($data);
             
             if ($form->isValid()) {                
-                if ($menuId = $menuCollection->addMenu($form->getData())) {
+                if ($catId = $categoriesCollection->addCategory($form->getData())) {
                     if (!$request->isXmlHttpRequest()) {
-                        $this->flashMessenger()->addSuccessMessage('Меню создано');
+                        $this->flashMessenger()->addSuccessMessage('Категория создана');
                         $this->redirect()->toRoute('admin/method',array(
-                            'module' => 'Menu',
-                            'method' => 'EditMenu',
-                            'id' => $menuId,
+                            'module' => 'Catalog',
+                            'method' => 'EditCategory',
+                            'id' => $catId,
                         ));
                     }
                     
                     return array(
                         'success' => true,
-                        'msg' => 'Меню создано',
+                        'msg' => 'Категория создана',
                     );    
                 } else {
                     $result['success'] = false;
-                    $result['errMsg'] = 'При создании меню произошли ошибки';
+                    $result['errMsg'] = 'При создании категории произошли ошибки';
                 }
             } else {
                 $result['success'] = false;
             }
         } else {
-            $form = $menuCollection->getForm(true);
+            $form = $categoriesCollection->getForm(true);
         }
         
         $result['contentTemplate'] = array(
-            'name' => 'content_template/Menu/menu_form.phtml',
+            'name' => 'content_template/Catalog/catalog_form.phtml',
             'data' => array(
                 'jsArgs' => array(
-                    'changeObjectTypeUrlTemplate' => $this->url()->fromRoute('admin/AddMenu', array(
+                    'changeObjectTypeUrlTemplate' => $this->url()->fromRoute('admin/AddCategory', array(
                         'objectTypeId' => '--OBJECT_TYPE--',    
                     )),
                 ),

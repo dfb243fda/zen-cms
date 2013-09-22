@@ -1,11 +1,11 @@
 <?php
 
-namespace Menu\Service;
+namespace Catalog\Service;
 
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
 
-class MenuTree implements ServiceManagerAwareInterface
+class ProductsTree implements ServiceManagerAwareInterface
 {
     protected $serviceManager;    
     
@@ -18,14 +18,14 @@ class MenuTree implements ServiceManagerAwareInterface
     {
         $urlPlugin = $this->serviceManager->get('ControllerPluginManager')->get('url');
         $db = $this->serviceManager->get('db');
-        $menuService = $this->serviceManager->get('Menu\Service\Menu');
+        $catalogService = $this->serviceManager->get('Catalog\Service\Catalog');
         
         $items = array();
         
-        $typeIds = $menuService->getTypeIds();        
+        $typeIds = $catalogService->getTypeIds();        
         
-        $menuTypeIds = $menuService->getMenuTypeIds();
-        $itemTypeIds = $menuService->getItemTypeIds();
+        $menuTypeIds = $catalogService->getCategoryTypeIds();
+        $itemTypeIds = $catalogService->getProductTypeIds();
         
         $typeIdsStr = implode(', ', $typeIds);
         
@@ -48,35 +48,35 @@ class MenuTree implements ServiceManagerAwareInterface
             $row['icons'] = array();
             if (in_array($row['type_id'], $menuTypeIds)) {
                 $row['icons']['editLink'] = $urlPlugin->fromRoute('admin/method', array(
-                    'module' => 'Menu',
-                    'method' => 'EditMenu',
+                    'module' => 'Catalog',
+                    'method' => 'EditCategory',
                     'id' => $row['id']
                 ));
             } else {
                 $row['icons']['editLink'] = $urlPlugin->fromRoute('admin/method', array(
-                    'module' => 'Menu',
-                    'method' => 'EditMenuItem',
+                    'module' => 'Catalog',
+                    'method' => 'EditProduct',
                     'id' => $row['id']
                 ));
             }
             
             if (0 == $parentId) {
                 $row['icons']['addLink'] = $urlPlugin->fromRoute('admin/method', array(
-                    'module' => 'Menu',
-                    'method' => 'AddMenuItem',
+                    'module' => 'Catalog',
+                    'method' => 'AddProduct',
                     'id' => $row['id']
                 ));
             }
             
             if (in_array($row['type_id'], $menuTypeIds)) {
-                $row['icons']['delLink'] = 'zen.menu.delMenu(\'' . $urlPlugin->fromRoute('admin/method', array(
-                    'module' => 'Menu',   
-                    'method' => 'DeleteMenu',
+                $row['icons']['delLink'] = 'zen.catalog.delCategory(\'' . $urlPlugin->fromRoute('admin/method', array(
+                    'module' => 'Catalog',   
+                    'method' => 'DeleteCategory',
                 )) . '\', ' . $row['id'] . ')';
             } else {
-                $row['icons']['delLink'] = 'zen.menu.delMenuItem(\'' . $urlPlugin->fromRoute('admin/method', array(
-                    'module' => 'Menu',   
-                    'method' => 'DeleteMenuItem',
+                $row['icons']['delLink'] = 'zen.catalog.delProduct(\'' . $urlPlugin->fromRoute('admin/method', array(
+                    'module' => 'Catalog',   
+                    'method' => 'DeleteProduct',
                 )) . '\', ' . $row['id'] . ')';
             }
             

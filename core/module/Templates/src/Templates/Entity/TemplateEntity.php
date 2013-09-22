@@ -117,8 +117,13 @@ class TemplateEntity implements ServiceManagerAwareInterface
                 
         unset($data['content']);
         
-        $markersStr = $data['markers'];
-        unset($data['markers']);
+        if (isset($data['markers'])) {
+            $markersStr = $data['markers'];
+            unset($data['markers']);
+        } else {
+            $markersStr = '';
+        }
+        
         
         $sql = new Sql($db);
         $update = $sql->update(DB_PREF . $this->templatesTable);
