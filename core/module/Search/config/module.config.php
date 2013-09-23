@@ -85,7 +85,7 @@ return array(
                             'elements' => array(
                                 array(
                                     'spec' => array(
-                                        'name' => 'items_on_page',
+                                        'name' => 'items_per_page',
                                         'options' => array(
                                             'label' => 'i18n::Search config items on page',
                                             'description' => 'i18n::Search config items on page description',
@@ -99,7 +99,7 @@ return array(
                 'input_filter' => array(
                     'search' => array(
                         'type' => 'Zend\InputFilter\InputFilter',
-                        'items_on_page' => array(
+                        'items_per_page' => array(
                             'required' => true,
                             'validators' => array(
                                 array('name' => 'Regex', 'options' => array('pattern' => '/[0-9]+/')),

@@ -32,7 +32,7 @@ class Installer implements ServiceManagerAwareInterface
         $db = $sm->get('db');
         
         $configManager = $sm->get('configManager');
-        $configManager->set('search', 'items_on_page', 10);
+        $configManager->set('search', 'items_per_page', 10);
         
         $fieldsCollection = $sm->get('fieldsCollection');
         $fieldTypesCollection = $sm->get('fieldTypesCollection');       

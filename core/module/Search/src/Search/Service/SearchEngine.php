@@ -31,7 +31,7 @@ class SearchEngine implements ServiceManagerAwareInterface
     {
         $db = $this->serviceManager->get('db');
         $configManager = $this->serviceManager->get('configManager');
-        $itemsOnPage = $configManager->get('search', 'items_on_page');        
+        $itemsPerPage = $configManager->get('search', 'items_per_page');        
         $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
         $objectPropertyCollection = $this->serviceManager->get('objectPropertyCollection');
         $objectsCollection = $this->serviceManager->get('objectsCollection');
@@ -189,7 +189,7 @@ class SearchEngine implements ServiceManagerAwareInterface
             $sqlRes = array();
             $totalCount = 0;
         } else {
-            $limit = ($pageNum - 1) * $itemsOnPage . ', ' . $itemsOnPage;        
+            $limit = ($pageNum - 1) * $itemsPerPage . ', ' . $itemsPerPage;   
             $query = '
                 select object_id, url_query 
                 from ' . DB_PREF . 'search_index
@@ -262,7 +262,7 @@ class SearchEngine implements ServiceManagerAwareInterface
             'totalCount' => $totalCount,
             'displayCount' => $displayCount,
             'pageNum' => $pageNum,
-            'itemsOnPage' => $itemsOnPage,
+            'itemsPerPage' => $itemsPerPage,
             'items' => $items,
         );
         
