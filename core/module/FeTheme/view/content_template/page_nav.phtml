@@ -1,0 +1,92 @@
+<?php
+
+$itemsPerPage = $this->itemsPerPage;
+$noOfItems = $this->totalCount;
+$this->currPage = $this->pageNum;
+
+if ($itemsPerPage <= 1)
+    $itemsPerPage = 2;
+elseif ($itemsPerPage > $noOfItems && $noOfItems != 0)
+    $itemsPerPage = $noOfItems;
+
+$this->noOfPages = ceil($noOfItems / $itemsPerPage);
+
+
+
+if ($this->currPage > $this->noOfPages) {
+    $this->currPage = $this->noOfPages;
+}
+
+$this->previousStartItem = ($this->currPage - 2) * $itemsPerPage;
+if ($this->previousStartItem < 0)
+    $this->previousStartItem = -1;
+
+$this->nextStartItem = $this->currPage * $itemsPerPage;
+if ($this->nextStartItem > $noOfItems - 1)
+    $this->nextStartItem = -1;
+
+// create pages
+$tempArray = array();
+// first part
+for ($i = 1; $i <= 3; $i++) {
+    if ($i >= 1 && $i <= $this->noOfPages) {
+        $tempArray[] = $i;
+    }
+}
+// middle part
+for ($i = $this->currPage - 6; $i <= $this->currPage + 6; $i++) {
+    if ($i >= 1 && $i <= $this->noOfPages) {
+        $tempArray[] = $i;
+    }
+}
+// last part
+for ($i = $this->noOfPages - 2; $i <= $this->noOfPages; $i++) {
+    if ($i >= 1 && $i <= $this->noOfPages) {
+        $tempArray[] = $i;
+    }
+}
+$tempArray = array_unique($tempArray); //cut off duplicate entries
+sort($tempArray);
+
+// and create the array containing the pages
+$pages = array();
+$tempLast = -1;
+foreach ($tempArray as $key => $value) {
+    if ($key != 0 && $value > ($tempLast + 1)) { // put an empty interval if there's a jump
+        $pages[] = array("pageno" => -1, "startitem" => -1);
+    }
+    $pages[] = array("pageno" => $value, "startitem" => (($value - 1) * $itemsPerPage));
+    $tempLast = $value;
+}
+
+
+
+
+
+echo "Listing ".$noOfItems." items<br /><br />";
+ 
+if ($this->noOfPages > 1) {
+     
+    if ($this->previousStartItem != -1) {
+        echo " <a href=\"pagenav.php?startitem=".$this->previousStartItem."\">Prev</a> ";
+    }
+     
+    foreach ( $pages as $page ) {
+        if ($page["pageno"] == -1) {
+            echo " <b>.</b> ";
+        }
+        elseif ($page["pageno"] == $this->currPage) {
+            echo " <b>".$page["pageno"]."</b> ";
+        }
+        else {
+            echo " <a href=\"".$this->url(null, array(), array('query' => array('p' => $page["pageno"])))."\">".$page["pageno"]."</a> ";
+        }
+    }
+     
+    if ($this->nextStartItem != -1) {
+        echo " <a href=\"pagenav.php?startitem=".$this->nextStartItem."\">Next</a> ";
+    }
+}
+
+
+//echo $this->totalCount . '-' . $this->itemsOnPage . '-' . $this->pageNum;

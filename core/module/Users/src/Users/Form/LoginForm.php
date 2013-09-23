@@ -47,17 +47,14 @@ class LoginForm extends Form implements ServiceLocatorAwareInterface
                     'label' => $translator->translate($identityLabel),
                 ),
                 'attributes' => array(
-                    'type' => 'text',
                     'autofocus' => 'autofocus',
                 ),
             ))
             ->add(array(
                 'name' => 'credential',
+                'type' => 'password',
                 'options' => array(
                     'label' => $translator->translate('Users:Credential field'),
-                ),
-                'attributes' => array(
-                    'type' => 'password',
                 ),
             ));
         

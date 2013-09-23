@@ -26,6 +26,16 @@ class Module
         return include __DIR__ . '/config/module.config.php';
     }
     
+    public function getSearchUrlQuery($sm)
+    {
+        return array(
+            'product' => function($sm, $objectId) {
+                $catalogService = $sm->get('Catalog\Service\CatalogUrl');
+                return $catalogService->getSingleProductUrlQuery($objectId);
+            },
+        );
+    }
+    
     public function onInstall($sm)
     {        
         if (!$sm->has('Catalog\Service\Installer')) {

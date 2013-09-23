@@ -6,6 +6,28 @@ return array(
         'description' => 'i18n::Catalog module description',
         'version' => '0.1',
         
+        'default_templates' => array(
+            array(
+                'title' => 'i18n::Catalog:Product list template',
+                'name' => 'product_list.phtml',
+                'type' => 'content_template',
+                'method' => 'FeProductList',
+            ),
+            array(
+                'title' => 'i18n::Catalog:Product item template',
+                'name' => 'product_item.phtml',
+                'type' => 'content_template',
+                'method' => 'FeProductItem',
+            ),
+        ),
+        
+        'search_object_types' => array(
+            array(
+                'guid' => 'product',
+                'with_descendants' => true,
+            ),
+        ),
+        
         'methods' => array(
             'ProductList' => array(
                 'service' => 'Catalog\Method\ProductList',
@@ -54,6 +76,20 @@ return array(
                 'description' => 'i18n::Catalog:DeleteProduct method description',
                 'type' => 'be',
             ),
+            'FeProductList' => array(
+                'service' => 'Catalog\Method\FeProductList',
+                'title' => 'i18n::Catalog:FeProduct list method',
+                'description' => 'i18n::Catalog:FeProduct list method description',
+                'type' => 'fe_content',
+                'dynamic_templates' => true,
+            ),
+            'FeProductItem' => array(
+                'service' => 'Catalog\Method\FeProductItem',
+                'title' => 'i18n::Catalog:FeProductItem method',
+                'description' => 'i18n::Catalog:FeProductItem method description',
+                'type' => 'fe_content',
+                'dynamic_templates' => true,
+            ),
         ),
     ),
     
@@ -70,6 +106,8 @@ return array(
             
             'Catalog\Entity\CategoryEntity' => 'Catalog\Entity\CategoryEntity',
             'Catalog\Entity\ProductEntity' => 'Catalog\Entity\ProductEntity',
+            
+            'Catalog\Service\CatalogUrl' => 'Catalog\Service\CatalogUrl',
         ),
     ),
     

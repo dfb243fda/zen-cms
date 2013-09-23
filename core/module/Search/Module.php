@@ -40,6 +40,15 @@ class Module
     
     public function onInstall($sm)
     {
+        if (!$sm->has('Search\Service\Installer')) {
+            require_once __DIR__ . '/src/Search/Service/Installer.php';
+            $sm->setInvokableClass('Search\Service\Installer', 'Search\Service\Installer');
+        }
+        if (!$sm->has('Search\Service\SearchIndexer')) {
+            require_once __DIR__ . '/src/Search/Service/SearchIndexer.php';
+            $sm->setInvokableClass('Search\Service\SearchIndexer', 'Search\Service\SearchIndexer');
+        }
+        
         $installer = $sm->get('Search\Service\Installer');
         $installer->install();
     }

@@ -3,8 +3,6 @@
 namespace Search\Method;
 
 use App\Method\AbstractMethod;
-use Search\Model\Search as SearchModel;
-
 
 class Search extends AbstractMethod
 {    
@@ -12,7 +10,10 @@ class Search extends AbstractMethod
     {
         $searchIndexer = $this->serviceLocator->get('Search\Service\SearchIndexer');     
         
-        if ($this->params()->fromPost('task') == 'refresh_search_index') {                   
+        if ($this->params()->fromPost('task') == 'refresh_search_index') {   
+            $searchObjectTypes = $this->serviceLocator->get('Search\Service\SearchObjectTypes'); 
+            $searchObjectTypes->refreshObjectTypes();     
+            
             $searchIndexer->refreshIndex();
             $this->flashMessenger()->addSuccessMessage('Индекс успешно обновлен');
             return $this->redirect()->refresh();

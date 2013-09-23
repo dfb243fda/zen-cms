@@ -52,6 +52,7 @@ return array(
             'Search\Listener\ModuleSearchObjectTypesCollector' => 'Search\Listener\ModuleSearchObjectTypesCollector',
             'Search\Service\Installer' => 'Search\Service\Installer',
             'Search\Service\SearchIndexer' => 'Search\Service\SearchIndexer',
+            'Search\Service\SearchObjectTypes' => 'Search\Service\SearchObjectTypes',
             'Search\Service\SearchEngine' => 'Search\Service\SearchEngine',
         ),
     ),

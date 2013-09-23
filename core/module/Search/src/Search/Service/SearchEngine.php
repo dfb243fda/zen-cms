@@ -217,10 +217,8 @@ class SearchEngine implements ServiceManagerAwareInterface
         foreach ($sqlRes as $row) {
             $objectId = $row['object_id'];
             $urlQuery = $row['url_query'];
-            
-            $object = $objectsCollection->getObject($objectId);
-            
-            if ($object->isExists()) {
+                        
+            if ($object = $objectsCollection->getObject($objectId)) {
                 $objectText = '';
                 
                 $objectType = $objectTypesCollection->getType($object->getTypeId());

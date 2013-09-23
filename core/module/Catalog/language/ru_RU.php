@@ -48,4 +48,13 @@ return array(
     'Catalog:Category name field' => 'Название категории',
     
     'Catalog:(Product without name)' => '(Без названия)',
+    
+    'Catalog:FeProduct list method' => 'Список товаров',
+    'Catalog:FeProduct list method description' => 'FE метод, отображающий список товаров',
+    
+    'Catalog:FeProductItem method' => 'Один товар',
+    'Catalog:FeProductItem method description' => 'FE метод, отображающий один товар',
+    
+    'Catalog:Product list template' => 'Список товаров',
+    'Catalog:Product item template' => 'Один товар',
 );

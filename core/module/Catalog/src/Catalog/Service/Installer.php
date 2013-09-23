@@ -23,7 +23,7 @@ class Installer implements ServiceManagerAwareInterface
         $fieldTypesCollection = $sm->get('fieldTypesCollection');
 
         $categoryGuid = 'category';
-        if (null === ($id = $objectTypesCollection->getTypeByGuid($categoryGuid))) {  
+        if (null === ($id = $objectTypesCollection->getTypeIdByGuid($categoryGuid))) {  
             $id = $objectTypesCollection->addType(0, 'i18n::Catalog:Category object type');
             $objectType = $objectTypesCollection->getType($id);
             $objectType->setGuid($categoryGuid)->setIsGuidable(true)->save();
@@ -117,7 +117,7 @@ class Installer implements ServiceManagerAwareInterface
                 $fieldTypeId = $fieldTypesCollection->getFieldTypeIdByDataType('select', true);
 
                 $fieldsGroup = $objectType->getFieldsGroup($groupId);
-
+                
                 $fieldId = $fieldsCollection->addField(array(
                     'name' => 'product_cat_id',
                     'title' => 'i18n::Catalog:Product category id',

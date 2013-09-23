@@ -9,6 +9,7 @@ use Zend\Crypt\Password\Bcrypt;
 use Users\Authentication\Adapter\AdapterChainEvent as AuthEvent;
 use Users\Mapper\User as UserMapperInterface;
 use Users\Options\AuthenticationOptionsInterface;
+use Zend\Session\Container as SessionContainer;
 
 class Db extends AbstractAdapter implements ServiceManagerAwareInterface
 {
@@ -42,6 +43,7 @@ class Db extends AbstractAdapter implements ServiceManagerAwareInterface
         $identity   = $e->getRequest()->getPost()->get('identity');
         $credential = $e->getRequest()->getPost()->get('credential');
         $credential = $this->preProcessCredential($credential);
+        $rememberMe = $e->getRequest()->getPost()->get('remember_me');
         $userEntity = NULL;
         
         $options = $this->getOptions();
@@ -99,6 +101,12 @@ class Db extends AbstractAdapter implements ServiceManagerAwareInterface
         $this->getStorage()->write($storage);
         $e->setCode(AuthenticationResult::SUCCESS)
           ->setMessages(array('Authentication successful.'));
+        
+        if ($rememberMe) {
+            SessionContainer::getDefaultManager()->rememberMe();
+        } else {
+            SessionContainer::getDefaultManager()->forgetMe();
+        }
     }
 
     protected function updateUserPasswordHash($userEntity, $password, $bcrypt)

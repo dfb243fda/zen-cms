@@ -63,6 +63,8 @@ class ProductFormFactory implements ServiceManagerAwareInterface
         
         if ($this->populateForm) {
             if (null === $this->objectId) {
+                $fieldsCollection = $this->serviceManager->get('fieldsCollection');
+                
                 $data = array(
                     'type_id' => $this->objectTypeId,
                 );
@@ -70,9 +72,18 @@ class ProductFormFactory implements ServiceManagerAwareInterface
                 foreach ($form->getFieldsets() as $fieldset) {
                     foreach ($fieldset->getElements() as $element) {
                         $elName = $element->getName();
-                        if (isset($data[$elName])) {
-                            $element->setValue($data[$elName]);
+                        if ('field_' == substr($elName, 0, 6)) {
+                            $fieldId = substr($elName, 6);
+                            $field = $fieldsCollection->getField($fieldId);
+                            if ('publish_date' == $field->getName()) {
+                                $element->setValue(new \DateTime());
+                            }
+                        } else {
+                            if (isset($data[$elName])) {
+                                $element->setValue($data[$elName]);
+                            }
                         }
+                        
                     }
                 }
             } else {            

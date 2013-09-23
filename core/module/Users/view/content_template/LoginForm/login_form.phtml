@@ -28,6 +28,7 @@ if (isset($this->formMsg)) {
                 <div><?php echo $this->formLabel($form->get('credential')) ?></div>
                 <div><?php echo $this->formInput($form->get('credential')) ?></div>
             </div>
+            <input type="hidden" name="remember_me" value="1" />
             <?php if ($this->redirect): ?>
                 <input type="hidden" name="redirect" value="<?php echo $this->redirect ?>" />
             <?php endif ?>

@@ -62,7 +62,7 @@ class FieldsGroupCollection implements ServiceManagerAwareInterface
         $db = $this->serviceManager->get('db');
         $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
         
-        if (($fieldsGroup = $this->getFieldsGroupByName($name)) !== null) {
+        if ($fieldsGroup = $this->getFieldsGroupByName($name)) {
             return $fieldsGroup->getId();
         }
         

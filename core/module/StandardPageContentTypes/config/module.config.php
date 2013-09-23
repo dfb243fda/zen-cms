@@ -15,6 +15,13 @@ return array(
             ),
         ),
         
+        'search_object_types' => array(
+            array(
+                'guid' => 'simple-text-page-content-type',
+                'with_descendants' => true,
+            ),
+        ),
+        
         'methods' => array(
             'SimpleText' => array(
                 'service' => 'StandardPageContentTypes\Method\SimpleText',

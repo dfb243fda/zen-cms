@@ -26,11 +26,17 @@ class Module {
         return array(
             'factories' => array(
                 'DBSessionStorage\DBStorage' => function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-
-                    $appConfig = $sm->get('ApplicationConfig');
-
-                    $storage = new DBStorage($dbAdapter, $appConfig['dbPref']);
+                    $appConfig = $sm->get('ApplicationConfig');                    
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');                      
+                    $dbPref = $appConfig['dbPref'];
+                    $config = $sm->get('config');
+                    if (isset($config['session'])) {
+                        $sessionConfig = $config['session'];
+                    } else {
+                        $sessionConfig = array();
+                    }                    
+                    
+                    $storage = new DBStorage($dbAdapter, $dbPref, $sessionConfig);
                     return $storage;
                 },
             ),

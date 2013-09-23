@@ -16,7 +16,7 @@ class SearchResult extends FeContentMethod
                 'all' => $searchQuery,
             );
         }
-        $pageNum = (int)$this->params()->fromQuery('pn', 1);
+        $pageNum = (int)$this->params()->fromRoute('page_num', 1);
         if ($pageNum < 1) {
             $pageNum = 1;
         }

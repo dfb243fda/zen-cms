@@ -10,18 +10,22 @@
 namespace DBSessionStorage;
 use Zend\Session\SaveHandler\DbTableGateway;
 use Zend\Session\SaveHandler\DbTableGatewayOptions;
-use Zend\Db\Adapter\Adapter;
 use Zend\Session\SessionManager;
 use Zend\Session\Container;
 
 class DBStorage  {
-    protected $adapter;
+        
     protected $tblGW;
-    public function __construct(Adapter $adapter, $dbPref) {
-        $this->adapter = $adapter;
-        $this->tblGW = new \Zend\Db\TableGateway\TableGateway($dbPref . 'sessions', $this->adapter);
+    
+    protected $sessionConfig;
+    
+    public function __construct($adapter, $dbPref, $sessionConfig) {        
+        $this->tblGW = new \Zend\Db\TableGateway\TableGateway($dbPref . 'sessions', $adapter);
+        
+        $this->sessionConfig = $sessionConfig;
     }
-    public function setSessionStorage($request){
+    public function setSessionStorage($request)
+    {        
         $gwOpts = new DbTableGatewayOptions();
         $gwOpts->setDataColumn('data');
         $gwOpts->setIdColumn('id');
@@ -31,15 +35,18 @@ class DBStorage  {
 
         $saveHandler = new DbTableGateway($this->tblGW, $gwOpts);
         
-        $config = new \Zend\Session\Config\SessionConfig();
-        $config->setOptions(array(
+        $sessionConfig = array_merge(array(
             'cookie_path' => $request->getBasePath() . '/',
-        ));
+        ), $this->sessionConfig);
+                
+        $config = new \Zend\Session\Config\SessionConfig();
+        $config->setOptions($sessionConfig);
         $sessionManager = new SessionManager($config);
         
         $sessionManager->setSaveHandler($saveHandler);
+        
         Container::setDefaultManager($sessionManager);
-        $sessionManager->start();
+//        $sessionManager->start();
     }
 
 }

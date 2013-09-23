@@ -23,7 +23,7 @@ class Installer implements ServiceManagerAwareInterface
         $fieldTypesCollection = $sm->get('fieldTypesCollection');
 
         $menuGuid = 'menu';
-        if (null === ($id = $objectTypesCollection->getTypeByGuid($menuGuid))) {  
+        if (null === ($id = $objectTypesCollection->getTypeIdByGuid($menuGuid))) {  
             $id = $objectTypesCollection->addType(0, 'i18n::Menu:Menu object type');
             $objectType = $objectTypesCollection->getType($id);
             $objectType->setGuid($menuGuid)->setIsGuidable(true)->save();

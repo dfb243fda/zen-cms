@@ -5,9 +5,7 @@ namespace Search\Service;
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 
-/**
- * Installs Pages module
- */
+
 class SearchIndexer implements ServiceManagerAwareInterface
 {
     /**
@@ -37,6 +35,31 @@ class SearchIndexer implements ServiceManagerAwareInterface
         return $sqlRes[0]['cnt'];
     }
     
+    protected function getSearchUrlQuery()
+    {
+        $config = $this->serviceManager->get('config');
+        
+        if (isset($config['search_url_query'])) {
+            $searchUrlQuery = $config['search_url_query'];
+        } else {
+            $searchUrlQuery = array();
+        }
+        
+        $moduleManager = $this->serviceManager->get('moduleManager');
+        
+        foreach ($moduleManager->getActiveModules() as $moduleKey=>$moduleConfig) {
+            $className = $moduleKey . '\Module';
+            $instance = new $className;
+            
+            if (is_callable(array($instance, 'getSearchUrlQuery'))) {
+                $tmp = $instance->getSearchUrlQuery($this->serviceManager);
+                $searchUrlQuery = array_merge($searchUrlQuery, $tmp);
+            }
+        }
+        
+        return $searchUrlQuery;
+    }
+    
     public function refreshIndex()
     {
         $db = $this->serviceManager->get('db');
@@ -51,7 +74,7 @@ class SearchIndexer implements ServiceManagerAwareInterface
         
         $items = array();
         
-        $config = $this->serviceManager->get('config');
+        $searchUrlQuery = $this->getSearchUrlQuery();
         
         foreach ($searchObjectTypes as $row) {
             $objectTypeId = $row['object_type_id'];
@@ -77,11 +100,11 @@ class SearchIndexer implements ServiceManagerAwareInterface
                     
                     $urlQuery = null;
 
-                    if (isset($config['search_url_query'][$guid])) {                        
-                        if (is_string($config['search_url_query'][$guid])) {
-                            $urlQuery = $config['search_url_query'][$guid];
-                        } elseif (is_callable($config['search_url_query'][$guid])) {
-                            $urlQuery = call_user_func_array($config['search_url_query'][$guid], array(
+                    if (isset($searchUrlQuery[$guid])) {
+                        if (is_string($searchUrlQuery[$guid])) {
+                            $urlQuery = $searchUrlQuery[$guid];
+                        } elseif (is_callable($searchUrlQuery[$guid])) {
+                            $urlQuery = call_user_func_array($searchUrlQuery[$guid], array(
                                 $this->serviceManager,
                                 $objectId
                             ));

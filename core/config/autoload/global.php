@@ -157,4 +157,9 @@ return array(
             'FormCollection3C' => 'App\Form\View\Helper\FormCollection3C',
         ),
     ),
+    
+    'session' => array(
+        'gc_maxlifetime' => 604800, // 1 week
+        'remember_me_seconds' => 1209600, // 2 weeks
+    ),
 );
