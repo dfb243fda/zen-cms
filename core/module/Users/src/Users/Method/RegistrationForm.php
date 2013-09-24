@@ -1,38 +1,24 @@
 <?php
 
-namespace Users\Controller;
+namespace Users\Method;
 
-use Zend\Mvc\Controller\AbstractActionController;
+use Pages\AbstractMethod\FeContentMethod;
 use Zend\Stdlib\Parameters;
 
-class RegisterController extends AbstractActionController
+class RegistrationForm extends FeContentMethod
 {
-    protected $htmlTemplate;
-    
-    public function indexAction()
-    {
-        $request = $this->getRequest();
-        $translator = $this->serviceLocator->get('translator');
+    public function main()
+    {   
+        $request = $this->serviceLocator->get('request');
         $configManager = $this->serviceLocator->get('configManager');
-        $systemInfoService = $this->serviceLocator->get('App\Service\SystemInfo');
-        $errorsService = $this->serviceLocator->get('App\Service\Errors');
-        $rendererStrategy = $this->serviceLocator->get('App\View\RendererStrategy');        
-        $rendererStrategyOptions = $this->serviceLocator->get('Users\View\RendererStrategyOptions');    
+        $translator = $this->serviceLocator->get('translator');
         $formElementManager = $this->serviceLocator->get('FormElementManager');
-        $application = $this->serviceLocator->get('application');
-        $eventManager = $application->getEventManager();
         $config = $this->serviceLocator->get('config');
-        $usersConfig = $config['Users'];        
-                        
-        if ($usersConfig['useRedirectParameterIfPresent'] && $this->params()->fromPost('redirect', $this->params()->fromQuery('redirect'))) {
-            $redirect = $this->params()->fromQuery('redirect');
-        } else {
-            $redirect = false;
-        }
-        
+        $usersConfig = $config['Users'];   
+                
         $allowReg = (bool)$configManager->get('users', 'allow_registration');
         
-        $resultArray = array(
+        $result = array(
             'allowRegistration' => $allowReg,
         );
         
@@ -45,8 +31,8 @@ class RegisterController extends AbstractActionController
             $form = $formFactory->getForm();
 
 
-            if ($request->isPost()) {
-                $form->setData($request->getPost());
+            if ('register' == $this->params()->fromPost('task')) {
+                $form->setData($this->params()->fromPost());
 
                 if ($form->isValid()) {
                     $registrationService = $this->serviceLocator->get('Users\Service\UserRegistration');
@@ -86,44 +72,16 @@ class RegisterController extends AbstractActionController
                             $res = $authenticationService->authenticate();
                         }
 
-                        if ($redirect) {
-                            return $this->redirect()->toUrl($redirect);
-                        }
-
-                        return $this->redirect()->toRoute($usersConfig['registrationRedirectRoute']);
+                        return $this->redirect()->refresh();
                     } else {
-                        $resultArray['errMsg'] = 'При регистрации произошли ошибки';
+                        $result['errMsg'] = 'При регистрации произошли ошибки';
                     }
                 }
             }
 
-            $resultArray['form'] = $form;
+            $result['form'] = $form;
         }
-               
         
-        $this->setHtmlTemplate($usersConfig['registerPageTemplate']);
-        
-        $rendererStrategy->setFormat($rendererStrategyOptions->getFormat())
-                         ->setTarget($this)
-                         ->setRendererStrategies($rendererStrategyOptions->getRendererStrategies())
-                         ->setResultComposers($rendererStrategyOptions->getResultComposers());
-        
-        $rendererStrategy->registerStrategy();        
-                      
-        $eventManager->trigger('prepare_output', $this, array($resultArray));
-                        
-        return $rendererStrategy->getResult($resultArray);
-    }
-    
-    public function setHtmlTemplate($template)
-    {
-        $this->htmlTemplate = $template;
-        return $this;
-    }
-    
-    public function getHtmlTemplate()
-    {
-        return $this->htmlTemplate;
-    }
-        
+        return $result;
+    }    
 }

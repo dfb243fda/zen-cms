@@ -1,13 +1,6 @@
 <?php
 
-$sm = $this->getHelperPluginManager()->getServiceLocator();
-
-$factory = new Zend\Form\Factory($sm->get('FormElementManager'));
-$formConfig = $this->formConfig;
-
-$form = $factory->createForm($formConfig);   
-$form->setAttribute('method', 'post');
-$form->setData($this->formValues);
+$form = $this->form;   
 $form->prepare();
 
 if (isset($this->formMsg)) {
@@ -29,15 +22,24 @@ if (isset($this->formMsg)) {
                 <div><?php echo $this->formInput($form->get('credential')) ?></div>
             </div>
             <input type="hidden" name="remember_me" value="1" />
+            <input type="hidden" name="task" value="login" />
             <?php if ($this->redirect): ?>
                 <input type="hidden" name="redirect" value="<?php echo $this->redirect ?>" />
             <?php endif ?>
             <div class="b-login_form__sbmt_div">
                 <input type="submit" name="submit" id="submit" value="<?php echo $this->translate('Users:Login btn') ?>">
             </div>
-            <?php if ($this->enableRegistration) : ?>
+            <?php if ($this->allowRegistration) : ?>
             <div class="b-login_form__register_div">
-                <a href="<?php echo $this->url('register') ?>"><?php echo $this->translate('Users: Sign up') ?></a>
+                <a href="<?php echo $this->url('register', array(), $this->redirect ? array('query' => array('redirect' => $this->redirect)) : array()) ?>"><?php echo $this->translate('Users: Sign up') ?></a>
+            </div>
+            <?php endif; ?>
+            <?php if ($this->loginza) : ?>
+            <script src="http://loginza.ru/js/widget.js" type="text/javascript"></script>
+            <div class="b-login_form__loginza_div">
+                <a href="http://loginza.ru/api/widget?token_url=<?php echo $this->serverUrl() . $this->url('loginza', array(), $this->redirect ? array('query' => array('redirect' => $this->redirect)) : array()) ?>" class="loginza">
+                    <img src="http://loginza.ru/img/sign_in_button_gray.gif" alt="Войти через loginza"/>
+                </a>                    
             </div>
             <?php endif; ?>
         </div>            

@@ -33,10 +33,9 @@ class LoginController extends AbstractActionController
             $redirect = false;
         }
         
-        if ($this->request->isPost()) {   
-            $formElementManager = $this->serviceLocator->get('FormElementManager');
+        $form = $formElementManager->get('Users\Form\LoginForm');
         
-            $form = $formElementManager->get('Users\Form\LoginForm');
+        if ($this->request->isPost()) {
             $form->setData($this->request->getPost());
             
             $authService = $this->serviceLocator->get('Users\Service\UserAuthentication');
@@ -50,17 +49,15 @@ class LoginController extends AbstractActionController
                 $this->flashMessenger()->setNamespace('users-login-form')->addMessage($translator->translate('Users:Failed login msg'));
                 return $this->redirect()->toRoute(static::ROUTE_LOGIN, array(), array('query' => $redirect ? array('query' => array('redirect' => $redirect)) : array()));
             }
-        } else {
-            $loginForm = $formElementManager->get('Users\Form\LoginForm');
-            
+        } else {            
             $fm = $this->flashMessenger()->setNamespace('users-login-form')->getMessages();
             if (isset($fm[0])) {
-                $loginForm->get('identity')->setMessages(array($fm[0]));
+                $form->get('identity')->setMessages(array($fm[0]));
             }      
             
-            $resultArray['form'] = $loginForm;
+            $resultArray['form'] = $form;
             $resultArray['redirect'] = $redirect;
-            $resultArray['enableRegistration'] = (bool)$configManager->get('users', 'allow_registration');
+            $resultArray['allowRegistration'] = (bool)$configManager->get('users', 'allow_registration');
             $resultArray['loginza'] = $loginzaService->getLoginzaConfig();
         }
         

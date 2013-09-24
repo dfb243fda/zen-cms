@@ -7,6 +7,64 @@ return array(
         'version' => '0.1',
         'isRequired' => true,
         
+        'default_templates' => array(
+            array(
+                'title' => 'i18n::Users:Login form template',
+                'name' => 'login_form.phtml',
+                'type' => 'content_template',
+                'method' => 'LoginForm',
+            ),
+            array(
+                'title' => 'i18n::Users:Registration form template',
+                'name' => 'registration_form.phtml',
+                'type' => 'content_template',
+                'method' => 'RegistrationForm',
+            ),
+        ),
+        
+        'methods' => array(
+            'UsersList' => array(
+                'service' => 'Users\Method\UsersList',
+                'title' => 'i18n::Users:Users list method',
+                'description' => 'i18n::Users:Users list method description',
+                'type' => 'be',
+                'menu_group' => 'users',
+            ),
+            'EditUser' => array(
+                'service' => 'Users\Method\EditUser',
+                'title' => 'i18n::Users:Users edit method',
+                'description' => 'i18n::Users:Users edit method description',
+                'type' => 'be',
+                'breadcrumbPrevMethod' => 'UsersList',
+            ),
+            'AddUser' => array(
+                'service' => 'Users\Method\AddUser',
+                'title' => 'i18n::Users:Add user method',
+                'description' => 'i18n::Users:Add user method description',
+                'type' => 'be',
+                'breadcrumbPrevMethod' => 'UsersList',
+            ),
+            'DeleteUser' => array(
+                'service' => 'Users\Method\DeleteUser',
+                'title' => 'i18n::Users:Users delete method',
+                'description' => 'i18n::Users:Users delete method description',
+                'type' => 'be',
+            ),
+            
+            'LoginForm' => array(
+                'service' => 'Users\Method\LoginForm',
+                'title' => 'i18n::Users:Users LoginForm method',
+                'description' => 'i18n::Users:Users LoginForm method description',
+                'type' => 'fe_content',
+            ),
+            'RegistrationForm' => array(
+                'service' => 'Users\Method\RegistrationForm',
+                'title' => 'i18n::Users:Users RegistrationForm method',
+                'description' => 'i18n::Users:Users RegistrationForm method description',
+                'type' => 'fe_content',
+            ),
+        ),
+        
         'loginPageTemplate' => 'page_template/Users/login.phtml',
         'registerPageTemplate' => 'page_template/Users/register.phtml',
         'loginzaPageTemplate' => 'page_template/Users/loginza.phtml',
@@ -42,6 +100,8 @@ return array(
     
     'service_manager' => array(
         'invokables' => array(
+            'Users\Service\UsersList' => 'Users\Service\UsersList',
+            
             'Users\Service\Installer' => 'Users\Service\Installer',
             'Users\Service\Loginza' => 'Users\Service\Loginza',
             

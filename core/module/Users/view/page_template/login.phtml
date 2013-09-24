@@ -43,7 +43,7 @@ $this->headLink()->appendStylesheet(ROOT_URL_SEGMENT . '/css/Users/users.css');
                 <div class="b-login_form__sbmt_div">
                     <input type="submit" name="submit" id="submit" value="<?php echo $this->translate('Users:Login btn') ?>">
                 </div>
-                <?php if ($this->enableRegistration) : ?>
+                <?php if ($this->allowRegistration) : ?>
                 <div class="b-login_form__register_div">
                     <a href="<?php echo $this->url('register', array(), $this->redirect ? array('query' => array('redirect' => $this->redirect)) : array()) ?>"><?php echo $this->translate('Users: Sign up') ?></a>
                 </div>

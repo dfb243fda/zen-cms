@@ -14,6 +14,8 @@ class Users implements ServiceManagerAwareInterface
     
     protected $usersTable = 'users';
     
+    protected $userRoleLinkerTable = 'user_role_linker';
+    
     /**
      * {@inheritDoc}
      */
@@ -97,5 +99,36 @@ class Users implements ServiceManagerAwareInterface
             return $userEntity;
         }
         return null;
+    }
+    
+    public function deleteUser($userId)
+    {
+        $db = $this->serviceManager->get('db');
+        $objectsCollection = $this->serviceManager->get('objectsCollection');
+        
+        $db->query('
+            delete from ' . DB_PREF . $this->userRoleLinkerTable . '
+            where user_id = ?
+        ', array($userId));
+        
+        $sqlRes = $db->query('
+            select object_id 
+            from ' . DB_PREF . $this->usersTable . '
+            where id = ?
+            ', array($userId))->toArray();
+        
+        
+        if (empty($sqlRes)) {
+            return false;
+        } else {
+            $objectsCollection->delObject($sqlRes[0]['object_id'], false);
+            
+            $db->query('
+                    delete from ' . DB_PREF . $this->usersTable . '
+                    where id = ?
+                ', array($userId));
+        }
+        
+        return true;
     }
 }

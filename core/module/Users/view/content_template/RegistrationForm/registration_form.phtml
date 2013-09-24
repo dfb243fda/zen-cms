@@ -1,13 +1,5 @@
 <?php
 
-$this->headTitle()->setSeparator(' - ');
-$this->headTitle('Zen-CMS');
-$this->headTitle($this->translate('Users:Authorization'));
-
-$this->headLink(array('rel' => 'icon', 'href' => ROOT_URL_SEGMENT . '/img/Users/favicon.ico'));   
-
-$this->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=utf-8');
-
 if (!$this->allowRegistration) {
     print "Registration is disabled";
     return;
@@ -16,13 +8,14 @@ if (!$this->allowRegistration) {
 $form = $this->form;
 $form->prepare();
 
-$this->headLink()->appendStylesheet(ROOT_URL_SEGMENT . '/css/Users/registration.css');
-
 ?>
 <div class="registration__wrap">
     <div class="registration">
         <?php
         echo $this->form()->openTag($form);  
+        ?>
+        <input type="hidden" name="task" value="register" />
+        <?php
         foreach ($form->getFieldsets() as $fieldset) :     
             ?>
             <div class="block">
