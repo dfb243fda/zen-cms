@@ -13,9 +13,9 @@ defined('APPLICATION_ENV')
     || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
 
 // Setup autoloading
-require __DIR__ . '/core/init_autoloader.php';
+require __DIR__ . '/init_autoloader.php';
 
-$tmpConfig = require __DIR__ . '/core/config/core.config.php';
+$tmpConfig = require __DIR__ . '/config/core.config.php';
 
 if (file_exists(APPLICATION_PATH  . '/config/application.config.php')) {
     $tmpFunc = require APPLICATION_PATH  . '/config/application.config.php';    
