@@ -244,8 +244,12 @@ return array(
     "Invalid type given, value should be a string" => "Недопустимый тип данных, значение должно быть строкой",
     "'%value%' is less than %min% characters long" => "'%value%' меньше разрешенной минимальной длины в %min% символов",
     "'%value%' is more than %max% characters long" => "'%value%' больше разрешенной максимальной длины в %max% символов",
+    "The input is less than %min% characters long" => "Введенное значение меньше разрешенной минимальной длины в %min% символов",
+    "The input is more than %max% characters long" => "Введенное значение больше разрешенной максимальной длины в %max% символов",
     
     "A record matching the input was found" => 'Данная запись уже существует в базе',
     
     "The input is not a valid email address. Use the basic format local-part@hostname" => "Введенное значение не является email-ом. Используйте формат local-part@hostname",
+    
+    "The two given tokens do not match" => "Два переданных значения не совпадают",
 );

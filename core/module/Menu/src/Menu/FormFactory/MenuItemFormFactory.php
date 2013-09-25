@@ -44,6 +44,9 @@ class MenuItemFormFactory implements ServiceManagerAwareInterface
     
     public function getForm()
     {
+        $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
+        $objectPropertyCollection = $this->serviceManager->get('objectPropertyCollection');
+        $objectsCollection = $this->serviceManager->get('objectsCollection');
         $formsMerger = $this->serviceManager->get('App\Form\FormsMerger');
         
         $baseForm = $this->serviceManager->get('FormElementManager')
@@ -51,15 +54,21 @@ class MenuItemFormFactory implements ServiceManagerAwareInterface
         
         $formsMerger->addForm($baseForm);
                 
-        if (null !== $this->objectTypeId) {
-            $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
-            
-            $objectType = $objectTypesCollection->getType($this->objectTypeId);     
-            
+        if (null === $this->objectTypeId) {
+            if (null !== $this->objectId) {
+                $object = $objectsCollection->getObject($this->objectId);
+                $objectTypeId = $object->getTypeId();
+                $objectType = $objectTypesCollection->getType($objectTypeId);                 
+                $formsMerger->addForm($objectType->getForm());
+            }
+        } else {
+            $objectType = $objectTypesCollection->getType($this->objectTypeId);             
             $formsMerger->addForm($objectType->getForm());
         }  
         
         $form = $formsMerger->getForm();
+        
+        $objectTypeId = $this->objectTypeId;
         
         if ($this->populateForm) {
             if (null === $this->objectId) {
@@ -75,10 +84,7 @@ class MenuItemFormFactory implements ServiceManagerAwareInterface
                         }
                     }
                 }
-            } else {            
-                $objectPropertyCollection = $this->serviceManager->get('objectPropertyCollection');
-                $objectsCollection = $this->serviceManager->get('objectsCollection');
-                
+            } else {        
                 $object = $objectsCollection->getObject($this->objectId);
                 $data = array(
                     'name' => $object->getName(),

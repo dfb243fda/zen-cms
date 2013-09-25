@@ -35,7 +35,6 @@ return array(
     'service_manager' => array(
         'invokables' => array(
             'Bootstrapper\Service\Constants' => 'Bootstrapper\Service\Constants',
-            'Bootstrapper\Service\Logger' => 'Bootstrapper\Service\Logger',
         ),
     ),
     

@@ -1,17 +1,8 @@
-<?php
-
-$sm = $this->getHelperPluginManager()->getServiceLocator();
-
-?>
-
 <div class="blocks">
     <?php
-    $factory = new Zend\Form\Factory($sm->get('FormElementManager'));
-    $formConfig = $this->formConfig;
     
-    $form = $factory->createForm($formConfig);   
+    $form = $this->form; 
     $form->setAttribute('class', 'form-2c');
-    $form->setData($this->formValues);
     $form->prepare();
     
     if (isset($this->formMsg)) {

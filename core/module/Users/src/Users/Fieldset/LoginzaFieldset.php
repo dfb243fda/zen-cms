@@ -40,7 +40,7 @@ class LoginzaFieldset extends Fieldset implements InputFilterProviderInterface, 
             'type' => 'checkbox',
             'name' => 'allow_loginza',
             'options' => array(
-                'label' => 'i18n::Dynamic config allow loginza',
+                'label' => 'Dynamic config allow loginza',
                 'description' => 'i18n::Dynamic config allow loginza description',
             ),
         ));
@@ -52,15 +52,15 @@ class LoginzaFieldset extends Fieldset implements InputFilterProviderInterface, 
         $this->add(array(
             'name' => 'domain',
             'options' => array(
-                'label' => 'i18n::Dynamic config loginza domain',
-                'description' => sprintf($translator->translate('i18n::Dynamic config loginza domain description %s'), $host),
+                'label' => 'Dynamic config loginza domain',
+                'description' => sprintf($translator->translate('Dynamic config loginza domain description %s'), $host),
             ),
         ));
         
         $this->add(array(
             'name' => 'widget_id',
             'options' => array(
-                'label' => 'i18n::Dynamic config loginza_widget_id',
+                'label' => 'Dynamic config loginza_widget_id',
                 'description' => 'i18n::Dynamic config loginza_widget_id description',
             ),
         ));
@@ -68,7 +68,7 @@ class LoginzaFieldset extends Fieldset implements InputFilterProviderInterface, 
         $this->add(array(
             'name' => 'secret',
             'options' => array(
-                'label' => 'i18n::Dynamic config loginza_secret',
+                'label' => 'Dynamic config loginza_secret',
                 'description' => 'i18n::Dynamic config loginza_secret description',
             ),
         ));
@@ -77,7 +77,7 @@ class LoginzaFieldset extends Fieldset implements InputFilterProviderInterface, 
             'type' => 'checkbox',
             'name' => 'secret_is_protected',
             'options' => array(
-                'label' => 'i18n::Dynamic config loginza_secret_is_protected',
+                'label' => 'Dynamic config loginza_secret_is_protected',
                 'description' => 'i18n::Dynamic config loginza_secret_is_protected description',
             ),
         ));

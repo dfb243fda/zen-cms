@@ -2,9 +2,33 @@
 
 namespace Users\Entity;
 
-class User implements UserInterface
+use Zend\ServiceManager\ServiceManager;
+use Zend\ServiceManager\ServiceManagerAwareInterface;
+use Zend\Crypt\Password\Bcrypt;
+use Zend\Db\Sql\Sql;
+
+class User implements ServiceManagerAwareInterface
 {
+    /**
+     * @var ServiceManager
+     */
+    protected $serviceManager;
+    
     protected $userData = array();
+    
+    protected $objectTypeId;
+    
+    protected $usersTable = 'users';
+    
+    protected $userRoleLinkerTable = 'user_role_linker';
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function setServiceManager(ServiceManager $serviceManager)
+    {
+        $this->serviceManager = $serviceManager;
+    }
     
     /**
      * Get id.
@@ -149,6 +173,17 @@ class User implements UserInterface
         return $this;
     }
     
+    public function getRoles()
+    {
+        return $this->userData['roles'];
+    }
+    
+    public function setRoles($roles)
+    {
+        $this->userData['roles'] = $roles;
+        return $this;
+    }
+    
     public function toArray()
     {
         return $this->userData;
@@ -158,5 +193,93 @@ class User implements UserInterface
     {
         $this->userData = $data;
         return $this;
+    }
+    
+    public function setObjectTypeId($objectTypeId)
+    {
+        $this->objectTypeId = $objectTypeId;
+        return $this;
+    }
+    
+    public function getForm($populateForm)
+    {
+        $formFactory = $this->serviceManager->get('Users\FormFactory\UserFormFactory');
+        $formFactory->setObjectTypeId($this->objectTypeId)
+                    ->setUserId($this->userData['id'])
+                    ->setPopulateForm($populateForm);
+        return $formFactory->getForm();
+    }
+    
+    public function editUser($data)
+    {
+        $insertFields = array();
+        $insertBase = array();
+
+        foreach ($data as $groupKey=>$groupData) {
+            foreach ($groupData as $fieldName=>$fieldVal) {
+                if ('field_' == substr($fieldName, 0, 6)) {
+                    $insertFields[substr($fieldName, 6)] = $fieldVal;
+                } else {
+                    $insertBase[$fieldName] = $fieldVal;
+                }
+            }
+        }
+        
+        $objectsCollection = $this->serviceManager->get('objectsCollection');
+        $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
+        $objectPropertyCollection = $this->serviceManager->get('objectPropertyCollection');
+        $db = $this->serviceManager->get('db');
+        $config = $this->serviceManager->get('config');
+        $usersConfig = $config['Users'];
+        
+        $userId = $this->userData['id'];
+        
+        $objectId = $this->userData['object_id'];
+        $objectTypeId = $insertBase['object_type_id'];
+        unset($insertBase['object_type_id']);
+
+        $roles = $insertBase['roles'];
+        unset($insertBase['roles']);
+
+        $db->query('delete from ' . DB_PREF . $this->userRoleLinkerTable . ' where user_id = ?', array($userId));
+        foreach ($roles as $roleId) {
+            $db->query('insert into ' . DB_PREF . $this->userRoleLinkerTable . ' (user_id, role_id) values (?, ?)', array($userId, $roleId));
+        }
+
+        unset($insertBase['passwordVerify']);
+        if ($insertBase['password'] == '') {
+            unset($insertBase['password']);
+        } else {
+            $bcrypt = new Bcrypt;
+            $bcrypt->setCost($usersConfig['passwordCost']);
+            $password = $bcrypt->create($insertBase['password']);
+
+            $insertBase['password'] = $password;
+        }   
+        
+
+        $sql = new Sql($db);
+        $update = $sql->update(DB_PREF . $this->usersTable)->set($insertBase)->where('id = ' . (int)$userId);
+        $sql->prepareStatementForSqlObject($update)->execute();  
+        
+        
+        $object = $objectsCollection->getObject($objectId);                
+        $object->setName('user-item')->setTypeId($objectTypeId)->save();
+
+        $objectType = $objectTypesCollection->getType($objectTypeId);
+        
+        $tmpFieldGroups = $objectType->getFieldGroups();
+        foreach ($tmpFieldGroups as $k=>$v) {
+            $fields = $v->getFields();
+
+            foreach ($fields as $k2=>$v2) {                    
+                if (array_key_exists($k2, $insertFields)) {
+                    $property = $objectPropertyCollection->getProperty($objectId, $k2); 
+                    $property->setValue($insertFields[$k2])->save();
+                }
+            }
+        }
+        
+        return true;
     }
 }

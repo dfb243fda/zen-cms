@@ -11,7 +11,6 @@ class EditProduct extends AbstractMethod
         $prodEntity = $this->serviceLocator->get('Catalog\Entity\ProductEntity');
         $catService = $this->serviceLocator->get('Catalog\Service\Catalog');
         $request = $this->serviceLocator->get('request');
-        $objectsCollection = $this->serviceLocator->get('objectsCollection');
         
         $result = array();
         
@@ -27,21 +26,16 @@ class EditProduct extends AbstractMethod
             return $result;
         }
         
-        $object = $objectsCollection->getObject($objectId);
-        
         $prodEntity->setObjectId($objectId);
                 
-        if (null === $this->params()->fromRoute('objectTypeId')) {            
-            $objectTypeId = $object->getTypeId();
-        } else {
+        if (null !== $this->params()->fromRoute('objectTypeId')) {  
             $objectTypeId = (int)$this->params()->fromRoute('objectTypeId');
             if (!in_array($objectTypeId, $catService->getProductTypeIds())) {
                 $result['errMsg'] = 'Передан неверный тип объекта ' . $objectTypeId;
                 return $result;
             }
+            $prodEntity->setObjectTypeId($objectTypeId);
         }
-        $prodEntity->setObjectTypeId($objectTypeId);
-            
         
         if ($request->isPost()) {
             $form = $prodEntity->getForm(false);

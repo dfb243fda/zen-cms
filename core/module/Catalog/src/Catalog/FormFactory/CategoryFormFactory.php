@@ -44,18 +44,27 @@ class CategoryFormFactory implements ServiceManagerAwareInterface
     
     public function getForm()
     {
+        $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
+        $objectPropertyCollection = $this->serviceManager->get('objectPropertyCollection');
+        $objectsCollection = $this->serviceManager->get('objectsCollection');
         $formsMerger = $this->serviceManager->get('App\Form\FormsMerger');
         
         $baseForm = $this->serviceManager->get('FormElementManager')
                                      ->get('Catalog\Form\BaseCategoryForm');  
         
         $formsMerger->addForm($baseForm);
+        
+        $objectTypeId = $this->objectTypeId;
                 
-        if (null !== $this->objectTypeId) {
-            $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
-            
-            $objectType = $objectTypesCollection->getType($this->objectTypeId);     
-            
+        if (null === $objectTypeId) {
+            if (null !== $this->objectId) {
+                $object = $objectsCollection->getObject($this->objectId);
+                $objectTypeId = $object->getTypeId();
+                $objectType = $objectTypesCollection->getType($objectTypeId);                 
+                $formsMerger->addForm($objectType->getForm());
+            }
+        } else {
+            $objectType = $objectTypesCollection->getType($objectTypeId); 
             $formsMerger->addForm($objectType->getForm());
         }  
         
@@ -64,7 +73,7 @@ class CategoryFormFactory implements ServiceManagerAwareInterface
         if ($this->populateForm) {
             if (null === $this->objectId) {
                 $data = array(
-                    'type_id' => $this->objectTypeId,
+                    'type_id' => $objectTypeId,
                 );
 
                 foreach ($form->getFieldsets() as $fieldset) {
@@ -75,14 +84,11 @@ class CategoryFormFactory implements ServiceManagerAwareInterface
                         }
                     }
                 }
-            } else {            
-                $objectPropertyCollection = $this->serviceManager->get('objectPropertyCollection');
-                $objectsCollection = $this->serviceManager->get('objectsCollection');
-                
+            } else {   
                 $object = $objectsCollection->getObject($this->objectId);
                 $data = array(
                     'name' => $object->getName(),
-                    'type_id' => $this->objectTypeId,
+                    'type_id' => $objectTypeId,
                 );
 
                 foreach ($form->getFieldsets() as $fieldset) {

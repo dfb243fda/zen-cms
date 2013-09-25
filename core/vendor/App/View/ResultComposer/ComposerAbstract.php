@@ -72,7 +72,11 @@ abstract class ComposerAbstract implements
 			if (is_array($value)) {
 				$this->removeObjectsFromArray($value);
 			} elseif (is_object($value)) {
-				$value = '[Object ' . get_class($value) . ']';;
+                if ($value instanceof \stdClass) {
+                    $value = (array)$value;
+                } else {
+                    $value = '[Object ' . get_class($value) . ']';
+                }				
 			}
 		}
 		unset($value);

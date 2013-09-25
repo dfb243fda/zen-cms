@@ -11,11 +11,16 @@ class Users implements ServiceManagerAwareInterface
     
     protected $typeIds;
     
-    protected $pagesGuid;
+    protected $usersGuid = 'user-item';
     
     public function setServiceManager(ServiceManager $serviceManager)
     {
         $this->serviceManager = $serviceManager;
+    }
+    
+    public function getUsersGuid()
+    {
+        return $this->usersGuid;
     }
     
     public function getTypeIds()
@@ -24,7 +29,7 @@ class Users implements ServiceManagerAwareInterface
             $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
             
             $typeIds = array();
-            $objectType = $objectTypesCollection->getType($this->pagesGuid);
+            $objectType = $objectTypesCollection->getType($this->usersGuid);
             $typeIds[] = $objectType->getId();
             $descendantTypeIds = $objectTypesCollection->getDescendantTypeIds($objectType->getId());
             $typeIds = array_merge($typeIds, $descendantTypeIds);

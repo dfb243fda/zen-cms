@@ -100,6 +100,7 @@ return array(
     
     'service_manager' => array(
         'invokables' => array(
+            'Users\Service\Users' => 'Users\Service\Users',
             'Users\Service\UsersList' => 'Users\Service\UsersList',
             
             'Users\Service\Installer' => 'Users\Service\Installer',
@@ -120,7 +121,8 @@ return array(
             
             'Users\View\ResultComposer\HtmlComposer' => 'Users\View\ResultComposer\HtmlComposer',
             
-            'Users\FormFactory\RegistrationFormFactory' => 'Users\FormFactory\RegistrationFormFactory',
+            'Users\FormFactory\RegistrationFormFactory' => 'Users\FormFactory\RegistrationFormFactory',            
+            'Users\FormFactory\UserFormFactory' => 'Users\FormFactory\UserFormFactory',
         ),
         'factories' => array(
             'Users\Authentication\Adapter\AdapterChain' => 'Users\Authentication\Adapter\AdapterChainServiceFactory',  

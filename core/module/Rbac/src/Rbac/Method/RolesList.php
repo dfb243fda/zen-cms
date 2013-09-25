@@ -23,32 +23,4 @@ class RolesList extends AbstractMethod
         return $result;
     }
     
-    
-    protected function getItems($parentId)
-    {                
-        $items = $this->rolesModel->getItems($parentId);
-        
-        foreach ($items as $k=>$row) {
-            $items[$k]['icons'] = array();
-            $items[$k]['icons']['editLink'] = $this->url()->fromRoute('admin/method', array(
-                'module' => 'Rbac',
-                'method' => 'EditRole',
-                'id' => $row['id']
-            ));
-            $items[$k]['icons']['addLink'] = $this->url()->fromRoute('admin/method', array(
-                'module' => 'Rbac',
-                'method' => 'AddRole',
-                'id' => $row['id']
-            ));
-            $items[$k]['icons']['delLink'] = 'zen.roles.delRole(\'' . $this->url()->fromRoute('admin/method', array(
-                'module' => 'Rbac',   
-                'method' => 'DeleteRole',
-            )) . '\', ' . $row['id'] . ')';            
-        }
-        
-        return array(
-            'items' => $items,
-        );
-    }
-    
 }

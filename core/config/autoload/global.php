@@ -109,32 +109,6 @@ return array(
 //            ),
         ),
     ),    
-    'log_writers' => array(
-        'db' => array(
-            'priority' => 10,
-            'options' => array(
-                'column' => array(
-                    'timestamp' => 'timestamp',
-                    'priority' => 'type',
-                    'message' => 'message',            
-                    'extra' => array(
-                        'line' => 'line',
-                        'errno' => 'errno',
-                        'file' => 'file',
-                        'class' => 'class',
-                        'function' => 'function',
-                        'uri' => 'uri',
-                        'client_ip' => 'client_ip',
-                        'user_id' => 'user_id',
-                    ),
-                ),
-                'table' => 'logs',
-            ),
-        ),
-        'bugHunter' => array(
-            'priority' => -1,
-        ),
-    ),
     'view_manager' => array(
         'display_not_found_reason' => true,
         'display_exceptions'       => true,

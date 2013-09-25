@@ -11,7 +11,6 @@ class EditCategory extends AbstractMethod
         $catEntity = $this->serviceLocator->get('Catalog\Entity\CategoryEntity');
         $catService = $this->serviceLocator->get('Catalog\Service\Catalog');
         $request = $this->serviceLocator->get('request');
-        $objectsCollection = $this->serviceLocator->get('objectsCollection');
         
         $result = array();
         
@@ -26,21 +25,17 @@ class EditCategory extends AbstractMethod
             $result['errMsg'] = 'Категория ' . $objectId . ' не найдена';
             return $result;
         } 
-                
-        $object = $objectsCollection->getObject($objectId);
-        
+                        
         $catEntity->setObjectId($objectId);
                 
-        if (null === $this->params()->fromRoute('objectTypeId')) {            
-            $objectTypeId = $object->getTypeId();
-        } else {
+        if (null !== $this->params()->fromRoute('objectTypeId')) {    
             $objectTypeId = (int)$this->params()->fromRoute('objectTypeId');
             if (!in_array($objectTypeId, $catService->getCategoryTypeIds())) {
                 $result['errMsg'] = 'Категория ' . $objectTypeId . ' не найдена';
                 return $result;
             }
-        }
-        $catEntity->setObjectTypeId($objectTypeId);
+            $catEntity->setObjectTypeId($objectTypeId);
+        }        
             
         
         if ($request->isPost()) {

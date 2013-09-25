@@ -10,9 +10,11 @@ class NoRecordExists extends AbstractRecord
         $this->setValue($value);
 
         $result = $this->query($value);
-        if ($result) {
-            $valid = false;
-            $this->error(self::ERROR_RECORD_FOUND);
+        if ($result) {            
+            if (!$this->exclusionUserId || ($this->exclusionUserId != $result->getId()) ) {
+                $valid = false;
+                $this->error(self::ERROR_RECORD_FOUND);
+            }
         }
 
         return $valid;

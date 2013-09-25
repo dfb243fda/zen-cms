@@ -17,14 +17,11 @@ class Module
         $locator = $this->serviceManager = $app->getServiceManager();
         
         $constants = $locator->get('Bootstrapper\Service\Constants');
-        $logger = $locator->get('Bootstrapper\Service\Logger');
         
         $constants->defineConstants();
         $this->setLocale();
         $this->setPhpIniSettings();
-        $this->setTimeZone();
-        $logger->init();
-        
+        $this->setTimeZone();        
     }
     
     public function getConfig()

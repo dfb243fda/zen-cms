@@ -34,19 +34,9 @@ class RegistrationBaseForm extends Form implements ServiceLocatorAwareInterface
     {
         $rootServiceManager = $this->serviceLocator->getServiceLocator();
         $objectTypesCollection = $rootServiceManager->get('objectTypesCollection');
-        $db = $rootServiceManager->get('db');
         $translator = $rootServiceManager->get('translator');
         $config = $rootServiceManager->get('config');
         $usersConfig = $config['Users'];
-
-        $sqlRes = $db->query('
-            select id, name 
-            from ' . DB_PREF . 'roles', array())->toArray();
-
-        $roles = array();
-        foreach ($sqlRes as $row) {
-            $roles[$row['id']] = $row['name'];
-        }
 
         $this->add(array(
             'name' => 'common',

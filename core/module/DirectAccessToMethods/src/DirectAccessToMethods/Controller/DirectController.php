@@ -10,8 +10,8 @@ class DirectController extends AbstractActionController
     public function indexAction()
     {
         $directAccessService = $this->serviceLocator->get('DirectAccessToMethods\Service\DirectAccess');
-        $systemInfoService = $this->serviceLocator->get('DirectAccessToMethods\Service\SystemInfo');
-        $errorsService = $this->serviceLocator->get('DirectAccessToMethods\Service\Errors');
+        $systemInfoService = $this->serviceLocator->get('App\Service\SystemInfo');
+        $errorsService = $this->serviceLocator->get('App\Service\Errors');
         $rendererStrategy = $this->serviceLocator->get('App\View\RendererStrategy');       
         $rendererStrategyOptions = $this->serviceLocator->get('DirectAccessToMethods\View\RendererStrategyOptions');    
         

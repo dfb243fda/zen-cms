@@ -3,59 +3,71 @@
 namespace Users\Method;
 
 use App\Method\AbstractMethod;
-use Users\Model\Users;
 
 class EditUser extends AbstractMethod
 {    
     public function main()
     {
-        $usersModel = new Users($this->serviceLocator);     
-        $request = $this->serviceLocator->get('request');
-        
         $result = array();
         
         $userId = $this->params()->fromRoute('id');
         if (null === $userId) {
-            throw new \Exception('user id is undefined');
+            $result['errMsg'] = 'user id is undefined';
+            return $result;
+        }
+        $userId = (int)$userId;
+        
+        $usersCollection = $this->serviceLocator->get('Users\Collection\Users');
+        $userEntity = $usersCollection->getUserById($userId);
+        $usersService = $this->serviceLocator->get('Users\Service\Users');
+        
+        if (!$userEntity) {
+            $result['errMsg'] = 'user ' . $userId . ' not found';
+            return $result;
         }
         
-        if ($this->params()->fromRoute('objectTypeId') !== null) {
-            $objectTypeId = (string)$this->params()->fromRoute('objectTypeId');
-            $usersModel->setObjectTypeId($objectTypeId);
-        }        
+        $request = $this->serviceLocator->get('request');
         
-        $form = $usersModel->getForm($userId);        
-        $formConfig = $form['formConfig'];
-        $formValues = $form['formValues'];
-        $formMessages = array();
+        if ($this->params()->fromRoute('objectTypeId') !== null) {
+            $objectTypeId = (int)$this->params()->fromRoute('objectTypeId');
+            if (!in_array($objectTypeId, $usersService->getTypeIds())) {
+                $result['errMsg'] = 'object type ' . $objectTypeId . ' is not user';
+                return $result;
+            }            
+            $userEntity->setObjectTypeId($objectTypeId);
+        }                
         
         if ($request->isPost()) {
-            $tmp = $usersModel->edit($userId, $this->params()->fromPost());
-            if ($tmp['success']) {
-                if (!$request->isXmlHttpRequest()) {
-                    $this->flashMessenger()->addSuccessMessage('Пользователь успешно изменен');
-                    return $this->redirect()->refresh();
-                }
+            $form = $userEntity->getForm(false); 
+            
+            $form->setData($this->params()->fromPost());
+            
+            if ($form->isValid()) {
+                if ($userEntity->editUser($form->getData())) {
+                    if (!$request->isXmlHttpRequest()) {
+                        $this->flashMessenger()->addSuccessMessage('Пользователь успешно изменен');
+                        return $this->redirect()->refresh();
+                    }
 
-                return array(
-                    'success' => true,
-                    'msg' => 'Пользователь успешно изменен',
-                );         
+                    return array(
+                        'success' => true,
+                        'msg' => 'Пользователь успешно изменен',
+                    );         
+                } else {
+                    $result['errMsg'] = 'При изменении пользователя произошли ошибки';
+                    $result['success'] = false;
+                }
             } else {
                 $result['success'] = false;
-                $formMessages = $tmp['form']->getMessages();
-                $formValues = $tmp['form']->getData();
-                unset($formValues['password']);
-                unset($formValues['passwordVerify']);
-            }
+            }            
+        } else {
+            $form = $userEntity->getForm(true); 
         }
         
         $result['contentTemplate'] = array(
-            'name' => 'content_template/Users/form_view.phtml',
+            'name' => 'content_template/Users/user_form.phtml',
             'data' => array(
-                'formConfig' => $formConfig,
-                'formValues' => $formValues,
-                'formMsg' => $formMessages,
+                'form' => $form,
             ),
         );
         

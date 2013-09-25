@@ -86,5 +86,7 @@ return array(
     'Users:Loginza settings for domain' => 'Настройки для одного домена',
     
     'Dynamic config loginza domain' => 'Домен',
-    'i18n::Dynamic config loginza domain description %s' => 'Оставьте это поле пустым, чтобы конфигурация действовала для любого домена. Пример домена "%s"',
+    'Dynamic config loginza domain description %s' => 'Оставьте это поле пустым, чтобы конфигурация действовала для любого домена. Пример домена "%s"',
+    
+    'Users:common fields group' => 'Основные параметры',
 );

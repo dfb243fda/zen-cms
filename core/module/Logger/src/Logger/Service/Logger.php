@@ -1,6 +1,6 @@
 <?php
 
-namespace Bootstrapper\Service;
+namespace Logger\Service;
 
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
@@ -34,7 +34,7 @@ class Logger implements ServiceManagerAwareInterface
             'request' => $request,
         ));        
         
-        foreach ($config['log_writers'] as $writer => $value) {
+        foreach ($config['Logger']['log_writers'] as $writer => $value) {
             switch ($writer) {
                 case 'db':
                     $logDbWriterOptions = $value['options'];

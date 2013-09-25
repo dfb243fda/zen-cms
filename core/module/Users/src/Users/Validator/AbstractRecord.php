@@ -30,6 +30,8 @@ abstract class AbstractRecord extends AbstractValidator
      * @var string
      */
     protected $key;
+    
+    protected $exclusionUserId;
 
     /**
      * Required options are:
@@ -42,7 +44,11 @@ abstract class AbstractRecord extends AbstractValidator
         }
 
         $this->setKey($options['key']);
-
+        
+        if (isset($options['exclusionUserId'])) {
+            $this->exclusionUserId = $options['exclusionUserId'];
+        }
+        
         parent::__construct($options);
     }
 

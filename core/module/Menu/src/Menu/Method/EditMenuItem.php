@@ -11,7 +11,6 @@ class EditMenuItem extends AbstractMethod
         $menuItemEntity = $this->serviceLocator->get('Menu\Entity\MenuItemEntity');
         $menuService = $this->serviceLocator->get('Menu\Service\Menu');
         $request = $this->serviceLocator->get('request');
-        $objectsCollection = $this->serviceLocator->get('objectsCollection');
         
         $result = array();
         
@@ -26,22 +25,17 @@ class EditMenuItem extends AbstractMethod
             $result['errMsg'] = 'Пункт меню ' . $objectId . ' не найден';
             return $result;
         }
-        
-        $object = $objectsCollection->getObject($objectId);
-        
+                
         $menuItemEntity->setObjectId($objectId);
                 
-        if (null === $this->params()->fromRoute('objectTypeId')) {            
-            $objectTypeId = $object->getTypeId();
-        } else {
+        if (null !== $this->params()->fromRoute('objectTypeId')) {
             $objectTypeId = (int)$this->params()->fromRoute('objectTypeId');
             if (!in_array($objectTypeId, $menuService->getItemTypeIds())) {
                 $result['errMsg'] = 'Передан неверный тип объекта ' . $objectTypeId;
                 return $result;
             }
+            $menuItemEntity->setObjectTypeId($objectTypeId);
         }
-        $menuItemEntity->setObjectTypeId($objectTypeId);
-            
         
         if ($request->isPost()) {
             $form = $menuItemEntity->getForm(false);
