@@ -1,0 +1,32 @@
+<?php
+
+$this->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/Catalog/catalog.js');
+
+$data = array(
+    'createBtn' => array(
+        'text' => 'Создать категорию',
+        'link' => $this->url('admin/method', array(
+            'module' => 'Catalog',
+            'method' => 'AddCategory',
+        )),
+    ),
+    'url' => $this->url('admin/ProductList', array(
+        'task'   => 'get_data',
+    )),  
+    'columns' => array(
+        array(
+            array(                        
+                'title' => $this->translate('Catalog:Name field'),
+                'field' => 'name',
+                'width' => '200',
+            ),
+            array(                        
+                'title' => '',
+                'field' => 'icons',
+                'width' => '200',
+            )
+        )                    
+    ),
+);
+
+echo $this->partial('content_template/' . CURRENT_THEME . '/tree_grid.phtml', $data);

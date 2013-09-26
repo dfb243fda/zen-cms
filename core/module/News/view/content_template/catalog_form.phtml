@@ -1,0 +1,36 @@
+<?php
+
+$this->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/Catalog/catalog.js');
+
+$this->inlineScript()->appendScript('zen.catalog.initCatalogForm(' . json_encode($this->jsArgs) . ');');  
+
+?>
+
+<div class="blocks">
+    <?php
+    
+    $form = $this->form; 
+    $form->setAttribute('class', 'form-2c');
+    $form->prepare();
+        
+    echo $this->form()->openTag($form);
+    foreach ($form->getFieldsets() as $fieldset) :     
+        ?>
+        <div class="block">
+            <div class="block__title"><?php echo $fieldset->getLabel() ?></div>
+            <div class="block__body">
+                <?php           
+                foreach ($fieldset->getElements() as $el) :
+                    echo $this->formElementWrapper($el);
+                endforeach;
+                ?>
+            </div>
+        </div>
+        <?php
+    endforeach;
+    ?>
+    <div class="block__buttons block__buttons-left clearfix">
+        <dd><input type="submit" name="submit" id="submit" value="Сохранить"></dd>
+    </div>
+    <?php echo $this->form()->closeTag($form); ?>
+</div>    

@@ -23,7 +23,7 @@ return array(
         
         'search_object_types' => array(
             array(
-                'guid' => 'news',
+                'guid' => 'news-item',
                 'with_descendants' => true,
             ),
         ),
@@ -31,55 +31,42 @@ return array(
         'methods' => array(
             'NewsList' => array(
                 'service' => 'News\Method\NewsList',
-                'title' => 'i18n::NewsList method',
-                'description' => 'i18n::NewsList method description',
+                'title' => 'i18n::News:News list method',
+                'description' => 'i18n::News:News list method description',
                 'type' => 'be',
                 'menu_group' => 'news',
             ),
-            'EditRubric' => array(
-                'service' => 'News\Method\EditRubric',
-                'title' => 'i18n::News:EditRubric method',
-                'description' => 'i18n::News:EditRubric method description',
-                'type' => 'be',
-                'breadcrumbPrevMethod' => 'NewsList',
-            ),
-            'EditNews' => array(
-                'service' => 'News\Method\EditNews',
-                'title' => 'i18n::News:EditNews method',
-                'description' => 'i18n::News:EditNews method description',
-                'type' => 'be',
-                'breadcrumbPrevMethod' => 'NewsList',
-            ),
-            'AddRubric' => array(
-                'service' => 'News\Method\AddRubric',
-                'title' => 'i18n::News:AddRubric method',
-                'description' => 'i18n::News:AddRubric method description',
+            'Edit' => array(
+                'service' => 'News\Method\Edit',
+                'title' => 'i18n::News:News edit method',
+                'description' => 'i18n::News:News edit method description',
                 'type' => 'be',
                 'breadcrumbPrevMethod' => 'NewsList',
             ),
             'AddNews' => array(
                 'service' => 'News\Method\AddNews',
-                'title' => 'i18n::News:AddNews method',
-                'description' => 'i18n::News:AddNews method description',
+                'title' => 'i18n::News:Add news method',
+                'description' => 'i18n::News:Add news method description',
                 'type' => 'be',
                 'breadcrumbPrevMethod' => 'NewsList',
             ),
-            'DeleteRubric' => array(
-                'service' => 'News\Method\DeleteRubric',
-                'title' => 'i18n::News:DeleteRubric method',
-                'description' => 'i18n::News:DeleteRubric method description',
+            'AddNewsItem' => array(
+                'service' => 'News\Method\AddNewsItem',
+                'title' => 'i18n::News:Add news item method',
+                'description' => 'i18n::News:Add news item method description',
                 'type' => 'be',
+                'breadcrumbPrevMethod' => 'NewsList',
             ),
-            'DeleteNews' => array(
-                'service' => 'News\Method\DeleteNews',
-                'title' => 'i18n::News:DeleteNews method',
-                'description' => 'i18n::News:DeleteNews method description',
+            'Delete' => array(
+                'service' => 'News\Method\Delete',
+                'title' => 'i18n::News:News delete method',
+                'description' => 'i18n::News:News delete method description',
                 'type' => 'be',
             ),
             'FeNewsList' => array(
                 'service' => 'News\Method\FeNewsList',
-                'title' => 'i18n::News:FeNewsList method',
-                'description' => 'i18n::News:FeNewsList method description',
+                'title' => 'i18n::News:FeNews list method',
+                'description' => 'i18n::News:FeNews list method description',
                 'type' => 'fe_content',
                 'dynamic_templates' => true,
             ),
@@ -90,26 +77,23 @@ return array(
                 'type' => 'fe_content',
                 'dynamic_templates' => true,
             ),
+            
         ),
     ),
     
+    'search_url_query' => array(
+        'news-item' => function($sm, $objectId) {
+            $newsService = $sm->get('News\Service\News');
+            
+            return $newsService->getSingleNewsUrlQuery($objectId);
+        },
+    ),
+            
     'service_manager' => array(
         'invokables' => array(
-            'News\Service\Installer' => 'News\Service\Installer',
-            'News\Service\NewsTree' => 'News\Service\NewsTree',
             'News\Service\News' => 'News\Service\News',
-            'News\Collection\RubricsCollection' => 'News\Collection\RubricsCollection',
-            'News\Collection\NewsCollection' => 'News\Collection\NewsCollection',
-            
-            'News\FormFactory\RubricFormFactory' => 'News\FormFactory\RubricFormFactory',
-            'News\FormFactory\NewsFormFactory' => 'News\FormFactory\NewsFormFactory',
-            
-            'News\Entity\RubricEntity' => 'News\Entity\RubricEntity',
-            'News\Entity\NewsEntity' => 'News\Entity\NewsEntity',
-            
-            'News\Service\NewsUrl' => 'News\Service\NewsUrl',
         ),
-    ),
+    ),        
     
     'translator' => array(
         'translation_file_patterns' => array(
@@ -126,7 +110,7 @@ return array(
         ),
     ),
     'router' => array(
-        'routes' => array(
+        'routes' => array(            
             'admin' => array(
                 'child_routes' => array(
                     'NewsList' => array(
@@ -139,36 +123,6 @@ return array(
                             ),
                         ),
                     ),
-                    'EditRubric' => array(
-                        'type' => 'segment',
-                        'options' => array(
-                            'route' => 'News/EditRubric[/id_:id{/.}][/object_type_:objectTypeId{/.}][/][.:format]',
-                            'defaults' => array(
-                                'module' => 'News',
-                                'method' => 'EditRubric',
-                            ),
-                        ),
-                    ),
-                    'EditNews' => array(
-                        'type' => 'segment',
-                        'options' => array(
-                            'route' => 'News/EditNews[/id_:id{/.}][/object_type_:objectTypeId{/.}][/][.:format]',
-                            'defaults' => array(
-                                'module' => 'News',
-                                'method' => 'EditNews',
-                            ),
-                        ),
-                    ),
-                    'AddRubric' => array(
-                        'type' => 'segment',
-                        'options' => array(
-                            'route' => 'News/AddRubric[/id_:id{/.}][/object_type_:objectTypeId{/.}][/][.:format]',
-                            'defaults' => array(
-                                'module' => 'News',
-                                'method' => 'AddRubric',
-                            ),
-                        ),
-                    ),                   
                     'AddNews' => array(
                         'type' => 'segment',
                         'options' => array(
@@ -178,9 +132,29 @@ return array(
                                 'method' => 'AddNews',
                             ),
                         ),
+                    ),
+                    'EditNews' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route' => 'News/EditNews[/id_:id{/.}][/object_type_:objectTypeId{/.}][/][.:format]',
+                            'defaults' => array(
+                                'module' => 'News',
+                                'method' => 'Edit',
+                            ),
+                        ),
+                    ),
+                    'AddNewsItem' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route' => 'News/AddNewsItem[/id_:id{/.}][/object_type_:objectTypeId{/.}][/][.:format]',
+                            'defaults' => array(
+                                'module' => 'News',
+                                'method' => 'AddNewsItem',
+                            ),
+                        ),
                     )
                 ),
-            ),
+            ),            
         ),
     ),    
 );

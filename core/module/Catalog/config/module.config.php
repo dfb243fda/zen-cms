@@ -175,7 +175,7 @@ return array(
                             'route' => 'Catalog/AddProduct[/id_:id{/.}][/object_type_:objectTypeId{/.}][/][.:format]',
                             'defaults' => array(
                                 'module' => 'Catalog',
-                                'method' => 'AddMenuItem',
+                                'method' => 'AddProduct',
                             ),
                         ),
                     )
