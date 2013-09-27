@@ -1,22 +1,22 @@
 <?php
 
-$this->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/Catalog/catalog.js');
+$this->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/News/news.js');
 
 $data = array(
     'createBtn' => array(
-        'text' => 'Создать категорию',
+        'text' => 'Создать рубрику',
         'link' => $this->url('admin/method', array(
             'module' => 'Catalog',
-            'method' => 'AddCategory',
+            'method' => 'AddRubric',
         )),
     ),
-    'url' => $this->url('admin/ProductList', array(
+    'url' => $this->url('admin/NewsList', array(
         'task'   => 'get_data',
     )),  
     'columns' => array(
         array(
             array(                        
-                'title' => $this->translate('Catalog:Name field'),
+                'title' => $this->translate('News:Name field'),
                 'field' => 'name',
                 'width' => '200',
             ),

@@ -112,7 +112,7 @@ class Installer implements ServiceManagerAwareInterface
                 $objectType->setGuid($newsListContentGuid)->save();
 
 
-                $groupId = $objectType->addFieldsGroup('item-info', 'i18n::News:Item info fields group');
+                $groupId = $objectType->addFieldsGroup('common', 'i18n::News:Common fields group');
 
                 $fieldTypeId = $fieldTypesCollection->getFieldTypeIdByDataType('select');
 

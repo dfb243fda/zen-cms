@@ -31,8 +31,8 @@ return array(
         'methods' => array(
             'NewsList' => array(
                 'service' => 'News\Method\NewsList',
-                'title' => 'i18n::NewsList method',
-                'description' => 'i18n::NewsList method description',
+                'title' => 'i18n::News:NewsList method',
+                'description' => 'i18n::News:NewsList method description',
                 'type' => 'be',
                 'menu_group' => 'news',
             ),
