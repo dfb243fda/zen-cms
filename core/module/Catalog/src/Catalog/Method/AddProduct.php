@@ -26,10 +26,7 @@ class AddProduct extends AbstractMethod
         
         $prodCollection->setParentObjectId($parentObjectId);
         
-        if (null === $this->params()->fromRoute('objectTypeId')) {
-            $objectTypeId = $objectTypesCollection->getTypeIdByGuid($catService->getProductGuid());  
-            $prodCollection->setObjectTypeId($objectTypeId);
-        } else {
+        if (null !== $this->params()->fromRoute('objectTypeId')) {
             $objectTypeId = (int)$this->params()->fromRoute('objectTypeId');
             $prodCollection->setObjectTypeId($objectTypeId);
             

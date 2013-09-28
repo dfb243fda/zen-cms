@@ -1,14 +1,14 @@
 <?php
 
-namespace Catalog\Method;
+namespace News\Method;
 
 use App\Method\AbstractMethod;
 
-class DeleteProduct extends AbstractMethod
+class DeleteNews extends AbstractMethod
 {
     public function main()
     {        
-        $catService = $this->serviceLocator->get('Catalog\Service\Catalog');
+        $newsService = $this->serviceLocator->get('News\Service\News');
         $objectsCollection = $this->serviceLocator->get('objectsCollection');
         
         $result = array();
@@ -20,18 +20,16 @@ class DeleteProduct extends AbstractMethod
         
         $objectId = (int)$this->params()->fromPost('id');
           
-        if ($catService->isObjectProduct($objectId)) {
+        if ($newsService->isObjectNews($objectId)) {
             if ($objectsCollection->delObject($objectId)) {
-                $result['msg'] = 'Товар удален';
+                $result['msg'] = 'Новость удалена';
                 $result['success'] = true;
             } else {
-                $result['errMsg'] = 'Не удалось удалить товар';
+                $result['errMsg'] = 'Не удалось удалить новость';
                 $result['success'] = false;
             }
         } else {
-            $result = array(
-                'errMsg' => 'Товар ' . $objectId . ' не найден',
-            );
+            $result['errMsg'] = 'Новость ' . $objectId . ' не найдена';
         }
         
         return $result;

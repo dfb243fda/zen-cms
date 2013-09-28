@@ -48,6 +48,7 @@ class MenuFormFactory implements ServiceManagerAwareInterface
         $objectPropertyCollection = $this->serviceManager->get('objectPropertyCollection');
         $objectsCollection = $this->serviceManager->get('objectsCollection');
         $formsMerger = $this->serviceManager->get('App\Form\FormsMerger');
+        $menuService = $this->serviceManager->get('Menu\Service\Menu');
         
         $baseForm = $this->serviceManager->get('FormElementManager')
                                      ->get('Menu\Form\BaseMenuForm');  
@@ -57,16 +58,15 @@ class MenuFormFactory implements ServiceManagerAwareInterface
         $objectTypeId = $this->objectTypeId;
         
         if (null === $objectTypeId) {
-            if (null !== $this->objectId) {
+            if (null === $this->objectId) {
+                $objectTypeId = $objectTypesCollection->getTypeIdByGuid($menuService->getMenuGuid());  
+            } else {
                 $object = $objectsCollection->getObject($this->objectId);
                 $objectTypeId = $object->getTypeId();
-                $objectType = $objectTypesCollection->getType($objectTypeId);                 
-                $formsMerger->addForm($objectType->getForm());
             }
-        } else {
-            $objectType = $objectTypesCollection->getType($objectTypeId);             
-            $formsMerger->addForm($objectType->getForm());
-        }  
+        }
+        $objectType = $objectTypesCollection->getType($objectTypeId);  
+        $formsMerger->addForm($objectType->getForm());
         
         $form = $formsMerger->getForm();
         

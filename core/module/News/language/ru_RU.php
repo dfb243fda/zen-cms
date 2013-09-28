@@ -36,7 +36,7 @@ return array(
     
     
     'News:Rubric object type' => 'Рубрика новостей',
-    'News:News object type' => 'Новоть',
+    'News:News object type' => 'Новость',
     'News:Item text fields group' => 'Текст новости',
     
     'News:News preview' => 'Краткий текст новости',
@@ -50,4 +50,11 @@ return array(
     'News:Name field' => 'Название',
     
     'News menu group' => 'Новости',
+    
+    'News:(Rubric without name)' => '(Без названия)',
+    
+    'News:Rubric name field' => 'Название рубрика',
+    'News:News name field' => 'Заголовок новости',
+    
+    'News:News rubric id' => 'Рубрика',
 );

@@ -26,10 +26,7 @@ class AddMenuItem extends AbstractMethod
         
         $menuItemsCollection->setParentObjectId($parentObjectId);
         
-        if (null === $this->params()->fromRoute('objectTypeId')) {
-            $objectTypeId = $objectTypesCollection->getTypeIdByGuid($menuService->getItemGuid());  
-            $menuItemsCollection->setObjectTypeId($objectTypeId);
-        } else {
+        if (null !== $this->params()->fromRoute('objectTypeId')) {
             $objectTypeId = (int)$this->params()->fromRoute('objectTypeId');
             $menuItemsCollection->setObjectTypeId($objectTypeId);
             
@@ -44,7 +41,7 @@ class AddMenuItem extends AbstractMethod
             
             $data = $request->getPost()->toArray();
             if (empty($data['common']['name'])) {
-                $data['common']['name'] = $translator->translate('Pages:(Page without name)');
+                $data['common']['name'] = $translator->translate('Menu:(Menu item without name)');
             }
             $form->setData($data);
             

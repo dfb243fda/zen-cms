@@ -1,11 +1,11 @@
 <?php
 
-namespace Catalog\Service;
+namespace News\Service;
 
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
 
-class ProductsTree implements ServiceManagerAwareInterface
+class NewsTree implements ServiceManagerAwareInterface
 {
     protected $serviceManager;    
     
@@ -18,14 +18,13 @@ class ProductsTree implements ServiceManagerAwareInterface
     {
         $urlPlugin = $this->serviceManager->get('ControllerPluginManager')->get('url');
         $db = $this->serviceManager->get('db');
-        $catalogService = $this->serviceManager->get('Catalog\Service\Catalog');
+        $newsService = $this->serviceManager->get('News\Service\News');
         
         $items = array();
         
-        $typeIds = $catalogService->getTypeIds();        
+        $typeIds = $newsService->getTypeIds();        
         
-        $menuTypeIds = $catalogService->getCategoryTypeIds();
-        $itemTypeIds = $catalogService->getProductTypeIds();
+        $rubricTypeIds = $newsService->getRubricTypeIds();
         
         $typeIdsStr = implode(', ', $typeIds);
         
@@ -46,37 +45,37 @@ class ProductsTree implements ServiceManagerAwareInterface
                 $row['state'] = 'open';
             }        
             $row['icons'] = array();
-            if (in_array($row['type_id'], $menuTypeIds)) {
+            if (in_array($row['type_id'], $rubricTypeIds)) {
                 $row['icons']['editLink'] = $urlPlugin->fromRoute('admin/method', array(
-                    'module' => 'Catalog',
-                    'method' => 'EditCategory',
+                    'module' => 'News',
+                    'method' => 'EditRubric',
                     'id' => $row['id']
                 ));
             } else {
                 $row['icons']['editLink'] = $urlPlugin->fromRoute('admin/method', array(
-                    'module' => 'Catalog',
-                    'method' => 'EditProduct',
+                    'module' => 'News',
+                    'method' => 'EditNews',
                     'id' => $row['id']
                 ));
             }
             
             if (0 == $parentId) {
                 $row['icons']['addLink'] = $urlPlugin->fromRoute('admin/method', array(
-                    'module' => 'Catalog',
-                    'method' => 'AddProduct',
+                    'module' => 'News',
+                    'method' => 'AddNews',
                     'id' => $row['id']
                 ));
             }
             
-            if (in_array($row['type_id'], $menuTypeIds)) {
-                $row['icons']['delLink'] = 'zen.catalog.delCategory(\'' . $urlPlugin->fromRoute('admin/method', array(
-                    'module' => 'Catalog',   
-                    'method' => 'DeleteCategory',
+            if (in_array($row['type_id'], $rubricTypeIds)) {
+                $row['icons']['delLink'] = 'zen.news.delRubric(\'' . $urlPlugin->fromRoute('admin/method', array(
+                    'module' => 'News',   
+                    'method' => 'DeleteRubric',
                 )) . '\', ' . $row['id'] . ')';
             } else {
-                $row['icons']['delLink'] = 'zen.catalog.delProduct(\'' . $urlPlugin->fromRoute('admin/method', array(
-                    'module' => 'Catalog',   
-                    'method' => 'DeleteProduct',
+                $row['icons']['delLink'] = 'zen.news.delNews(\'' . $urlPlugin->fromRoute('admin/method', array(
+                    'module' => 'News',   
+                    'method' => 'DeleteNews',
                 )) . '\', ' . $row['id'] . ')';
             }
             

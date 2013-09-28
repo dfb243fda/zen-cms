@@ -24,8 +24,7 @@ class ProductsTree implements ServiceManagerAwareInterface
         
         $typeIds = $catalogService->getTypeIds();        
         
-        $menuTypeIds = $catalogService->getCategoryTypeIds();
-        $itemTypeIds = $catalogService->getProductTypeIds();
+        $catTypeIds = $catalogService->getCategoryTypeIds();
         
         $typeIdsStr = implode(', ', $typeIds);
         
@@ -46,7 +45,7 @@ class ProductsTree implements ServiceManagerAwareInterface
                 $row['state'] = 'open';
             }        
             $row['icons'] = array();
-            if (in_array($row['type_id'], $menuTypeIds)) {
+            if (in_array($row['type_id'], $catTypeIds)) {
                 $row['icons']['editLink'] = $urlPlugin->fromRoute('admin/method', array(
                     'module' => 'Catalog',
                     'method' => 'EditCategory',
@@ -68,7 +67,7 @@ class ProductsTree implements ServiceManagerAwareInterface
                 ));
             }
             
-            if (in_array($row['type_id'], $menuTypeIds)) {
+            if (in_array($row['type_id'], $catTypeIds)) {
                 $row['icons']['delLink'] = 'zen.catalog.delCategory(\'' . $urlPlugin->fromRoute('admin/method', array(
                     'module' => 'Catalog',   
                     'method' => 'DeleteCategory',

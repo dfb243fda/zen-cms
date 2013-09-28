@@ -1,10 +1,10 @@
 <?php
 
-namespace Catalog\Method;
+namespace News\Method;
 
 use Pages\AbstractMethod\FeContentMethod;
 
-class FeProductList extends FeContentMethod
+class FeNewsList extends FeContentMethod
 {
     public function main()
     {        
@@ -12,15 +12,15 @@ class FeProductList extends FeContentMethod
         $objectTypesCollection = $this->serviceLocator->get('objectTypesCollection');
         $objectsCollection = $this->serviceLocator->get('objectsCollection');
         $objectPropertyCollection = $this->serviceLocator->get('objectPropertyCollection');
-        $catalogUrlService = $this->serviceLocator->get('Catalog\Service\CatalogUrl');
+        $newsUrlService = $this->serviceLocator->get('News\Service\NewsUrl');
         
         $result = array();
         
-        $categoriesId = $this->contentData['fieldGroups']['common']['fields']['product_cat_id'];
+        $rubricsId = $this->contentData['fieldGroups']['common']['fields']['news_rubric_id'];
         
-        $categoriesId = array_map(function($v) use ($db) {
+        $rubricsId = array_map(function($v) use ($db) {
             return $db->getPlatform()->quoteValue($v);
-        }, $categoriesId);
+        }, $rubricsId);
         
         $pageNum = (int)$this->params()->fromQuery('p', 1);
         if ($pageNum < 1) {
@@ -31,7 +31,7 @@ class FeProductList extends FeContentMethod
         $sqlRes = $db->query('
             select count(id) as cnt
             from ' . DB_PREF . 'objects 
-            where parent_id IN (' . implode(', ', $categoriesId) . ') 
+            where parent_id IN (' . implode(', ', $rubricsId) . ') 
                 and is_active = 1 
                 and is_deleted = 0', array())->toArray();
         
@@ -40,7 +40,7 @@ class FeProductList extends FeContentMethod
         $sqlRes = $db->query('
             select * 
             from ' . DB_PREF . 'objects 
-            where parent_id IN (' . implode(', ', $categoriesId) . ') 
+            where parent_id IN (' . implode(', ', $rubricsId) . ') 
                 and is_active = 1 
                 and is_deleted = 0 
             order by created_time desc
@@ -52,7 +52,7 @@ class FeProductList extends FeContentMethod
 
             $objectType = $objectTypesCollection->getType($object->getTypeId());
             
-            $row['link'] = $catalogUrlService->getSingleProductUrl($objectId);
+            $row['link'] = $newsUrlService->getNewsItemUrl($objectId);
 
             $row['fieldGroups'] = array();
 

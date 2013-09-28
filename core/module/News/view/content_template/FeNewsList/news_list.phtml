@@ -1,0 +1,18 @@
+<div class="news-list">
+    <?php
+    if (empty($this->items)) :
+        ?>
+        <div class="news-list__err-msg">Новостей нет</div>
+        <?php
+    else :    
+        foreach ($this->items as $item) : ?>
+            <div class="news-list__item">
+                <div class="news-list__item-title"><a href="<?php echo $item['link'] ?>"><?php echo $item['name'] ?></a></div>
+                <div class="news-list__item-body"><?php echo $item['fieldGroups']['news-text']['preview'] ?></div>
+            </div>
+        <?php
+        endforeach;
+        echo $this->partial('content_template/' . CURRENT_THEME . '/page_nav.phtml');
+    endif;    
+    ?>
+</div>

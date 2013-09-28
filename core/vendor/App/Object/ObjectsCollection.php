@@ -95,6 +95,8 @@ class ObjectsCollection implements ServiceManagerAwareInterface
         $db = $this->serviceManager->get('db');
         
         if ($this->isExists($objectId)) {
+            $childrenObjectIds = $this->getChildrenObjectIds($objectId);
+            
             if ($flagAsDelete) {
                 $db->query('
                     update ' . DB_PREF . $this->objectsTable . ' 
@@ -109,10 +111,33 @@ class ObjectsCollection implements ServiceManagerAwareInterface
             if (array_key_exists($objectId, $this->objects)) {
                 unset($this->objects[$objectId]);
             }           
+            
+            foreach ($childrenObjectIds as $id) {
+                $this->delObject($id, $flagAsDelete);
+            }
+            
             return true;
         } else {
             return false;
         }
+    }
+    
+    public function getChildrenObjectIds($parentId)
+    {                
+        $db = $this->serviceManager->get('db');
+        
+        $query = '
+            SELECT id 
+            FROM ' . DB_PREF . $this->objectsTable . ' 
+            WHERE parent_id = ?';
+
+        $sqlRes = $db->query($query, array($parentId))->toArray();
+
+        $ids = array();
+        foreach ($sqlRes as $row) {
+            $ids[] = $row['id'];
+        }
+        return $ids;
     }
         
     public function getObject($objectId, $objectData = null)

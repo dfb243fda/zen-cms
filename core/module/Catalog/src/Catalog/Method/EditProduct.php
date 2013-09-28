@@ -39,7 +39,12 @@ class EditProduct extends AbstractMethod
         
         if ($request->isPost()) {
             $form = $prodEntity->getForm(false);
-            $form->setData($request->getPost());
+            
+            $data = $request->getPost()->toArray();
+            if (empty($data['common']['name'])) {
+                $data['common']['name'] = $translator->translate('Catalog:(Product without name)');
+            }
+            $form->setData($data);
             
             if ($form->isValid()) {
                 if ($prodEntity->editProduct($form->getData())) {

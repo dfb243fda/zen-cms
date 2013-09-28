@@ -1,9 +1,9 @@
-zen.catalog = zen.catalog || {};
+zen.news = zen.news || {};
 
-zen.apply(zen.catalog, {
-    delProduct: function(url, id) {
-        jConfirm('Вы собираетесь удалить товар <strong>после удаления его нельзя будет восстановить</strong>',
-            'Вы действительно хотите удалить товар?', 
+zen.apply(zen.news, {
+    delNews: function(url, id) {
+        jConfirm('Вы собираетесь удалить новость <strong>после удаления её нельзя будет восстановить</strong>',
+            'Вы действительно хотите удалить новость?', 
             function(r) {
                 if (r) {
                     $.ajax({
@@ -27,9 +27,9 @@ zen.apply(zen.catalog, {
             }
        );
     },
-    delCategory: function(url, id) {
-        jConfirm('Вы собираетесь удалить катеогрию товаров <strong>после удаления её нельзя будет восстановить</strong>',
-            'Вы действительно хотите удалить категорию товаров?', 
+    delRubric: function(url, id) {
+        jConfirm('Вы собираетесь удалить рубрику новостей <strong>после удаления её нельзя будет восстановить</strong>',
+            'Вы действительно хотите удалить рубрику новостей?', 
             function(r) {
                 if (r) {
                     $.ajax({
@@ -53,7 +53,7 @@ zen.apply(zen.catalog, {
             }
        );
     },
-    initCatalogForm : function(data) {
+    initNewsForm : function(data) {
         $('#object_type_id').change(function() {
             var $this = $(this);
             jConfirm('Вы собираетесь изменить тип данных, поля формы изменятся',

@@ -1,38 +1,38 @@
 <?php
 
-namespace Catalog\Service;
+namespace News\Service;
 
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
 
-class CatalogUrl implements ServiceManagerAwareInterface
+class NewsUrl implements ServiceManagerAwareInterface
 {
     protected $serviceManager;
     
-    protected $singleProductPage;
+    protected $newsItemPage;
     
     public function setServiceManager(ServiceManager $serviceManager)
     {
         $this->serviceManager = $serviceManager;
     }
     
-    public function getSingleProductUrl($objectId)
+    public function getNewsItemUrl($objectId)
     {
-        $urlQuery = $this->getSingleProductUrlQuery($objectId);
+        $urlQuery = $this->getNewsItemUrlQuery($objectId);
         if (null !== $urlQuery) {
             $urlQuery = ROOT_URL_SEGMENT . $urlQuery;
         }
         return $urlQuery;
     }
     
-    public function getSingleProductUrlQuery($objectId)
+    public function getNewsItemUrlQuery($objectId)
     {
-        if (null === $this->singleProductPage) {
+        if (null === $this->newsItemPage) {
             $db = $this->serviceManager->get('db');
 
             $sqlRes = $db->query('
                 select id from ' . DB_PREF . 'page_content_types 
-                where module = ? and method = ?', array('Catalog', 'FeProductItem'))->toArray();
+                where module = ? and method = ?', array('News', 'FeNewsItem'))->toArray();
 
             if (!empty($sqlRes)) {
                 $typeId = $sqlRes[0]['id'];
@@ -44,15 +44,15 @@ class CatalogUrl implements ServiceManagerAwareInterface
                         and is_deleted = 0', array($typeId))->toArray();
 
                 if (!empty($sqlRes)) {
-                    $this->singleProductPage = $sqlRes[0]['page_id'];
+                    $this->newsItemPage = $sqlRes[0]['page_id'];
                 }
             }
         }
         
         
-        if (null !== $this->singleProductPage) {
+        if (null !== $this->newsItemPage) {
             $pageUrlService = $this->serviceManager->get('Pages\Service\PageUrl');            
-            $urlParams = $pageUrlService->getPageUrlParams($this->singleProductPage);
+            $urlParams = $pageUrlService->getPageUrlParams($this->newsItemPage);
             
             if (is_array($urlParams)) {
                 $urlParams['itemId'] = $objectId;

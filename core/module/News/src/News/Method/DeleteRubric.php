@@ -1,14 +1,14 @@
 <?php
 
-namespace Catalog\Method;
+namespace News\Method;
 
 use App\Method\AbstractMethod;
 
-class DeleteCategory extends AbstractMethod
+class DeleteRubric extends AbstractMethod
 {
     public function main()
     {        
-        $catService = $this->serviceLocator->get('Catalog\Service\Catalog');
+        $newsService = $this->serviceLocator->get('News\Service\News');
         $objectsCollection = $this->serviceLocator->get('objectsCollection');
         
         $result = array();
@@ -20,17 +20,17 @@ class DeleteCategory extends AbstractMethod
         
         $objectId = (int)$this->params()->fromPost('id');
           
-        if ($catService->isObjectCategory($objectId)) {
+        if ($newsService->isObjectRubric($objectId)) {
             if ($objectsCollection->delObject($objectId)) {
-                $result['msg'] = 'Категория удалена';
+                $result['msg'] = 'Рубрика удалена';
                 $result['success'] = true;
             } else {
-                $result['errMsg'] = 'Не удалось удалить категорию';
+                $result['errMsg'] = 'Не удалось удалить рубрику';
                 $result['success'] = false;
             }
         } else {
             $result = array(
-                'errMsg' => 'Категория ' . $objectId . ' не найдена',
+                'errMsg' => 'Рубрика ' . $objectId . ' не найдена',
             );
         }
         

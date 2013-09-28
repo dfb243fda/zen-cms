@@ -30,9 +30,6 @@ class MenuCollection implements ServiceManagerAwareInterface
         $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
         $menuService = $this->serviceManager->get('Menu\Service\Menu');
         
-        $objectTypeId = $this->objectTypeId;
-        $objectType = $objectTypesCollection->getType($objectTypeId);
-        
         $insertFields = array();
         $insertBase = array();
 
@@ -45,6 +42,9 @@ class MenuCollection implements ServiceManagerAwareInterface
                 }
             }
         }
+        
+        $objectTypeId = $insertBase['type_id'];
+        $objectType = $objectTypesCollection->getType($objectTypeId);
         
         $typeIds = $menuService->getMenuTypeIds();
         $typeIds = array_map(function ($id) use ($db) {

@@ -16,10 +16,7 @@ class AddCategory extends AbstractMethod
         
         $result = array();
         
-        if (null === $this->params()->fromRoute('objectTypeId')) {
-            $objectTypeId = $objectTypesCollection->getTypeIdByGuid($catalogService->getCategoryGuid());  
-            $categoriesCollection->setObjectTypeId($objectTypeId);
-        } else {
+        if (null !== $this->params()->fromRoute('objectTypeId')) {
             $objectTypeId = (int)$this->params()->fromRoute('objectTypeId');
             $categoriesCollection->setObjectTypeId($objectTypeId);
             
@@ -34,7 +31,7 @@ class AddCategory extends AbstractMethod
             
             $data = $request->getPost()->toArray();
             if (empty($data['common']['name'])) {
-                $data['common']['name'] = $translator->translate('Pages:(Page without name)');
+                $data['common']['name'] = $translator->translate('Catalog:(Category without name)');
             }
             $form->setData($data);
             

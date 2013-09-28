@@ -30,9 +30,6 @@ class CategoriesCollection implements ServiceManagerAwareInterface
         $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
         $catalogService = $this->serviceManager->get('Catalog\Service\Catalog');
         
-        $objectTypeId = $this->objectTypeId;
-        $objectType = $objectTypesCollection->getType($objectTypeId);
-        
         $insertFields = array();
         $insertBase = array();
 
@@ -45,6 +42,9 @@ class CategoriesCollection implements ServiceManagerAwareInterface
                 }
             }
         }
+        
+        $objectTypeId = $insertBase['type_id'];
+        $objectType = $objectTypesCollection->getType($objectTypeId);
         
         $typeIds = $catalogService->getCategoryTypeIds();
         $typeIds = array_map(function ($id) use ($db) {

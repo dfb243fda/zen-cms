@@ -39,7 +39,12 @@ class EditMenuItem extends AbstractMethod
         
         if ($request->isPost()) {
             $form = $menuItemEntity->getForm(false);
-            $form->setData($request->getPost());
+            
+            $data = $request->getPost()->toArray();
+            if (empty($data['common']['name'])) {
+                $data['common']['name'] = $translator->translate('Menu:(Menu item without name)');
+            }
+            $form->setData($data);
             
             if ($form->isValid()) {
                 if ($menuItemEntity->editMenuItem($form->getData())) {

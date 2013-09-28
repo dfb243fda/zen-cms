@@ -47,4 +47,5 @@ return array(
     'Menu:Item name field' => 'Название пункта меню',
     
     'Menu:(Without name)' => '(Без названия)',
+    'Menu:(Menu item without name)' => '(Без названия)',
 );

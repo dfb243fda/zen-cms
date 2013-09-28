@@ -1,11 +1,11 @@
 <?php
 
-namespace Catalog\Collection;
+namespace News\Collection;
 
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
 
-class ProductsCollection implements ServiceManagerAwareInterface
+class NewsCollection implements ServiceManagerAwareInterface
 {
     protected $serviceManager;
     
@@ -30,18 +30,15 @@ class ProductsCollection implements ServiceManagerAwareInterface
         return $this;
     }
     
-    public function addMenuItem($data)
+    public function addNews($data)
     {
         $db = $this->serviceManager->get('db');
         $objectsCollection = $this->serviceManager->get('objectsCollection');
         $objectPropertyCollection = $this->serviceManager->get('objectPropertyCollection');
         $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
-        $catalogService = $this->serviceManager->get('Catalog\Service\Catalog');
+        $newsService = $this->serviceManager->get('News\Service\News');
         
         $parentObjectId = $this->parentObjectId;
-        
-        $objectTypeId = $this->objectTypeId;
-        $objectType = $objectTypesCollection->getType($objectTypeId);
         
         $insertFields = array();
         $insertBase = array();
@@ -55,8 +52,11 @@ class ProductsCollection implements ServiceManagerAwareInterface
                 }
             }
         }
+        
+        $objectTypeId = $insertBase['type_id'];
+        $objectType = $objectTypesCollection->getType($objectTypeId);
 
-        $typeIds = $catalogService->getProductTypeIds();
+        $typeIds = $newsService->getNewsTypeIds();
         $typeIds = array_map(function ($id) use ($db) {
             return $db->getPlatform()->quoteValue($id);
         }, $typeIds);
@@ -94,7 +94,7 @@ class ProductsCollection implements ServiceManagerAwareInterface
     
     public function getForm($populateForm)
     {
-        $formFactory = $this->serviceManager->get('Catalog\FormFactory\ProductFormFactory');
+        $formFactory = $this->serviceManager->get('News\FormFactory\NewsFormFactory');
         $formFactory->setObjectTypeId($this->objectTypeId)
                     ->setPopulateForm($populateForm);
         return $formFactory->getForm();

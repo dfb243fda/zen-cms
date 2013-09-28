@@ -11,30 +11,30 @@ class FeProductItem extends FeContentMethod
         $objectsCollection = $this->serviceLocator->get('objectsCollection');
         $objectTypesCollection = $this->serviceLocator->get('objectTypesCollection');
         $objectPropertyCollection = $this->serviceLocator->get('objectPropertyCollection');
+        $catService = $this->serviceLocator->get('Catalog\Service\Catalog');        
         
         $result = array(
             'success' => false,
         );
         
-        $newsId = $this->params()->fromRoute('itemId');
+        $prodId = $this->params()->fromRoute('itemId');
         
-        if ($newsId === null) {
+        if ($prodId === null) {
             $result['errMsg'] = 'Не передан идентификатор товара';
             return $result;
         }
         
-        $newsId = (int)$newsId;
+        $prodId = (int)$prodId;
         
-        if (!$object = $objectsCollection->getObject($newsId)) {
+        if (!$catService->isObjectProduct($prodId)) {
             $result['errMsg'] = 'Товар не найден';
             return $result;
         }
         
+        $object = $objectsCollection->getObject($prodId);
+        
         $result = $object->getObjectData();
         $result['success'] = true;
-        
-        $objectId = $result['id'];
-        $object = $objectsCollection->getObject($objectId);
 
         $objectType = $objectTypesCollection->getType($object->getTypeId());
 
@@ -46,7 +46,7 @@ class FeProductItem extends FeContentMethod
 
             $fields = $v->getFields();
             foreach ($fields as $k2=>$v2) {      
-                $property = $objectPropertyCollection->getProperty($objectId, $k2);                        
+                $property = $objectPropertyCollection->getProperty($prodId, $k2);                        
                 $result['fieldGroups'][$v->getName()][$v2->getName()] = $property->getValue();
             }
         }            

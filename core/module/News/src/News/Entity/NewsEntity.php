@@ -1,11 +1,11 @@
 <?php
 
-namespace Catalog\Entity;
+namespace News\Entity;
 
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
 
-class ProductEntity implements ServiceManagerAwareInterface
+class NewsEntity implements ServiceManagerAwareInterface
 {
     protected $serviceManager;
     
@@ -32,14 +32,14 @@ class ProductEntity implements ServiceManagerAwareInterface
     
     public function getForm($populateForm)
     {
-        $formFactory = $this->serviceManager->get('Catalog\FormFactory\ProductFormFactory');
+        $formFactory = $this->serviceManager->get('News\FormFactory\NewsFormFactory');
         $formFactory->setObjectTypeId($this->objectTypeId)
                     ->setObjectId($this->objectId)
                     ->setPopulateForm($populateForm);
         return $formFactory->getForm();
     }
     
-    public function editProduct($data)
+    public function editNews($data)
     {
         $insertFields = array();
         $insertBase = array();
@@ -60,9 +60,9 @@ class ProductEntity implements ServiceManagerAwareInterface
         
         $object = $objectsCollection->getObject($this->objectId);
                 
-        $object->setName($insertBase['name'])->setTypeId($this->objectTypeId)->save();
+        $object->setName($insertBase['name'])->setTypeId($insertBase['type_id'])->save();
 
-        $objectType = $objectTypesCollection->getType($this->objectTypeId);
+        $objectType = $objectTypesCollection->getType($insertBase['type_id']);
         
         $tmpFieldGroups = $objectType->getFieldGroups();
         foreach ($tmpFieldGroups as $k=>$v) {

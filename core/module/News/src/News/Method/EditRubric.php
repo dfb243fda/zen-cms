@@ -1,16 +1,17 @@
 <?php
 
-namespace Catalog\Method;
+namespace News\Method;
 
 use App\Method\AbstractMethod;
 
-class EditCategory extends AbstractMethod
+class EditRubric extends AbstractMethod
 {
     public function main()
     {        
-        $catEntity = $this->serviceLocator->get('Catalog\Entity\CategoryEntity');
-        $catService = $this->serviceLocator->get('Catalog\Service\Catalog');
+        $rubricEntity = $this->serviceLocator->get('News\Entity\RubricEntity');
+        $newsService = $this->serviceLocator->get('News\Service\News');
         $request = $this->serviceLocator->get('request');
+        $translator = $this->serviceLocator->get('translator');
         
         $result = array();
         
@@ -21,61 +22,66 @@ class EditCategory extends AbstractMethod
         
         $objectId = (int)$this->params()->fromRoute('id');
   
-        if (!$catService->isObjectCategory($objectId)) {
-            $result['errMsg'] = 'Категория ' . $objectId . ' не найдена';
+        if (!$newsService->isObjectRubric($objectId)) {
+            $result['errMsg'] = 'Рубрика ' . $objectId . ' не найдена';
             return $result;
         } 
                         
-        $catEntity->setObjectId($objectId);
+        $rubricEntity->setObjectId($objectId);
                 
         if (null !== $this->params()->fromRoute('objectTypeId')) {    
             $objectTypeId = (int)$this->params()->fromRoute('objectTypeId');
-            if (!in_array($objectTypeId, $catService->getCategoryTypeIds())) {
-                $result['errMsg'] = 'Категория ' . $objectTypeId . ' не найдена';
+            if (!in_array($objectTypeId, $newsService->getRubricTypeIds())) {
+                $result['errMsg'] = 'Рубрика ' . $objectTypeId . ' не найдена';
                 return $result;
             }
-            $catEntity->setObjectTypeId($objectTypeId);
+            $rubricEntity->setObjectTypeId($objectTypeId);
         }        
             
         
         if ($request->isPost()) {
-            $form = $catEntity->getForm(false);
-            $form->setData($request->getPost());
+            $form = $rubricEntity->getForm(false);
+            
+            $data = $request->getPost()->toArray();
+            if (empty($data['common']['name'])) {
+                $data['common']['name'] = $translator->translate('News:(Rubric without name)');
+            }
+            $form->setData($data);
             
             if ($form->isValid()) {
-                if ($catEntity->editCategory($form->getData())) {
+                if ($rubricEntity->editRubric($form->getData())) {
                     if (!$request->isXmlHttpRequest()) {
-                        $this->flashMessenger()->addSuccessMessage('Категория успешно обновлена');
+                        $this->flashMessenger()->addSuccessMessage('Рубрика успешно обновлена');
                         $this->redirect()->toRoute('admin/method',array(
-                            'module' => 'Catalog',
-                            'method' => 'EditCategory',
+                            'module' => 'News',
+                            'method' => 'EditRubric',
                             'id' => $objectId,
                         ));
                     }
 
                     return array(
                         'success' => true,
-                        'msg' => 'Категория успешно обновлена',
+                        'msg' => 'Рубрика успешно обновлена',
                     );  
                 } else {
                     return array(
                         'success' => false,
-                        'msg' => 'При обновлении категории произошли ошибки',
+                        'msg' => 'При обновлении рубрики произошли ошибки',
                     );  
                 }                       
             } else {
                 $result['success'] = false;
             }
         } else {
-            $form = $catEntity->getForm(true);    
+            $form = $rubricEntity->getForm(true);    
         }
         
         
         $result['contentTemplate'] = array(
-            'name' => 'content_template/Catalog/catalog_form.phtml',
+            'name' => 'content_template/News/news_form.phtml',
             'data' => array(
                 'jsArgs' => array(
-                    'changeObjectTypeUrlTemplate' => $this->url()->fromRoute('admin/EditCategory', array(
+                    'changeObjectTypeUrlTemplate' => $this->url()->fromRoute('admin/EditRubric', array(
                         'id' => $objectId,
                         'objectTypeId' => '--OBJECT_TYPE--',            
                     )),

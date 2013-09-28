@@ -53,27 +53,26 @@ class MenuItemFormFactory implements ServiceManagerAwareInterface
                                      ->get('Menu\Form\BaseMenuItemForm');  
         
         $formsMerger->addForm($baseForm);
-                
-        if (null === $this->objectTypeId) {
-            if (null !== $this->objectId) {
-                $object = $objectsCollection->getObject($this->objectId);
-                $objectTypeId = $object->getTypeId();
-                $objectType = $objectTypesCollection->getType($objectTypeId);                 
-                $formsMerger->addForm($objectType->getForm());
-            }
-        } else {
-            $objectType = $objectTypesCollection->getType($this->objectTypeId);             
-            $formsMerger->addForm($objectType->getForm());
-        }  
-        
-        $form = $formsMerger->getForm();
         
         $objectTypeId = $this->objectTypeId;
+        
+        if (null === $objectTypeId) {
+            if (null === $this->objectId) {
+                $objectTypeId = $objectTypesCollection->getTypeIdByGuid($menuService->getItemGuid());  
+            } else {
+                $object = $objectsCollection->getObject($this->objectId);
+                $objectTypeId = $object->getTypeId();
+            }
+        }
+        $objectType = $objectTypesCollection->getType($objectTypeId);  
+        $formsMerger->addForm($objectType->getForm());
+                        
+        $form = $formsMerger->getForm();   
         
         if ($this->populateForm) {
             if (null === $this->objectId) {
                 $data = array(
-                    'type_id' => $this->objectTypeId,
+                    'type_id' => $objectTypeId,
                 );
 
                 foreach ($form->getFieldsets() as $fieldset) {
@@ -88,7 +87,7 @@ class MenuItemFormFactory implements ServiceManagerAwareInterface
                 $object = $objectsCollection->getObject($this->objectId);
                 $data = array(
                     'name' => $object->getName(),
-                    'type_id' => $this->objectTypeId,
+                    'type_id' => $objectTypeId,
                 );
 
                 foreach ($form->getFieldsets() as $fieldset) {

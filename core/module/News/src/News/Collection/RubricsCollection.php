@@ -1,11 +1,11 @@
 <?php
 
-namespace Catalog\Collection;
+namespace News\Collection;
 
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
 
-class CategoriesCollection implements ServiceManagerAwareInterface
+class RubricsCollection implements ServiceManagerAwareInterface
 {
     protected $serviceManager;
     
@@ -22,16 +22,13 @@ class CategoriesCollection implements ServiceManagerAwareInterface
         return $this;
     }
     
-    public function addCategory($data)
+    public function addRubric($data)
     {
         $db = $this->serviceManager->get('db');
         $objectsCollection = $this->serviceManager->get('objectsCollection');
         $objectPropertyCollection = $this->serviceManager->get('objectPropertyCollection');
         $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
-        $catalogService = $this->serviceManager->get('Catalog\Service\Catalog');
-        
-        $objectTypeId = $this->objectTypeId;
-        $objectType = $objectTypesCollection->getType($objectTypeId);
+        $newsService = $this->serviceManager->get('News\Service\News');   
         
         $insertFields = array();
         $insertBase = array();
@@ -46,7 +43,10 @@ class CategoriesCollection implements ServiceManagerAwareInterface
             }
         }
         
-        $typeIds = $catalogService->getCategoryTypeIds();
+        $objectTypeId = $insertBase['type_id'];
+        $objectType = $objectTypesCollection->getType($objectTypeId);
+        
+        $typeIds = $newsService->getRubricTypeIds();
         $typeIds = array_map(function ($id) use ($db) {
             return $db->getPlatform()->quoteValue($id);
         }, $typeIds);
@@ -83,7 +83,7 @@ class CategoriesCollection implements ServiceManagerAwareInterface
     
     public function getForm($populateForm)
     {
-        $formFactory = $this->serviceManager->get('Catalog\FormFactory\CategoryFormFactory');
+        $formFactory = $this->serviceManager->get('News\FormFactory\RubricFormFactory');
         $formFactory->setObjectTypeId($this->objectTypeId)
                     ->setPopulateForm($populateForm);
         return $formFactory->getForm();

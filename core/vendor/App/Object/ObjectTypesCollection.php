@@ -171,21 +171,7 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
             return false;
         }      
         
-        $descendantTypeIds = $this->getDescendantTypeIds($typeId);
-        
-        foreach ($descendantTypeIds as $id) {
-            $db->query('
-                delete from ' . DB_PREF . $this->objectsTable . ' 
-                where type_id = ?', array($id));
-            
-            $db->query('
-                delete from ' . DB_PREF . $this->objectTypesTable . '
-                where id = ?', array($id));
-            
-            unset($this->types[$id]);
-            unset($this->allTypesList[$id]);
-            unset($this->childrenTypesList[$id]);
-        }
+        $childrenTypeIds = $this->getChildrenTypeIds($typeId);
         
         $db->query('
                 delete from ' . DB_PREF . $this->objectsTable . ' 
@@ -198,6 +184,10 @@ class ObjectTypesCollection implements ServiceManagerAwareInterface
         unset($this->types[$typeId]);
         unset($this->allTypesList[$typeId]);
         unset($this->childrenTypesList[$typeId]);    
+        
+        foreach ($childrenTypeIds as $id) {
+            $this->delType($id);
+        }
         
         return true;
     }

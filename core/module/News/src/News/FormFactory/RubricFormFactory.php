@@ -1,11 +1,11 @@
 <?php
 
-namespace Catalog\FormFactory;
+namespace News\FormFactory;
 
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
 
-class ProductFormFactory implements ServiceManagerAwareInterface
+class RubricFormFactory implements ServiceManagerAwareInterface
 {
     protected $serviceManager;
     
@@ -44,30 +44,29 @@ class ProductFormFactory implements ServiceManagerAwareInterface
     
     public function getForm()
     {
+        $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
         $objectPropertyCollection = $this->serviceManager->get('objectPropertyCollection');
-        $objectTypesCollection = $this->serviceManager->get('objectTypesCollection'); 
         $objectsCollection = $this->serviceManager->get('objectsCollection');
-        $fieldsCollection = $this->serviceManager->get('fieldsCollection');
         $formsMerger = $this->serviceManager->get('App\Form\FormsMerger');
+        $newsService = $this->serviceManager->get('News\Service\News');
         
         $baseForm = $this->serviceManager->get('FormElementManager')
-                                     ->get('Catalog\Form\BaseProductForm');  
+                                     ->get('News\Form\BaseRubricForm');  
         
         $formsMerger->addForm($baseForm);
-                
-        $objectTypeId = $this->objectTypeId;
         
+        $objectTypeId = $this->objectTypeId;
+                
         if (null === $objectTypeId) {
-            if (null !== $this->objectId) {
+            if (null === $this->objectId) {
+                $objectTypeId = $objectTypesCollection->getTypeIdByGuid($newsService->getRubricGuid());  
+            } else {
                 $object = $objectsCollection->getObject($this->objectId);
-                $objectTypeId = $object->getTypeId();
-                $objectType = $objectTypesCollection->getType($objectTypeId);                 
-                $formsMerger->addForm($objectType->getForm());
+                $objectTypeId = $object->getTypeId();                
             }
-        } else {                       
-            $objectType = $objectTypesCollection->getType($objectTypeId);                 
-            $formsMerger->addForm($objectType->getForm());
         }
+        $objectType = $objectTypesCollection->getType($objectTypeId);  
+        $formsMerger->addForm($objectType->getForm());
         
         $form = $formsMerger->getForm();
         
@@ -80,21 +79,12 @@ class ProductFormFactory implements ServiceManagerAwareInterface
                 foreach ($form->getFieldsets() as $fieldset) {
                     foreach ($fieldset->getElements() as $element) {
                         $elName = $element->getName();
-                        if ('field_' == substr($elName, 0, 6)) {
-                            $fieldId = substr($elName, 6);
-                            $field = $fieldsCollection->getField($fieldId);
-                            if ('publish_date' == $field->getName()) {
-                                $element->setValue(new \DateTime());
-                            }
-                        } else {
-                            if (isset($data[$elName])) {
-                                $element->setValue($data[$elName]);
-                            }
+                        if (isset($data[$elName])) {
+                            $element->setValue($data[$elName]);
                         }
-                        
                     }
                 }
-            } else {     
+            } else {   
                 $object = $objectsCollection->getObject($this->objectId);
                 $data = array(
                     'name' => $object->getName(),

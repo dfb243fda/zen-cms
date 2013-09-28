@@ -60,9 +60,9 @@ class CategoryEntity implements ServiceManagerAwareInterface
         
         $object = $objectsCollection->getObject($this->objectId);
                 
-        $object->setName($insertBase['name'])->setTypeId($this->objectTypeId)->save();
+        $object->setName($insertBase['name'])->setTypeId($insertBase['type_id'])->save();
 
-        $objectType = $objectTypesCollection->getType($this->objectTypeId);
+        $objectType = $objectTypesCollection->getType($insertBase['type_id']);
         
         $tmpFieldGroups = $objectType->getFieldGroups();
         foreach ($tmpFieldGroups as $k=>$v) {

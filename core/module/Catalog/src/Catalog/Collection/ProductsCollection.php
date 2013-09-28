@@ -40,9 +40,6 @@ class ProductsCollection implements ServiceManagerAwareInterface
         
         $parentObjectId = $this->parentObjectId;
         
-        $objectTypeId = $this->objectTypeId;
-        $objectType = $objectTypesCollection->getType($objectTypeId);
-        
         $insertFields = array();
         $insertBase = array();
 
@@ -55,6 +52,9 @@ class ProductsCollection implements ServiceManagerAwareInterface
                 }
             }
         }
+        
+        $objectTypeId = $insertBase['type_id'];
+        $objectType = $objectTypesCollection->getType($objectTypeId);
 
         $typeIds = $catalogService->getProductTypeIds();
         $typeIds = array_map(function ($id) use ($db) {

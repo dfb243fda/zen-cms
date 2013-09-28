@@ -1,15 +1,15 @@
 <?php
 
-namespace Catalog\Method;
+namespace News\Method;
 
 use App\Method\AbstractMethod;
 
-class EditProduct extends AbstractMethod
+class EditNews extends AbstractMethod
 {
     public function main()
     {        
-        $prodEntity = $this->serviceLocator->get('Catalog\Entity\ProductEntity');
-        $catService = $this->serviceLocator->get('Catalog\Service\Catalog');
+        $newsEntity = $this->serviceLocator->get('News\Entity\NewsEntity');
+        $newsService = $this->serviceLocator->get('News\Service\News');
         $request = $this->serviceLocator->get('request');
         
         $result = array();
@@ -21,60 +21,60 @@ class EditProduct extends AbstractMethod
         
         $objectId = (int)$this->params()->fromRoute('id');
   
-        if (!$catService->isObjectProduct($objectId)) {
-            $result['errMsg'] = 'Пункт меню ' . $objectId . ' не найден';
+        if (!$newsService->isObjectNews($objectId)) {
+            $result['errMsg'] = 'Новость ' . $objectId . ' не найдена';
             return $result;
         }
         
-        $prodEntity->setObjectId($objectId);
+        $newsEntity->setObjectId($objectId);
                 
         if (null !== $this->params()->fromRoute('objectTypeId')) {  
             $objectTypeId = (int)$this->params()->fromRoute('objectTypeId');
-            if (!in_array($objectTypeId, $catService->getProductTypeIds())) {
+            if (!in_array($objectTypeId, $newsService->getNewsTypeIds())) {
                 $result['errMsg'] = 'Передан неверный тип объекта ' . $objectTypeId;
                 return $result;
             }
-            $prodEntity->setObjectTypeId($objectTypeId);
+            $newsEntity->setObjectTypeId($objectTypeId);
         }
         
         if ($request->isPost()) {
-            $form = $prodEntity->getForm(false);
+            $form = $newsEntity->getForm(false);
             $form->setData($request->getPost());
             
             if ($form->isValid()) {
-                if ($prodEntity->editProduct($form->getData())) {
+                if ($newsEntity->editNews($form->getData())) {
                     if (!$request->isXmlHttpRequest()) {
-                        $this->flashMessenger()->addSuccessMessage('Товар успешно обновлен');
+                        $this->flashMessenger()->addSuccessMessage('Новость успешно обновлена');
                         $this->redirect()->toRoute('admin/method',array(
-                            'module' => 'Catalog',
-                            'method' => 'EditProduct',
+                            'module' => 'News',
+                            'method' => 'EditNews',
                             'id' => $objectId,
                         ));
                     }
 
                     return array(
                         'success' => true,
-                        'msg' => 'Товар успешно обновлен',
+                        'msg' => 'Новость успешно обновлена',
                     );  
                 } else {
                     return array(
                         'success' => false,
-                        'msg' => 'При обновлении товара произошли ошибки',
+                        'msg' => 'При обновлении новости произошли ошибки',
                     );  
                 }                       
             } else {
                 $result['success'] = false;
             }
         } else {
-            $form = $prodEntity->getForm(true);    
+            $form = $newsEntity->getForm(true);    
         }
         
         
         $result['contentTemplate'] = array(
-            'name' => 'content_template/Catalog/catalog_form.phtml',
+            'name' => 'content_template/News/news_form.phtml',
             'data' => array(
                 'jsArgs' => array(
-                    'changeObjectTypeUrlTemplate' => $this->url()->fromRoute('admin/EditProduct', array(
+                    'changeObjectTypeUrlTemplate' => $this->url()->fromRoute('admin/EditNews', array(
                         'id' => $objectId,
                         'objectTypeId' => '--OBJECT_TYPE--',            
                     )),

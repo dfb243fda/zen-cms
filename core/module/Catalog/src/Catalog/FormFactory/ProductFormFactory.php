@@ -49,6 +49,7 @@ class ProductFormFactory implements ServiceManagerAwareInterface
         $objectsCollection = $this->serviceManager->get('objectsCollection');
         $fieldsCollection = $this->serviceManager->get('fieldsCollection');
         $formsMerger = $this->serviceManager->get('App\Form\FormsMerger');
+        $catService = $this->serviceManager->get('Catalog\Service\Catalog');
         
         $baseForm = $this->serviceManager->get('FormElementManager')
                                      ->get('Catalog\Form\BaseProductForm');  
@@ -58,16 +59,15 @@ class ProductFormFactory implements ServiceManagerAwareInterface
         $objectTypeId = $this->objectTypeId;
         
         if (null === $objectTypeId) {
-            if (null !== $this->objectId) {
+            if (null === $this->objectId) {
+                $objectTypeId = $objectTypesCollection->getTypeIdByGuid($catService->getProductGuid());  
+            } else {
                 $object = $objectsCollection->getObject($this->objectId);
-                $objectTypeId = $object->getTypeId();
-                $objectType = $objectTypesCollection->getType($objectTypeId);                 
-                $formsMerger->addForm($objectType->getForm());
+                $objectTypeId = $object->getTypeId();                
             }
-        } else {                       
-            $objectType = $objectTypesCollection->getType($objectTypeId);                 
-            $formsMerger->addForm($objectType->getForm());
         }
+        $objectType = $objectTypesCollection->getType($objectTypeId);  
+        $formsMerger->addForm($objectType->getForm());
         
         $form = $formsMerger->getForm();
         

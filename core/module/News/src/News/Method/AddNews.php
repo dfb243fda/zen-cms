@@ -1,15 +1,15 @@
 <?php
 
-namespace Catalog\Method;
+namespace News\Method;
 
 use App\Method\AbstractMethod;
 
-class AddProduct extends AbstractMethod
+class AddNews extends AbstractMethod
 {
     public function main()
     {
-        $catService = $this->serviceLocator->get('Catalog\Service\Catalog');
-        $prodCollection = $this->serviceLocator->get('Catalog\Collection\ProductsCollection');
+        $newsService = $this->serviceLocator->get('News\Service\News');
+        $newsCollection = $this->serviceLocator->get('News\Collection\NewsCollection');
         $objectTypesCollection = $this->serviceLocator->get('objectTypesCollection');
         $request = $this->serviceLocator->get('request');
         $translator = $this->serviceLocator->get('translator');
@@ -18,60 +18,57 @@ class AddProduct extends AbstractMethod
         
         $parentObjectId = (int)$this->params()->fromRoute('id', 0); 
         if ($parentObjectId) {
-            if (!$catService->isObjectCategory($parentObjectId)) {
-                $result['errMsg'] = 'Объект ' . $parentObjectId . ' не является категорией';
+            if (!$newsService->isObjectRubric($parentObjectId)) {
+                $result['errMsg'] = 'Объект ' . $parentObjectId . ' не является рубрикой';
                 return $result;
             }
         }     
         
-        $prodCollection->setParentObjectId($parentObjectId);
+        $newsCollection->setParentObjectId($parentObjectId);
         
-        if (null === $this->params()->fromRoute('objectTypeId')) {
-            $objectTypeId = $objectTypesCollection->getTypeIdByGuid($catService->getProductGuid());  
-            $prodCollection->setObjectTypeId($objectTypeId);
-        } else {
+        if (null !== $this->params()->fromRoute('objectTypeId')) {
             $objectTypeId = (int)$this->params()->fromRoute('objectTypeId');
-            $prodCollection->setObjectTypeId($objectTypeId);
+            $newsCollection->setObjectTypeId($objectTypeId);
             
-            if (!in_array($objectTypeId, $catService->getProductTypeIds())) {
-                $result['errMsg'] = 'Тип данных ' . $objectTypeId . ' не является товаром';
+            if (!in_array($objectTypeId, $newsService->getProductTypeIds())) {
+                $result['errMsg'] = 'Тип данных ' . $objectTypeId . ' не является новостью';
                 return $result;
             }
         }       
         
         if ($request->isPost()) {
-            $form = $prodCollection->getForm(false);
+            $form = $newsCollection->getForm(false);
             
             $data = $request->getPost()->toArray();
             if (empty($data['common']['name'])) {
-                $data['common']['name'] = $translator->translate('Catalog:(Product without name)');
+                $data['common']['name'] = $translator->translate('News:(News without name)');
             }
             $form->setData($data);
             
             if ($form->isValid()) {
-                if ($menuItemId = $prodCollection->addMenuItem($form->getData())) {
+                if ($menuItemId = $newsCollection->addNews($form->getData())) {
                     if (!$request->isXmlHttpRequest()) {
-                        $this->flashMessenger()->addSuccessMessage('Товар добавлен');
+                        $this->flashMessenger()->addSuccessMessage('Новость добавлена');
                         $this->redirect()->toRoute('admin/method',array(
-                            'module' => 'Catalog',
-                            'method' => 'EditProduct',
+                            'module' => 'News',
+                            'method' => 'EditNews',
                             'id' => $menuItemId,
                         ));
                     }
                     
                     return array(
                         'success' => true,
-                        'msg' => 'Товар добавлен',
+                        'msg' => 'Новость добавлена',
                     );    
                 } else {
                     $result['success'] = false;
-                    $result['errMsg'] = 'При добавлении товара произошли ошибки';
+                    $result['errMsg'] = 'При добавлении новости произошли ошибки';
                 }
             } else {
                 $result['success'] = false;
             }
         } else {
-            $form = $prodCollection->getForm(true);
+            $form = $newsCollection->getForm(true);
         }
         
         $params = array(
@@ -82,10 +79,10 @@ class AddProduct extends AbstractMethod
         }
         
         $result['contentTemplate'] = array(
-            'name' => 'content_template/Catalog/catalog_form.phtml',
+            'name' => 'content_template/News/news_form.phtml',
             'data' => array(
                 'jsArgs' => array(
-                    'changeObjectTypeUrlTemplate' => $this->url()->fromRoute('admin/AddProduct', $params),
+                    'changeObjectTypeUrlTemplate' => $this->url()->fromRoute('admin/AddNews', $params),
                 ),
                 'form' => $form,
             ),

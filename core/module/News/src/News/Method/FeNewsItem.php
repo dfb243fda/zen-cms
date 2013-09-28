@@ -1,40 +1,40 @@
 <?php
 
-namespace Catalog\Method;
+namespace News\Method;
 
 use Pages\AbstractMethod\FeContentMethod;
 
-class FeProductItem extends FeContentMethod
+class FeNewsItem extends FeContentMethod
 {    
     public function main()
     {   
         $objectsCollection = $this->serviceLocator->get('objectsCollection');
         $objectTypesCollection = $this->serviceLocator->get('objectTypesCollection');
-        $objectPropertyCollection = $this->serviceLocator->get('objectPropertyCollection');
+        $objectPropertyCollection = $this->serviceLocator->get('objectPropertyCollection');        
+        $newsService = $this->serviceLocator->get('News\Service\News');        
         
-        $result = array(
-            'success' => false,
-        );
+        $result = array();
         
         $newsId = $this->params()->fromRoute('itemId');
         
         if ($newsId === null) {
-            $result['errMsg'] = 'Не передан идентификатор товара';
+            $result['success'] = false;
+            $result['errMsg'] = 'Не передан идентификатор новости';
             return $result;
         }
         
         $newsId = (int)$newsId;
         
-        if (!$object = $objectsCollection->getObject($newsId)) {
-            $result['errMsg'] = 'Товар не найден';
+        if (!$newsService->isObjectNews($newsId)) {
+            $result['success'] = false;
+            $result['errMsg'] = 'Новость не найдена';
             return $result;
         }
         
+        $object = $objectsCollection->getObject($newsId);
+        
         $result = $object->getObjectData();
         $result['success'] = true;
-        
-        $objectId = $result['id'];
-        $object = $objectsCollection->getObject($objectId);
 
         $objectType = $objectTypesCollection->getType($object->getTypeId());
 
@@ -46,7 +46,7 @@ class FeProductItem extends FeContentMethod
 
             $fields = $v->getFields();
             foreach ($fields as $k2=>$v2) {      
-                $property = $objectPropertyCollection->getProperty($objectId, $k2);                        
+                $property = $objectPropertyCollection->getProperty($newsId, $k2);                        
                 $result['fieldGroups'][$v->getName()][$v2->getName()] = $property->getValue();
             }
         }            

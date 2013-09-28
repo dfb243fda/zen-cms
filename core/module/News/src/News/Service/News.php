@@ -1,32 +1,32 @@
 <?php
 
-namespace Catalog\Service;
+namespace News\Service;
 
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\ServiceManager\ServiceManager;
 
-class Catalog implements ServiceManagerAwareInterface
+class News implements ServiceManagerAwareInterface
 {
     protected $serviceManager;
     
     protected $categoryTypeIds;
     protected $productTypeIds;
     
-    protected $categoryGuid = 'category';
-    protected $productGuid   = 'product';
+    protected $rubricGuid = 'news-rubric';
+    protected $newsGuid   = 'news';
     
     public function setServiceManager(ServiceManager $serviceManager)
     {
         $this->serviceManager = $serviceManager;
     }
     
-    public function getCategoryTypeIds()
+    public function getRubricTypeIds()
     {
         if (null === $this->categoryTypeIds) {
             $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
             
             $typeIds = array();
-            $objectType = $objectTypesCollection->getType($this->categoryGuid);
+            $objectType = $objectTypesCollection->getType($this->rubricGuid);
             $typeIds[] = $objectType->getId();
             $descendantTypeIds = $objectTypesCollection->getDescendantTypeIds($objectType->getId());
             $typeIds = array_merge($typeIds, $descendantTypeIds);
@@ -36,13 +36,13 @@ class Catalog implements ServiceManagerAwareInterface
         return $this->categoryTypeIds;
     }
     
-    public function getProductTypeIds()
+    public function getNewsTypeIds()
     {
         if (null === $this->productTypeIds) {
             $objectTypesCollection = $this->serviceManager->get('objectTypesCollection');
             
             $typeIds = array();
-            $objectType = $objectTypesCollection->getType($this->productGuid);
+            $objectType = $objectTypesCollection->getType($this->newsGuid);
             $typeIds[] = $objectType->getId();
             $descendantTypeIds = $objectTypesCollection->getDescendantTypeIds($objectType->getId());
             $typeIds = array_merge($typeIds, $descendantTypeIds);
@@ -54,41 +54,41 @@ class Catalog implements ServiceManagerAwareInterface
     
     public function getTypeIds()
     {
-        return array_merge($this->getCategoryTypeIds(), $this->getProductTypeIds());
+        return array_merge($this->getRubricTypeIds(), $this->getNewsTypeIds());
     }
     
-    public function isObjectCategory($objectId)
+    public function isObjectRubric($objectId)
     {            
         $objectsCollection = $this->serviceManager->get('objectsCollection');
         
         if ($object = $objectsCollection->getObject($objectId)) {
             $objectTypeId = $object->getTypeId();            
-            $typeIds = $this->getCategoryTypeIds();            
+            $typeIds = $this->getRubricTypeIds();            
             return in_array($objectTypeId, $typeIds);
         }
         return false;        
     }
     
-    public function isObjectProduct($objectId)
+    public function isObjectNews($objectId)
     {            
         $objectsCollection = $this->serviceManager->get('objectsCollection');
         
         if ($object = $objectsCollection->getObject($objectId)) {
             $objectTypeId = $object->getTypeId();            
-            $typeIds = $this->getProductTypeIds();            
+            $typeIds = $this->getNewsTypeIds();            
             return in_array($objectTypeId, $typeIds);
         }
         return false;        
     }
     
-    public function getCategoryGuid()
+    public function getRubricGuid()
     {
-        return $this->categoryGuid;
+        return $this->rubricGuid;
     }
     
-    public function getProductGuid()
+    public function getNewsGuid()
     {
-        return $this->productGuid;
+        return $this->newsGuid;
     }
     
 }

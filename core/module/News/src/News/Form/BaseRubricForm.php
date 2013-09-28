@@ -1,12 +1,12 @@
 <?php
 
-namespace Catalog\Form;
+namespace News\Form;
 
 use Zend\Form\Form;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class BaseCategoryForm extends Form implements ServiceLocatorAwareInterface
+class BaseRubricForm extends Form implements ServiceLocatorAwareInterface
 {
     /**
      * @var ServiceLocatorInterface
@@ -37,10 +37,10 @@ class BaseCategoryForm extends Form implements ServiceLocatorAwareInterface
     {
         $serviceManager = $this->serviceLocator->getServiceLocator();
         
-        $catalogService = $serviceManager->get('Catalog\Service\Catalog');
+        $newsService = $serviceManager->get('News\Service\News');
         $objectTypesCollection = $serviceManager->get('objectTypesCollection');
         
-        $typeIds = $catalogService->getCategoryTypeIds();
+        $typeIds = $newsService->getRubricTypeIds();
         
         $objectTypesMultiOptions = array();
         foreach ($typeIds as $id) {
@@ -56,7 +56,7 @@ class BaseCategoryForm extends Form implements ServiceLocatorAwareInterface
         $this->get('common')->add(array(
             'name' => 'name',
             'options' => array(
-                'label' => 'Catalog:Category name field',
+                'label' => 'News:Rubric name field',
             ),
         ));
         
