@@ -38,7 +38,10 @@ class AdminController extends AbstractActionController
         }    
         if (isset($config[CURRENT_THEME]['notFoundTemplate'])) {
             $viewManager->getRouteNotFoundStrategy()->setNotFoundTemplate($config[CURRENT_THEME]['notFoundTemplate']);
-        } 
+        }
+        if (is_dir(APPLICATION_PATH . '/view/theme_override/' . CURRENT_THEME)) {
+            $this->serviceLocator->get('ViewTemplatePathStack')->addPath(APPLICATION_PATH . '/view/theme_override/' . CURRENT_THEME);
+        }        
         
         $pageDataService->detectModuleAndMethod();
         
