@@ -8,55 +8,84 @@ return array(
         
         'default_templates' => array(
             array(
-                'title' => 'i18n::ImageGallery:Gallery template',
-                'name' => 'image_gallery.phtml',
+                'title' => 'i18n::ImageGallery:Lightbox2 template',
+                'name' => 'lightbox2.phtml',
                 'type' => 'content_template',
-                'method' => 'FeGallery',
+                'method' => 'FeImageGallery',
             ),
         ),
         
         'methods' => array(
             'GalleryList' => array(
                 'service' => 'ImageGallery\Method\GalleryList',
-                'title' => 'i18n::ImageGallery:Gallery list method',
-                'description' => 'i18n::ImageGallery:Gallery list method description',
+                'title' => 'i18n::ImageGallery:GalleryList method',
+                'description' => 'i18n::ImageGallery:GalleryList method description',
                 'type' => 'be',
                 'menu_group' => 'media',
             ),
-            'Edit' => array(
-                'service' => 'ImageGallery\Method\Edit',
-                'title' => 'i18n::ImageGallery:Gallery edit method',
-                'description' => 'i18n::ImageGallery:Gallery edit method description',
+            'EditGallery' => array(
+                'service' => 'ImageGallery\Method\EditGallery',
+                'title' => 'i18n::ImageGallery:EditGallery method',
+                'description' => 'i18n::ImageGallery:EditGallery method description',
+                'type' => 'be',
+                'breadcrumbPrevMethod' => 'GalleryList',
+            ),
+            'EditImage' => array(
+                'service' => 'ImageGallery\Method\EditImage',
+                'title' => 'i18n::ImageGallery:EditImage method',
+                'description' => 'i18n::ImageGallery:EditImage method description',
                 'type' => 'be',
                 'breadcrumbPrevMethod' => 'GalleryList',
             ),
             'AddGallery' => array(
                 'service' => 'ImageGallery\Method\AddGallery',
-                'title' => 'i18n::ImageGallery:Add gallery method',
-                'description' => 'i18n::ImageGallery:Add gallery method description',
+                'title' => 'i18n::ImageGallery:AddGallery method',
+                'description' => 'i18n::ImageGallery:AddGallery method description',
                 'type' => 'be',
                 'breadcrumbPrevMethod' => 'GalleryList',
             ),
             'AddImage' => array(
                 'service' => 'ImageGallery\Method\AddImage',
-                'title' => 'i18n::ImageGallery:Add image method',
-                'description' => 'i18n::ImageGallery:Add image method description',
+                'title' => 'i18n::ImageGallery:AddImage method',
+                'description' => 'i18n::ImageGallery:AddImage method description',
                 'type' => 'be',
                 'breadcrumbPrevMethod' => 'GalleryList',
             ),
-            'Delete' => array(
-                'service' => 'ImageGallery\Method\Delete',
-                'title' => 'i18n::ImageGallery:Gallery delete method',
-                'description' => 'i18n::ImageGallery:Gallery delete method description',
+            'DeleteGallery' => array(
+                'service' => 'ImageGallery\Method\DeleteGallery',
+                'title' => 'i18n::ImageGallery:DeleteGallery method',
+                'description' => 'i18n::ImageGallery:DeleteGallery method description',
                 'type' => 'be',
             ),
-            'FeGallery' => array(
-                'service' => 'ImageGallery\Method\FeGallery',
-                'title' => 'i18n::ImageGallery:FeGallery method',
-                'description' => 'i18n::ImageGallery:FeGallery method description',
+            'DeleteImage' => array(
+                'service' => 'ImageGallery\Method\DeleteImage',
+                'title' => 'i18n::ImageGallery:DeleteImage method',
+                'description' => 'i18n::ImageGallery:DeleteImage method description',
+                'type' => 'be',
+            ),
+            'FeImageGallery' => array(
+                'service' => 'ImageGallery\Method\FeImageGallery',
+                'title' => 'i18n::ImageGallery:FeImageGallery method',
+                'description' => 'i18n::ImageGallery:FeImageGallery method description',
                 'type' => 'fe_content',
                 'dynamic_templates' => true,
             ),
+        ),
+    ),
+    
+    'service_manager' => array(
+        'invokables' => array(
+            'ImageGallery\Service\Installer' => 'Catalog\Service\Installer',
+            'ImageGallery\Service\GalleryTree' => 'ImageGallery\Service\GalleryTree',
+            'ImageGallery\Service\ImageGallery' => 'ImageGallery\Service\ImageGallery',
+            'ImageGallery\Collection\GalleriesCollection' => 'ImageGallery\Collection\GalleriesCollection',
+            'ImageGallery\Collection\ImagesCollection' => 'ImageGallery\Collection\ImagesCollection',
+            
+            'ImageGallery\FormFactory\GalleryFormFactory' => 'ImageGallery\FormFactory\GalleryFormFactory',
+            'ImageGallery\FormFactory\ImageFormFactory' => 'ImageGallery\FormFactory\ImageFormFactory',
+            
+            'ImageGallery\Entity\GalleryEntity' => 'ImageGallery\Entity\GalleryEntity',
+            'ImageGallery\Entity\ImageEntity' => 'ImageGallery\Entity\ImageEntity',
         ),
     ),
     
@@ -69,11 +98,7 @@ return array(
             ),
         ),
     ),
-    'menu_groups' => array(
-        'media' => array(
-            'title' => 'i18n::Media menu group',
-        ),
-    ),
+    
     'router' => array(
         'routes' => array(
             'admin' => array(
@@ -88,6 +113,26 @@ return array(
                             ),
                         ),
                     ),
+                    'EditGallery' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route' => 'ImageGallery/EditGallery[/id_:id{/.}][/object_type_:objectTypeId{/.}][/][.:format]',
+                            'defaults' => array(
+                                'module' => 'ImageGallery',
+                                'method' => 'EditGallery',
+                            ),
+                        ),
+                    ),
+                    'EditImage' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route' => 'ImageGallery/EditImage[/id_:id{/.}][/object_type_:objectTypeId{/.}][/][.:format]',
+                            'defaults' => array(
+                                'module' => 'ImageGallery',
+                                'method' => 'EditImage',
+                            ),
+                        ),
+                    ),
                     'AddGallery' => array(
                         'type' => 'segment',
                         'options' => array(
@@ -97,17 +142,7 @@ return array(
                                 'method' => 'AddGallery',
                             ),
                         ),
-                    ),
-                    'EditGallery' => array(
-                        'type' => 'segment',
-                        'options' => array(
-                            'route' => 'ImageGallery/EditGallery[/id_:id{/.}][/object_type_:objectTypeId{/.}][/][.:format]',
-                            'defaults' => array(
-                                'module' => 'ImageGallery',
-                                'method' => 'Edit',
-                            ),
-                        ),
-                    ),
+                    ),                   
                     'AddImage' => array(
                         'type' => 'segment',
                         'options' => array(

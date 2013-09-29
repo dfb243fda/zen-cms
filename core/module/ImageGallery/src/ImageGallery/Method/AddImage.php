@@ -3,91 +3,88 @@
 namespace ImageGallery\Method;
 
 use App\Method\AbstractMethod;
-use ImageGallery\Model\ImageGallery;
 
 class AddImage extends AbstractMethod
 {
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->db = $this->rootServiceLocator->get('db');
-        $this->objectTypesCollection = $this->rootServiceLocator->get('objectTypesCollection');
-        $this->objectsCollection = $this->rootServiceLocator->get('objectsCollection');
-        $this->imageGalleryModel = new ImageGallery($this->rootServiceLocator);        
-        $this->request = $this->rootServiceLocator->get('request');
-    }
-
     public function main()
     {
+        $galService = $this->serviceLocator->get('ImageGallery\Service\ImageGallery');
+        $imagesCollection = $this->serviceLocator->get('ImageGallery\Collection\ImagesCollection');
+        $objectTypesCollection = $this->serviceLocator->get('objectTypesCollection');
+        $request = $this->serviceLocator->get('request');
+        $translator = $this->serviceLocator->get('translator');
+        
         $result = array();
-                
-        if (null === $this->params()->fromRoute('id')) {
-            $result['errMsg'] = 'Не передана рубрика для добавления';
-            return $result;
-        }
         
-        $parentObjectId = (int)$this->params()->fromRoute('id'); 
-        if (!$this->imageGalleryModel->isObjectRubric($parentObjectId)) {
-            $result['errMsg'] = 'Тип объекта ' . $parentObjectId . ' не является рубрикой новостей';
-            return $result;
-        }
+        $parentObjectId = (int)$this->params()->fromRoute('id', 0); 
+        if ($parentObjectId) {
+            if (!$galService->isObjectGallery($parentObjectId)) {
+                $result['errMsg'] = 'Галерея ' . $parentObjectId . ' не найдена';
+                return $result;
+            }
+        }     
         
-        $this->imageGalleryModel->setGalleryType(ImageGallery::ITEM)->setParentObjectId($parentObjectId);
+        $imagesCollection->setParentObjectId($parentObjectId);
         
-        if (null === $this->params()->fromRoute('objectTypeId')) {
-            $objectType = $this->objectTypesCollection->getType($this->imageGalleryModel->getItemGuid());        
-            $objectTypeId = $objectType->getId();
-            $this->imageGalleryModel->setObjectTypeId($objectTypeId);
-        } else {
+        if (null !== $this->params()->fromRoute('objectTypeId')) {
             $objectTypeId = (int)$this->params()->fromRoute('objectTypeId');
-            $this->imageGalleryModel->setObjectTypeId($objectTypeId);
+            $imagesCollection->setObjectTypeId($objectTypeId);
             
-            if (!$this->imageGalleryModel->isObjectTypeCorrect($objectTypeId)) {
-                $result['errMsg'] = 'Передан неверный тип объекта ' . $objectTypeId;
+            if (!in_array($objectTypeId, $galService->getImageTypeIds())) {
+                $result['errMsg'] = 'Тип данных ' . $objectTypeId . ' не является изображением';
                 return $result;
             }
         }       
         
-        $form = $this->imageGalleryModel->getForm();        
-        $formConfig = $form['formConfig'];
-        $formValues = $form['formValues'];
-        $formMessages = array();
-        
-        if ($this->request->isPost()) {
-            $tmp = $this->imageGalleryModel->add($this->request->getPost());
-            if ($tmp['success']) {
-                if (!$this->request->isXmlHttpRequest()) {
-                    $this->flashMessenger()->addSuccessMessage('Картинка успешно добавлена');
-                    $this->redirect()->toRoute('admin/method',array(                        
-                        'module' => 'ImageGallery',
-                        'method' => 'Edit',
-                        'id' => $tmp['objectId'],
-                    ));
-                }
-
-                return array(
-                    'success' => 1,
-                    'msg' => 'Картинка успешно добавлена',
-                );         
-            } else {
-                $formMessages = $tmp['form']->getMessages();
-                $formValues = $tmp['form']->getData();
+        if ($request->isPost()) {
+            $form = $imagesCollection->getForm(false);
+            
+            $data = $request->getPost()->toArray();
+            if (empty($data['common']['name'])) {
+                $data['common']['name'] = $translator->translate('ImageGallery:(Image without name)');
             }
+            $form->setData($data);
+            
+            if ($form->isValid()) {
+                if ($imgId = $imagesCollection->addImage($form->getData())) {
+                    if (!$request->isXmlHttpRequest()) {
+                        $this->flashMessenger()->addSuccessMessage('Изображение добавлено');
+                        return $this->redirect()->toRoute('admin/method',array(
+                            'module' => 'ImageGallery',
+                            'method' => 'EditImage',
+                            'id' => $imgId,
+                        ));
+                    }
+                    
+                    return array(
+                        'success' => true,
+                        'msg' => 'Изображение добавлено',
+                    );    
+                } else {
+                    $result['success'] = false;
+                    $result['errMsg'] = 'При добавлении изображения произошли ошибки';
+                }
+            } else {
+                $result['success'] = false;
+            }
+        } else {
+            $form = $imagesCollection->getForm(true);
+        }
+        
+        $params = array(
+            'objectTypeId' => '--OBJECT_TYPE--',    
+        );
+        if (0 != $parentObjectId) {
+            $params['id'] = $parentObjectId;
         }
         
         $result['contentTemplate'] = array(
-            'name' => 'content_template/ImageGallery/form_view.phtml',
+            'name' => 'content_template/ImageGallery/gallery_form.phtml',
             'data' => array(
                 'jsArgs' => array(
-                    'changeObjectTypeUrlTemplate' => $this->url()->fromRoute('admin/AddImage', array(
-                        'id' => $parentObjectId,
-                        'objectTypeId' => '--OBJECT_TYPE--',            
-                    )),
+                    'changeObjectTypeUrlTemplate' => $this->url()->fromRoute('admin/AddImage', $params),
                 ),
-                'formConfig' => $formConfig,
-                'formValues' => $formValues,
-                'formMsg' => $formMessages,
+                'form' => $form,
             ),
         );
         

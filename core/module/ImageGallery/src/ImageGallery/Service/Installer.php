@@ -1,79 +1,68 @@
 <?php
 
-namespace ImageGallery;
+namespace ImageGallery\Service;
 
-use App\FieldsGroup\FieldsGroup;
+use Zend\ServiceManager\ServiceManagerAwareInterface;
+use Zend\ServiceManager\ServiceManager;
 
-class Module
+class Installer implements ServiceManagerAwareInterface
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function getAutoloaderConfig()
+    protected $serviceManager;
+    
+    public function setServiceManager(ServiceManager $serviceManager)
     {
-        return array(
-            'Zend\Loader\StandardAutoloader' => array(
-                'namespaces' => array(
-                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-                ),
-            ),
-        );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getConfig()
-    {
-        return include __DIR__ . '/config/module.config.php';
+        $this->serviceManager = $serviceManager;
     }
     
-    public function onInstall($sm)
+    public function install()
     {
+        $sm = $this->serviceManager;
+        
         $objectTypesCollection = $sm->get('objectTypesCollection');
         $fieldsCollection = $sm->get('fieldsCollection');
         $fieldTypesCollection = $sm->get('fieldTypesCollection');
 
-        $guid = 'image-gallery';
-        if (null === ($id = $objectTypesCollection->getTypeByGuid($guid))) {  
+        $imageGalleryGuid = 'image-gallery';
+        if (null === ($id = $objectTypesCollection->getTypeIdByGuid($imageGalleryGuid))) {  
             $id = $objectTypesCollection->addType(0, 'i18n::ImageGallery:Gallery object type');
             $objectType = $objectTypesCollection->getType($id);
-            $objectType->setGuid($guid)->setIsGuidable(true)->save();
+            $objectType->setGuid($imageGalleryGuid)->setIsGuidable(true)->save();
         }
         $imageGalleryObjectTypeId = $id;
         
-        $guid = 'image';
-        if (null === $objectTypesCollection->getTypeByGuid($guid)) {  
+        $imageGuid = 'image';
+        if (null === $objectTypesCollection->getTypeByGuid($imageGuid)) {  
             $id = $objectTypesCollection->addType(0, 'i18n::ImageGallery:Image object type');
             $objectType = $objectTypesCollection->getType($id);
-            $objectType->setGuid($guid)->save();
+            $objectType->setGuid($imageGuid)->save();
             
             $groupId = $objectType->addFieldsGroup('image-description', 'i18n::ImageGallery:Image description fields group');
                 
             $fieldTypeId = $fieldTypesCollection->getFieldTypeIdByDataType('textarea');
 
-            $fieldsGroup = new FieldsGroup(array(
-                'serviceManager' => $sm,
-                'id' => $groupId,
-            ));
+            $fieldsGroup = $objectType->getFieldsGroup($groupId);
 
             $fieldId = $fieldsCollection->addField(array(
                 'name' => 'image_alt',
                 'title' => 'i18n::ImageGallery:Image alt',
                 'field_type_id' => $fieldTypeId,
+                'tip' => '',
+                'is_locked' => 0,
+                'is_visible' => 1,
+                'is_required' => 0,
+                'in_filter' => 0,
+                'in_search' => 0,
+                'guide_id' => false,
             ));
             
             $fieldsGroup->attachField($fieldId);
             
             
-            $groupId = $objectType->addFieldsGroup('image-src', 'i18n::ImageGallery:Image source fields group');
+            $groupId = $objectType->addFieldsGroup('common', 'i18n::ImageGallery:Common fields group');
                 
             $fieldTypeId = $fieldTypesCollection->getFieldTypeIdByDataType('image');
 
-            $fieldsGroup = new FieldsGroup(array(
-                'serviceManager' => $sm,
-                'id' => $groupId,
-            ));
+            $fieldsGroup = $objectType->getFieldsGroup($groupId);
 
             $fieldId = $fieldsCollection->addField(array(
                 'name' => 'image_src',
@@ -88,43 +77,39 @@ class Module
         $db = $sm->get('db');
         $sqlRes = $db->query('
             select id from ' . DB_PREF . 'page_content_types 
-                where module = ? and method = ?', array('ImageGallery', 'FeGallery'))->toArray();
+                where module = ? and method = ?', array('ImageGallery', 'FeImageGallery'))->toArray();
 
         if (!empty($sqlRes)) {
             $contentTypeId = $sqlRes[0]['id'];
             
-            $guid = 'image-gallery-content';
-            if (null === ($objectType = $objectTypesCollection->getTypeByGuid($guid))) {  
+            $imageGalleryContentGuid = 'image-gallery-content';
+            if (null === ($objectType = $objectTypesCollection->getTypeByGuid($imageGalleryContentGuid))) {  
                 $id = $objectTypesCollection->addType(0, 'i18n::ImageGallery:Image gallery content object type');
                 $objectType = $objectTypesCollection->getType($id);
 
                 $objectType->setPageContentTypeId($contentTypeId);
-                    
-                $objectType->setGuid($guid)->save();
+
+                $objectType->setGuid($imageGalleryContentGuid)->save();
 
 
-                $groupId = $objectType->addFieldsGroup('item-info', 'i18n::ImageGallery:Item info fields group');
+                $groupId = $objectType->addFieldsGroup('common', 'i18n::ImageGallery:Common fields group');
 
                 $fieldTypeId = $fieldTypesCollection->getFieldTypeIdByDataType('select');
 
-                $fieldsGroup = new FieldsGroup(array(
-                    'serviceManager' => $sm,
-                    'id' => $groupId,
-                ));
-
+                $fieldsGroup = $objectType->getFieldsGroup($groupId);
+                
                 $fieldId = $fieldsCollection->addField(array(
                     'name' => 'image_gallery_id',
-                    'title' => 'i18n::ImageGallery:Image gallery id',
+                    'title' => 'i18n::ImageGallery:Image gallery field',
                     'field_type_id' => $fieldTypeId,
                     'is_required' => 1,
+                    'guide_id' => $imageGalleryObjectTypeId,
                 ));
 
                 $fieldsGroup->attachField($fieldId);
             } else {
                 $objectType->setPageContentTypeId($contentTypeId)->save();
             }
-        }  
-        
-        
+        }
     }
 }

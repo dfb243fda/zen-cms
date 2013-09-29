@@ -155,7 +155,12 @@ class Field implements ServiceManagerAwareInterface
         
         
         if (null !== $this->getGuideId()) { 
-            $sqlRes = $db->query('select * from ' . DB_PREF . 'objects where type_id = ?', array($this->getGuideId()));
+            $sqlRes = $db->query('
+                select * 
+                from ' . DB_PREF . 'objects 
+                where type_id = ? 
+                    and is_deleted = 0 
+                    and is_active = 1', array($this->getGuideId()));
             
             $spec['options']['value_options'] = array();
             foreach ($sqlRes as $row) {

@@ -1,8 +1,8 @@
-zen.image_gallery = zen.image_gallery || {};
+zen.imageGallery = zen.imageGallery || {};
 
-zen.apply(zen.image_gallery, {
+zen.apply(zen.imageGallery, {
     delImage: function(url, id) {
-        jConfirm('Вы собираетесь удалить изображение',
+        jConfirm('Вы собираетесь удалить изображение <strong>после удаления его нельзя будет восстановить</strong>',
             'Вы действительно хотите удалить изображение?', 
             function(r) {
                 if (r) {
@@ -28,7 +28,7 @@ zen.apply(zen.image_gallery, {
        );
     },
     delGallery: function(url, id) {
-        jConfirm('Вы собираетесь удалить галерею',
+        jConfirm('Вы собираетесь удалить гелерею <strong>после удаления её нельзя будет восстановить</strong>',
             'Вы действительно хотите удалить галерею?', 
             function(r) {
                 if (r) {

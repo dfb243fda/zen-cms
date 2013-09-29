@@ -3,96 +3,77 @@
 namespace ImageGallery\Method;
 
 use App\Method\AbstractMethod;
-use ImageGallery\Model\ImageGallery;
 
 class AddGallery extends AbstractMethod
 {
-    public function init()
-    {
-        $this->rootServiceLocator = $this->serviceLocator->getServiceLocator();
-        $this->translator = $this->rootServiceLocator->get('translator');
-        $this->db = $this->rootServiceLocator->get('db');
-        $this->objectTypesCollection = $this->rootServiceLocator->get('objectTypesCollection');
-        $this->objectsCollection = $this->rootServiceLocator->get('objectsCollection');
-        $this->imageGalleryModel = new ImageGallery($this->rootServiceLocator);     
-        $this->request = $this->rootServiceLocator->get('request');
-    }
-
     public function main()
     {
+        $galleryService = $this->serviceLocator->get('ImageGallery\Service\ImageGallery');
+        $galleriesCollection = $this->serviceLocator->get('ImageGallery\Collection\GalleriesCollection');
+        $objectTypesCollection = $this->serviceLocator->get('objectTypesCollection');
+        $request = $this->serviceLocator->get('request');
+        $translator = $this->serviceLocator->get('translator');
+        
         $result = array();
         
-        $parentObjectId = (int)$this->params()->fromRoute('id', 0); 
-        if ($parentObjectId) {
-            if (!$this->imageGalleryModel->isObjectRubric($parentObjectId)) {
-                $result['errMsg'] = 'Объект ' . $parentObjectId . ' не является галереей';
-                return $result;
-            }
-        }        
-        
-        $this->imageGalleryModel->setGalleryType(ImageGallery::RUBRIC)->setParentObjectId($parentObjectId);
-        
-        if (null === $this->params()->fromRoute('objectTypeId')) {
-            $objectType = $this->objectTypesCollection->getType($this->imageGalleryModel->getRubricGuid());        
-            $objectTypeId = $objectType->getId();
-            $this->imageGalleryModel->setObjectTypeId($objectTypeId);
-        } else {
+        if (null !== $this->params()->fromRoute('objectTypeId')) {
             $objectTypeId = (int)$this->params()->fromRoute('objectTypeId');
-            $this->imageGalleryModel->setObjectTypeId($objectTypeId);
+            $galleriesCollection->setObjectTypeId($objectTypeId);
             
-            if (!$this->imageGalleryModel->isObjectTypeCorrect($objectTypeId)) {
-                $result['errMsg'] = 'Передан неверный тип объекта ' . $objectTypeId;
+            if (!in_array($objectTypeId, $galleryService->getGalleryTypeIds())) {
+                $result['errMsg'] = 'Тип данных ' . $objectTypeId . ' не является галереей';
                 return $result;
             }
         }       
         
-        $form = $this->imageGalleryModel->getForm();        
-        $formConfig = $form['formConfig'];
-        $formValues = $form['formValues'];
-        $formMessages = array();
-        
-        if ($this->request->isPost()) {
-            $tmp = $this->imageGalleryModel->add($this->request->getPost());
-            if ($tmp['success']) {
-                if (!$this->request->isXmlHttpRequest()) {
-                    $this->flashMessenger()->addSuccessMessage('Галерея успешно добавлена');
-                    $this->redirect()->toRoute('admin/method',array(
-                        'module' => 'ImageGallery',
-                        'method' => 'Edit',
-                        'id' => $tmp['objectId'],
-                    ));
+        if ($request->isPost()) {
+            $form = $galleriesCollection->getForm(false);
+            
+            $data = $request->getPost()->toArray();
+            if (empty($data['common']['name'])) {
+                $data['common']['name'] = $translator->translate('ImageGallery:(Gallery without name)');
+            }
+            $form->setData($data);
+            
+            if ($form->isValid()) {                
+                if ($galId = $galleriesCollection->addGallery($form->getData())) {
+                    if (!$request->isXmlHttpRequest()) {
+                        $this->flashMessenger()->addSuccessMessage('Галерея создана');
+                        $this->redirect()->toRoute('admin/method',array(
+                            'module' => 'ImageGallery',
+                            'method' => 'EditGallery',
+                            'id' => $galId,
+                        ));
+                    }
+                    
+                    return array(
+                        'success' => true,
+                        'msg' => 'Галерея создана',
+                    );    
+                } else {
+                    $result['success'] = false;
+                    $result['errMsg'] = 'При создании галереи произошли ошибки';
                 }
-
-                return array(
-                    'success' => true,
-                    'msg' => 'Галерея успешно добавлена',
-                );         
             } else {
                 $result['success'] = false;
-                $formMessages = $tmp['form']->getMessages();
-                $formValues = $tmp['form']->getData();
             }
-        }
-        
-        $changeObjectTypeUrlParams = array(
-            'objectTypeId' => '--OBJECT_TYPE--',            
-        );
-        if (0 != $parentObjectId) {
-            $changeObjectTypeUrlParams['id'] = $parentObjectId;
+        } else {
+            $form = $galleriesCollection->getForm(true);
         }
         
         $result['contentTemplate'] = array(
-            'name' => 'content_template/ImageGallery/form_view.phtml',
+            'name' => 'content_template/ImageGallery/gallery_form.phtml',
             'data' => array(
                 'jsArgs' => array(
-                    'changeObjectTypeUrlTemplate' => $this->url()->fromRoute('admin/AddGallery', $changeObjectTypeUrlParams),
+                    'changeObjectTypeUrlTemplate' => $this->url()->fromRoute('admin/AddGallery', array(
+                        'objectTypeId' => '--OBJECT_TYPE--',    
+                    )),
                 ),
-                'formConfig' => $formConfig,
-                'formValues' => $formValues,
-                'formMsg' => $formMessages,
+                'form' => $form,
             ),
         );
         
-        return $result;        
+        return $result;
     }
+    
 }

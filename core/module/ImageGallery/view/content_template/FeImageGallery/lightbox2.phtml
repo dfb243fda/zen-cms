@@ -1,0 +1,23 @@
+<div class="img-gallery">
+    <?php
+    if (empty($this->items)) :
+        ?>
+        <div class="img-gallery__err-msg">Изображений нет</div>
+        <?php
+    else :    
+        $this->inlineScript()->appendFile($this->basePath('/js/ImageGallery/lightbox/js/jquery-1.10.2.min.js'));
+        $this->inlineScript()->appendFile($this->basePath('/js/ImageGallery/lightbox/js/lightbox-2.6.min.js'));
+        $this->headLink()->appendStylesheet($this->basePath('/js/ImageGallery/lightbox/css/lightbox.css'));
+        
+        
+        foreach ($this->items as $item) : ?>
+            <div class="img-gallery__item">
+                <a href="<?php echo $item['fieldGroups']['common']['image_src'] ?>" data-lightbox="image-gal-<?php echo $this->gallery ?>" title="<?php echo $item['fieldGroups']['image-description']['image_alt'] ?>">
+                    <img src="<?php echo $this->makeThumb($item['fieldGroups']['common']['image_path'], 100, 100); ?>" alt="" />
+                </a>
+            </div>
+        <?php
+        endforeach;
+    endif;    
+    ?>
+</div>

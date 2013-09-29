@@ -1,27 +1,18 @@
 <?php
 
-$sm = $this->getHelperPluginManager()->getServiceLocator();
+$this->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/ImageGallery/image_gallery.js');
 
-$this->headScript()->appendFile(ROOT_URL_SEGMENT . '/js/ImageGallery/gallery.js');
-
-$this->inlineScript()->appendScript('zen.image_gallery.initGalleryForm(' . json_encode($this->jsArgs) . ');');  
+$this->inlineScript()->appendScript('zen.imageGallery.initGalleryForm(' . json_encode($this->jsArgs) . ');');  
 
 ?>
 
 <div class="blocks">
     <?php
-    $factory = new Zend\Form\Factory($sm->get('FormElementManager'));
-    $formConfig = $this->formConfig;
     
-    $form = $factory->createForm($formConfig);   
+    $form = $this->form; 
     $form->setAttribute('class', 'form-2c');
-    $form->setData($this->formValues);
     $form->prepare();
-    
-    if (isset($this->formMsg)) {
-        $form->setMessages($this->formMsg);
-    }
-    
+        
     echo $this->form()->openTag($form);
     foreach ($form->getFieldsets() as $fieldset) :     
         ?>

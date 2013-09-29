@@ -1,0 +1,32 @@
+<?php
+
+$this->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/ImageGallery/image_gallery.js');
+
+$data = array(
+    'createBtn' => array(
+        'text' => 'Создать галерею',
+        'link' => $this->url('admin/method', array(
+            'module' => 'ImageGallery',
+            'method' => 'AddGallery',
+        )),
+    ),
+    'url' => $this->url('admin/GalleryList', array(
+        'task'   => 'get_data',
+    )),  
+    'columns' => array(
+        array(
+            array(                        
+                'title' => $this->translate('ImageGallery:Name field'),
+                'field' => 'name',
+                'width' => '200',
+            ),
+            array(                        
+                'title' => '',
+                'field' => 'icons',
+                'width' => '200',
+            )
+        )                    
+    ),
+);
+
+echo $this->partial('content_template/' . CURRENT_THEME . '/tree_grid.phtml', $data);

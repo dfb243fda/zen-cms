@@ -162,7 +162,7 @@ return array(
                     'AddCategory' => array(
                         'type' => 'segment',
                         'options' => array(
-                            'route' => 'Menu/AddCategory[/id_:id{/.}][/object_type_:objectTypeId{/.}][/][.:format]',
+                            'route' => 'Catalog/AddCategory[/id_:id{/.}][/object_type_:objectTypeId{/.}][/][.:format]',
                             'defaults' => array(
                                 'module' => 'Catalog',
                                 'method' => 'AddCategory',

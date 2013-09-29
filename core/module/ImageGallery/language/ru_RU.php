@@ -2,43 +2,46 @@
 
 return array(
     'ImageGallery module' => 'Галерея изображений',
-    'ImageGallery module description' => 'Галерея изображений',
+    'ImageGallery module descripition' => 'Модуль, управляющий галереей изобрадений',
     
-    'ImageGallery:Gallery list method' => 'Галерея изображений',
-    'ImageGallery:Gallery list method description' => 'Метод, отображающий список галерей',
+    'ImageGallery:Lightbox2 template' => 'Lightbox2',
     
-    'ImageGallery:Gallery edit method' => 'Редактирование галереи',
-    'ImageGallery:Gallery edit method description' => 'Метод, редактирующий галерею',
+    'ImageGallery:GalleryList method' => 'Галереи',
+    'ImageGallery:GalleryList method description' => 'Метод, отображающий список галерей',
     
-    'ImageGallery:Add gallery method' => 'Создание галереи',
-    'ImageGallery:Add gallery method description' => 'Метод, создающий галерею',
+    'ImageGallery:EditGallery method' => 'Редактирование галереи',
+    'ImageGallery:EditGallery method description' => 'Метод, редактирующий галерею',
     
-    'ImageGallery:Add image method' => 'Добавление изображения',
-    'ImageGallery:Add image method description' => 'Метод, добавляющий изображение',
+    'ImageGallery:EditImage method' => 'Редактирование изображения',
+    'ImageGallery:EditImage method description' => 'Метд, редактирующий изображение',
     
-    'ImageGallery:Gallery delete method' => 'Удаление галереи или изображения',
-    'ImageGallery:Gallery delete method description' => 'Удаление галереи или изображения',
+    'ImageGallery:AddGallery method' => 'Создание галереи',
+    'ImageGallery:AddGallery method description' => 'Метод, создающий галерею',
     
-    'ImageGallery:FeGallery method' => 'Галерея изображений',
-    'ImageGallery:FeGallery method description' => 'Фронтэнд метод, для отображения галереи изображений',
+    'ImageGallery:AddImage method' => 'Добавление изображения',
+    'ImageGallery:AddImage method description' => 'Метод, добавляющий изображение',
     
-    'ImageGallery:Gallery template' => 'Галерея изображений',
+    'ImageGallery:DeleteGallery method' => 'Удаление галереи',
+    'ImageGallery:DeleteGallery method description' => 'Метод, удаляющий галерею',
     
-    'ImageGallery:Gallery object type' => 'Галерея изображений',
+    'ImageGallery:DeleteImage method' => 'Удаление изображения',
+    'ImageGallery:DeleteImage method description' => 'Метод, удаляющий изображение',
+    
+    'ImageGallery:FeImageGallery method' => 'Галерея изображений',
+    'ImageGallery:FeImageGallery method description' => 'Метод, отображающий галерею',
+    
+    'ImageGallery:Name field' => 'Название',
+    
+    'ImageGallery:Gallery object type' => 'Галерея',
     'ImageGallery:Image object type' => 'Изображение',
-    
     'ImageGallery:Image description fields group' => 'Описание изображения',
-    'ImageGallery:Image source fields group' => 'Изображение',
-    'ImageGallery:Image upload' => 'Изображение',
-    
-    'ImageGallery:Image gallery content object type' => 'Галерея изображений (содержимое страницы)',
-    'ImageGallery:Item info fields group' => 'Дополнительная информация',
-    
-    'ImageGallery:Image gallery id' => 'Галерея',
     'ImageGallery:Image alt' => 'Альтернативный текст',
+    'ImageGallery:Image upload' => 'Изображение',
+    'ImageGallery:Image gallery content object type' => 'Галерея (содержимое)',
+    'ImageGallery:Image gallery field' => 'Галерея',
     
-    'Media menu group' => 'Медиа',
     'ImageGallery:Gallery name field' => 'Название галереи',
+    'ImageGallery:Image name field' => 'Название изображения',
     
-    'ImageGallery:(Without name)' => '(Без названия)',
+    'ImageGallery:Image gallery' => 'Галерея',
 );
