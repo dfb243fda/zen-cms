@@ -30,6 +30,9 @@ class FormCkEditor extends FormTextarea
         if (!isset($attributes['id'])) {
             $attributes['id'] = 'ckeditor_' . str_replace(array('[', ']'), '_', $name);
         }
+        if (!isset($attributes['filebrowserBrowseUrl'])) {
+            $attributes['filebrowserBrowseUrl'] = ROOT_URL_SEGMENT + '/js/core/file_manager/elfinder-2.0-rc1/elfinder_ckeditor.html';
+        }
    
         $attributes['name'] = $name;
         $content            = (string) $element->getValue();

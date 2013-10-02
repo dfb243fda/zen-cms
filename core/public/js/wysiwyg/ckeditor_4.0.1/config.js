@@ -8,7 +8,7 @@ CKEDITOR.editorConfig = function( config ) {
 	// For the complete reference:
 	// http://docs.ckeditor.com/#!/api/CKEDITOR.config
 
-   config.filebrowserBrowseUrl = zen.currentTheme.params['baseUrl'] + '/js/core/file_manager/elfinder-2.0-rc1/elfinder_ckeditor.html';
+   config.filebrowserBrowseUrl = zen.baseUrl + '/js/core/file_manager/elfinder-2.0-rc1/elfinder_ckeditor.html';
 
 	// The toolbar groups arrangement, optimized for two toolbar rows.
 	config.toolbarGroups = [

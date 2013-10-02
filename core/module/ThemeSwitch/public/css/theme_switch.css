@@ -1,0 +1,28 @@
+.themes-group {
+    margin-bottom: 10px;
+    padding-bottom: 20px;
+    border-bottom: 1px dotted #BBBBBB;
+}
+.themes-group__title {
+    color: #960000;
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+.themes-group__item {
+    float: left;
+    width: 300px;
+    border-right: 1px dotted #BBBBBB;
+    text-align: center;
+}
+.themes-group__item-checkbox-wrap {
+    margin-bottom: 5px;
+}
+.themes-group__item-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.themes-group__item-img img {
+    max-width: 250px;
+    max-height: 250px;
+}

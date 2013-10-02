@@ -16,6 +16,21 @@ return array(
         
         'priority' => -7,
         'isRequired' => true,
+        
+        'methods' => array(
+            'AdminMainPage' => array(
+                'service' => 'AdminPanel\Method\AdminMainPage',
+                'title' => 'i18n::AdminPanel:AdminMainPage method',
+                'description' => 'i18n::AdminPanel:AdminMainPage method description',
+                'type' => 'be',
+                'showTitle' => false,
+            ),
+            'AdminMainMenu' => array(
+                'service' => 'AdminPanel\Method\AdminMainMenu',
+                'title' => 'i18n::AdminPanel:AdminMainMenu method',
+                'description' => 'i18n::AdminPanel:AdminMainMenu method description',
+            ),
+        ),
     ),
     
     'translator' => array(
@@ -58,11 +73,14 @@ return array(
             
             'AdminPanel\View\ResultComposer\HtmlComposer' => 'AdminPanel\View\ResultComposer\HtmlComposer',
             'AdminPanel\View\ResultComposer\JsonHtmlComposer' => 'AdminPanel\View\ResultComposer\JsonHtmlComposer',
+            
+            'AdminPanel\Service\AdminMainPage' => 'AdminPanel\Service\AdminMainPage',
+            'AdminPanel\Service\AdminMainMenu' => 'AdminPanel\Service\AdminMainMenu',
         ),
     ),
     'controllers' => array(
         'invokables' => array(
             'AdminPanel\Controller\Admin' => 'AdminPanel\Controller\AdminController',
         ),
-    ),    
+    ),   
 );

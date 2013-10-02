@@ -4,12 +4,6 @@ return array(
     'Chameleon theme module' => 'Тема "Хамелеон"',
     'Chameleon theme module description' => 'Тема для административной панели "Хамелеон"',
     
-    'Admin main page method' => 'Главная страница',
-    'Admin main page method description' => 'Главная страница административной панели',
-    
-    'Admin main menu method' => 'Главное меню',
-    'Admin main menu method description' => 'Главное меню в административной панели',
-    
 	'Welcome to zen-cms!' => 'Добро пожаловать в Zen-CMS!',
     'List of active modules:' => 'Список активных модулей:',
     'Methods' => 'Методы',

@@ -24,9 +24,11 @@ class FormCollection3C extends FormCollection
         }  
         
         if ($collection->allowAdd()) {
-            $html .= '<button class="add-collection-item" onclick="return zen.currentTheme.forms.addCollectionItem(this)">' . $addButtonText . '</button>';
+            $this->getView()->inlineScript()->appendFile(ROOT_URL_SEGMENT . '/js/core/forms.js'); 
             
-            $html .= '<button class="del-collection-item" onclick="return zen.currentTheme.forms.delCollectionItem(this)">' . $delButtonText . '</button>';
+            $html .= '<button class="add-collection-item" onclick="return zen.forms.addCollectionItem(this)">' . $addButtonText . '</button>';
+            
+            $html .= '<button class="del-collection-item" onclick="return zen.forms.delCollectionItem(this)">' . $delButtonText . '</button>';
         }        
         
         return $html;

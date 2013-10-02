@@ -2,17 +2,6 @@
 
 $sm = $this->getHelperPluginManager()->getServiceLocator();
 
-//$publicResources = $sm->get('publicResources');
-
-//$publicResources->includeJS(array(
-//    'be-modul' => ROOT_URL_SEGMENT . '/js/ObjectTypes/object_types.js',
-//));
-
-//if (isset($this->jsInclude)) {
-//    $publicResources->includeJS($this->jsInclude);
-//}
-
-
 if (!isset($this->idField)) {
     $this->idField = 'id';
 }
@@ -22,7 +11,7 @@ if (!isset($this->treeField)) {
 if (!isset($this->loadFilter)) {
     $this->loadFilter = new Zend\Json\Expr('
         function(data) {
-            data.page.items = zen.chameleonTheme.renderIcons(data.page.items);
+            data.page.items = zen.treeGrid.renderIcons(data.page.items);
 
             var opts = $(this).treegrid(\'options\');
             var originalData = $(this).treegrid(\'getData\');
@@ -64,15 +53,6 @@ if (!isset($this->loadFilter)) {
     ');
 }
 
-/*
-if (!isset($data['onLoadSuccess'])) {
-    $data['onLoadSuccess'] = new Zend_Json_Expr('
-        function(row, param) { zen.chameleonTheme.treeGrid.enableDnd($(\'#easyui-tree-grid\')); }
-    ');
-}
-*/
-
-
 $data = array(
     'idField' => $this->idField,
     'treeField' => $this->treeField,
@@ -83,15 +63,8 @@ $data = array(
 
 $jsonStr = Zend\Json\Json::encode($data, false, array('enableJsonExprFinder' => true));  
 
+$this->inlineScript()->appendFile($this->basePath('/js/core/tree_grid.js'));
 $this->inlineScript()->appendScript('$(\'#easyui-tree-grid\').treegrid(' . $jsonStr . ');');
-
-//$publicResources->includeJSCallback(array(
-//    'be-modul' => array(
-//        array(
-//            'code' => '$(\'#easyui-tree-grid\').treegrid(' . $jsonStr . ');',
-//        ),      
-//   ),
-//));
 
 if (isset($this->createBtn)) {
     echo '<div class="buttons">';

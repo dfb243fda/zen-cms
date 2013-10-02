@@ -1,0 +1,30 @@
+<?php
+    $this->headLink()->appendStylesheet($this->basePath('/css/ThemeSwitch/theme_switch.css'));
+?>
+<div class="themes">
+    <form action="<?php echo $this->serverUrl(true) ?>" method="post">
+        <?php foreach ($this->themes as $themeGroupKey => $themeGroup): ?>
+            <div class="themes-group">
+                <div class="themes-group__title"><?php echo $this->translateI18n($themeGroup['title']) ?></div>
+                <div class="themes-group__items clearfix">
+                    <?php foreach ($themeGroup['items'] as $themeKey => $themeConfig): ?>
+                        <?php
+                            $checked = '';
+                            if ($themeConfig['isCurrentTheme']) {
+                                $checked = ' checked';
+                            }
+                        ?>
+                        <div class="themes-group__item">
+                            <div class="themes-group__item-checkbox-wrap"><input type="radio"<?php echo $checked ?> name="<?php echo $themeGroupKey ?>_theme" value="<?php echo $themeKey ?>" /></div>
+                            <div class="themes-group__item-title"><?php echo $this->translateI18n($themeConfig['title']) ?></div>
+                            <?php if (isset($themeConfig['themeImage'])): ?>
+                                <img class="themes-group__item-img" src="<?php echo $themeConfig['themeImage'] ?>" alt="<?php echo $this->escapeHtmlAttr($this->translateI18n($themeConfig['title'])) ?>" />
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+        <input type="submit" value="Сохранить" />
+    </form>
+</div>

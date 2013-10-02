@@ -2,6 +2,7 @@
 
 return array(
     'FeTheme' => array(
+        'type' => 'fe_theme',
         'title' => 'i18n::FeTheme module',
         'description' => 'i18n::FeTheme module description',
         'dynamic_templates' => true,

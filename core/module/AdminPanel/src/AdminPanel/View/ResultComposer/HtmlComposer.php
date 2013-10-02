@@ -10,7 +10,7 @@ class HtmlComposer extends ComposerAbstract
     public function getResult(array $resultArray)
     {
         $config = $this->serviceManager->get('config');
-        $themePageTemplate = $config[CURRENT_THEME]['defaultTemplate'];
+        $themePageTemplate = $config[CURRENT_THEME]['be_template'];
         $viewRenderer = $this->serviceManager->get('ViewRenderer');
         $eventManager = $this->serviceManager->get('application')->getEventManager();
         

@@ -257,7 +257,7 @@ zen.apply(zen, {
         },
         add: function(url) {
             this.hasPushedStates = true;
-            if (zen.history.histAPI == true) {
+            if (this.histAPI == true) {
                 window.history.pushState(null, null, url);	
             }
         },
@@ -265,7 +265,7 @@ zen.apply(zen, {
             window.history.go(step + 1 - window.history.length);
         },
         refresh: function() {
-            if (zen.history.histAPI == true) {
+            if (this.histAPI == true) {
                 var url = window.location.href;
                 
                 if (window.location.pathname.indexOf('.') == -1) {

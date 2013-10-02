@@ -1,6 +1,6 @@
 <?php
 
-namespace ChameleonTheme\Service;
+namespace AdminPanel\Service;
 
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManagerAwareInterface;

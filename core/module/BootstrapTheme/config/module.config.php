@@ -1,16 +1,17 @@
 <?php
 
 return array(
-    'ChameleonTheme' => array(
-        'type' => 'be_theme',
-        'title' => 'i18n::Chameleon theme module',
-        'description' => 'i18n::Chameleon theme module description',
+    'BootstrapTheme' => array(
+        'title' => 'i18n::BootstrapTheme module',
+        'description' => 'i18n::BootstrapTheme module description',
         'version' => '0.1',
-        'be_template' => 'page_template/ChameleonTheme/default.phtml',
+        
+        'be_template' => 'page_template/BootstrapTheme/default.phtml',
         'be_main_page_method' => array('AdminPanel', 'AdminMainPage'),
-        'isRequired' => true,
-        'themeImage' => '/img/ChameleonTheme/theme_image.png',
+        
+        'type' => 'be_theme',
     ),
+    
     'translator' => array(
         'translation_file_patterns' => array(
             array(
@@ -19,5 +20,5 @@ return array(
                 'pattern'  => '%s.php',
             ),
         ),
-    ),    
+    ),
 );
