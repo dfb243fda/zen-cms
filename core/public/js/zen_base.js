@@ -175,6 +175,19 @@ zen.apply(zen, {
 		}
 		return retObj;
 	},
+    
+    init: function() {
+        this.initEvents();
+        this.history.init();
+    },
+    
+    initEvents: function() {
+        _.extend(this.events, Backbone.Events);
+    },
+    
+    events: {},
+
+    baseUrl: null,
 
 	invoke: function(methodName, params) {
 		var arr = methodName.split('.');
@@ -185,68 +198,6 @@ zen.apply(zen, {
 			parent = parent[arr[i]];
 		}
 		return parent[funcName].apply(parent, params);
-	},
-	observer : {
-		observers : {},
-		registerObserver : function(event, callback, args, observer_id) {
-			if (!zen.isDefined(args)) {
-				args = [];
-			}
-			if (!zen.isDefined(this.observers[event])) {
-				this.observers[event] = [];
-			}
-			if (!zen.isDefined(observer_id)) {
-				observer_id = false;
-			}
-
-			this.observers[event].push({
-				id: observer_id,
-				callback : callback,
-				args : args
-			});
-		},
-		fireEvent : function(event) {
-
-			var args = Array.prototype.slice.call(arguments);
-			args = args.slice(1);
-
-			if (zen.isDefined(this.observers[event])) {
-				$.each(this.observers[event], function(index, value) {
-					args = zen.array_merge(value['args'], args);
-					value['callback'].apply(window, args);
-				});
-			}
-		},
-		clearObservers: function(event, observer_id) {		
-			var me = this;
-			
-			if (zen.isDefined(observer_id)) {
-				
-				if (event == '') {
-					$.each(me.observers, function(i, v) {
-						me.observers[i] = $.map(me.observers[i], function(value) {
-							if (value['id'] == observer_id) {
-								return null;
-							}
-							return value;
-						});
-					});
-				}
-				else {
-					if (zen.isDefined(me.observers[event])) {
-						me.observers[event] = $.map(me.observers[event], function(value) {
-							if (value['id'] == observer_id) {
-								return null;
-							}
-							return value;
-						});
-					}
-				}				
-			}
-			else {
-				me.observers[event] = [];
-			}			
-		}
 	},
 	        
     history: {		
@@ -266,12 +217,7 @@ zen.apply(zen, {
         },
         refresh: function() {
             if (this.histAPI == true) {
-                var url = window.location.href;
-                
-                if (window.location.pathname.indexOf('.') == -1) {
-                    url += '.json_html';
-                }                
-                zen.currentTheme.getAjaxContent(url, false);
+                zen.events.trigger('history.refresh');
             }
             else {
                 window.location = window.location;

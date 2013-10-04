@@ -18,7 +18,7 @@ $sm = $this->getHelperPluginManager()->getServiceLocator();
 
 $this->headScript()->prependFile($this->basePath('/js/core/modernizr.js'));
 
-$this->inlineScript()->prependScript('zen.baseUrl = "' . $this->basePath() . '";')
+$this->inlineScript()->prependScript('zen.chameleonTheme.init({baseUrl: "' . $this->basePath() . '"});')
                    ->prependFile($this->basePath('/js/core/jquery_plugins/fancybox/jquery.fancybox.pack.js'))
                    ->prependFile($this->basePath('/js/core/jquery_plugins/jquery-toastmessage-plugin/javascript/jquery.toastmessage.js'))
                    ->prependFile($this->basePath('/js/core/jquery_plugins/jquery.alerts-1.1/jquery.alerts.js'))
@@ -28,6 +28,8 @@ $this->inlineScript()->prependScript('zen.baseUrl = "' . $this->basePath() . '";
                    ->prependFile($this->basePath('/js/ChameleonTheme/chameleon_theme.js'))
                    ->prependFile($this->basePath('/js/core/zen_base.js'))
                    ->prependFile($this->basePath('/js/core/jquery_plugins/jquery.form.js'))
+                   ->prependFile($this->basePath('/js/core/backbone-min.js'))
+                   ->prependFile($this->basePath('/js/core/underscore-min.js'))
                    ->prependFile($this->basePath('/js/core/jquery/jquery-1.8.3.min.js'));               
                    
                    

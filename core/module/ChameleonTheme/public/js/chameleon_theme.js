@@ -4,7 +4,9 @@ zen.chameleonTheme = {};
     zen.apply(zen.chameleonTheme, {
         params: {},
         init: function(params) {
-            this.params = params;
+            var me = this;
+            
+            me.params = params;
             
             this.logo.init();
             $(document).ajaxStart(function() {
@@ -13,8 +15,17 @@ zen.chameleonTheme = {};
             $(document).ajaxStop(function() {
                 $('#loading-msg').hide();
             });
-            zen.currentTheme = this;      
-            zen.history.init();
+            zen.init();            
+            zen.baseUrl = params.baseUrl;
+            
+            zen.events.on('history.refresh', function() {
+                var url = window.location.href;
+                
+                if (window.location.pathname.indexOf('.') == -1) {
+                    url += '.json_html';
+                }                
+                me.getAjaxContent(url, false);
+            });
         },
         
         getAjaxContent: function(url, pushState) {
