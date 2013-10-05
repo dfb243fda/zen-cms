@@ -17,8 +17,10 @@
                         <div class="themes-group__item">
                             <div class="themes-group__item-checkbox-wrap"><input type="radio"<?php echo $checked ?> name="<?php echo $themeGroupKey ?>_theme" value="<?php echo $themeKey ?>" /></div>
                             <div class="themes-group__item-title"><?php echo $this->translateI18n($themeConfig['title']) ?></div>
-                            <?php if (isset($themeConfig['themeImage'])): ?>
-                                <img class="themes-group__item-img" src="<?php echo $themeConfig['themeImage'] ?>" alt="<?php echo $this->escapeHtmlAttr($this->translateI18n($themeConfig['title'])) ?>" />
+                            <?php if (isset($themeConfig['themeImagePath'])): ?>
+                                <img class="themes-group__item-img" src="<?php echo $this->makeThumb($themeConfig['themeImagePath'], 250, 250) ?>" alt="<?php echo $this->escapeHtmlAttr($this->translateI18n($themeConfig['title'])) ?>" />
+                            <?php else: ?>
+                                <img class="themes-group__item-img" src="<?php echo $this->makeThumb(PUBLIC_PATH . '/img/ThemeSwitch/no_image.png', 250, 250); ?>" alt="<?php echo $this->escapeHtmlAttr($this->translateI18n($themeConfig['title'])) ?>" />
                             <?php endif; ?>
                         </div>
                     <?php endforeach; ?>

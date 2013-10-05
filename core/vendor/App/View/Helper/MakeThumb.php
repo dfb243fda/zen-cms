@@ -5,7 +5,6 @@ namespace App\View\Helper;
 use Zend\View\Helper\AbstractHelper;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use App\Resize\Resize;
 
 class MakeThumb extends AbstractHelper implements ServiceLocatorAwareInterface
 {
@@ -31,7 +30,7 @@ class MakeThumb extends AbstractHelper implements ServiceLocatorAwareInterface
         return $this->serviceLocator;
     }
     
-    public function __invoke($imgPath, $width, $height, $resizeMethod = 'auto')
+    public function __invoke($imgPath, $width, $height, $resizeMode = \Imagine\Image\ImageInterface::THUMBNAIL_INSET)
     {
         if (!is_file($imgPath)) {
             return $imgPath;
@@ -39,20 +38,32 @@ class MakeThumb extends AbstractHelper implements ServiceLocatorAwareInterface
         
         $baseName = basename($imgPath);
         
-        $newImgPath = PUBLIC_PATH . '/img/thumb/' . md5($imgPath) . '/' . $baseName;
-        $newImgUrl =  ROOT_URL_SEGMENT . '/img/thumb/' . md5($imgPath) . '/' . $baseName;
+        $newImgPath = PUBLIC_PATH . '/thumb/' . md5($imgPath) . '/' . $baseName;
+        $newImgUrl =  ROOT_URL_SEGMENT . '/thumb/' . md5($imgPath) . '/' . $baseName;
         
         if (!file_exists($newImgPath)) {
-            $dir = PUBLIC_PATH . '/img/thumb/' . md5($imgPath);
-            if (!is_dir($dir)) {
-                $fileManager = $this->serviceLocator->getServiceLocator()->get('FileManager');            
-                $fileManager->mkdir($dir, true);
-            }            
+            $fileManager = $this->serviceLocator->getServiceLocator()->get('FileManager');     
             
-            $resize = new Resize($imgPath);
+            $dir = PUBLIC_PATH . '/thumb/' . md5($imgPath);
+            if (!is_dir($dir)) {
+                $fileManager->mkdir($dir, true);
+            }       
+            
+            $imagine = new \Imagine\Gd\Imagine();
+                        
+            $size = new \Imagine\Image\Box($width, $height);
+            
+            $imagine->open($imgPath)
+                ->thumbnail($size, $resizeMode)
+                ->save($newImgPath);
+            
+       /*     
+            $resize = new Resize($imgPath, $fileManager);
             $resize->resizeImage($width, $height, $resizeMethod);
    
             $resize->saveImage($newImgPath);
+        * 
+        */
         }
         
         return $newImgUrl;

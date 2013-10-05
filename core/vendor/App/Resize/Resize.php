@@ -1,22 +1,8 @@
 <?php
 
-   # ========================================================================#
-   #
-   #  Author:    Jarrod Oberto
-   #  Version:	 1.0
-   #  Date:      17-Jan-10
-   #  Purpose:   Resizes and saves image
-   #  Requires : Requires PHP5, GD library.
-   #  Usage Example:
-   #                     include("classes/resize_class.php");
-   #                     $resizeObj = new resize('images/cars/large/input.jpg');
-   #                     $resizeObj -> resizeImage(150, 100, 0);
-   #                     $resizeObj -> saveImage('images/cars/large/output.jpg', 100);
-   #
-   #
-   # ========================================================================#
-
 namespace App\Resize;
+
+use App\FileManager\FileManager;
 
 class Resize
 {
@@ -25,8 +11,9 @@ class Resize
 	private $width;
 	private $height;
 	private $imageResized;
+    private $fileManager;
 
-	function __construct($fileName)
+	function __construct($fileName, FileManager $fileManager)
 	{
 		// *** Open up the file
 		$this->image = $this->openImage($fileName);
@@ -34,6 +21,8 @@ class Resize
 		// *** Get width and height
 		$this->width  = imagesx($this->image);
 		$this->height = imagesy($this->image);
+        
+        $this->fileManager = $fileManager;
 	}
 
 	## --------------------------------------------------------
@@ -255,7 +244,7 @@ class Resize
 		
 		if (file_exists($savePath))
 		{
-			general::fixPermissions($savePath);
+			$this->fileManager->fixPermissions($savePath);
 		}
 		else
 		{

@@ -35,7 +35,7 @@ class ThemeSwitch implements ServiceManagerAwareInterface
         foreach ($modules as $moduleKey => $moduleConfig) {
             if (isset($moduleConfig['type'])) {
                 if (isset($moduleConfig['themeImage'])) {
-                    $moduleConfig['themeImage'] = ROOT_URL_SEGMENT . $moduleConfig['themeImage'];
+                    $moduleConfig['themeImagePath'] = PUBLIC_PATH . $moduleConfig['themeImage'];
                 }
                 
                 if ('be_theme' == $moduleConfig['type']) {

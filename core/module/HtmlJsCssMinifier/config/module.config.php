@@ -15,25 +15,6 @@ return array(
             ),
         ),
     ),
-    'router' => array(
-        'routes' => array(
-            'minify' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
-                'options' => array(
-                    'route'    => '/minify',
-                    'defaults' => array(
-                        'controller' => 'HtmlJsCssMinifier\Controllers\Minify',
-                        'action'     => 'minify',
-                    ),
-                ),
-            ),
-        ),
-    ),
-    'controllers' => array(
-        'invokables' => array(
-            'HtmlJsCssMinifier\Controllers\Minify' => 'HtmlJsCssMinifier\Controllers\MinifyController',
-        ),
-    ),
     'service_manager' => array(
         'invokables' => array(
             'HtmlJsCssMinifier\Service\Installer' => 'HtmlJsCssMinifier\Service\Installer',

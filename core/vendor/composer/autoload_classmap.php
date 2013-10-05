@@ -11,7 +11,16 @@ return array(
     'Array2XML' => $vendorDir . '/xml/Array2XML.php',
     'XML2Array' => $vendorDir . '/xml/XML2Array.php',
     
-    'lessc' => $vendorDir . '/leafo/lessphp/lessc.inc.php',
+    'Minify' => $vendorDir . '/minify/min/lib/Minify.php',    
+    'Minify_Controller_Files' => $vendorDir . '/minify/min/lib/Minify/Controller/Files.php',    
+    'Minify_Controller_Base' => $vendorDir . '/minify/min/lib/Minify/Controller/Base.php', 
+    'Minify_Logger' => $vendorDir . '/minify/min/lib/Minify/Logger.php', 
+    'Minify_Source' => $vendorDir . '/minify/min/lib/Minify/Source.php', 
+    'HTTP_ConditionalGet' => $vendorDir . '/minify/min/lib/HTTP/ConditionalGet.php', 
+    'JSMin' => $vendorDir . '/minify/min/lib/JSMin.php', 
+    'JSMinPlus' => $vendorDir . '/minify/min/lib/JSMinPlus.php', 
+    
+/*    'lessc' => $vendorDir . '/leafo/lessphp/lessc.inc.php',
     'lessc_formatter_classic' => $vendorDir . '/leafo/lessphp/lessc.inc.php',
     'lessc_formatter_compressed' => $vendorDir . '/leafo/lessphp/lessc.inc.php',
     'lessc_formatter_lessjs' => $vendorDir . '/leafo/lessphp/lessc.inc.php',
@@ -23,6 +32,8 @@ return array(
     'scss_server' => $vendorDir . '/leafo/scssphp/scss.inc.php',
     'scssc' => $vendorDir . '/leafo/scssphp/scss.inc.php',
     'JSqueeze' => $vendorDir . '/nicolas-grekas/JSqueeze/class/JSqueeze.php',
+ * 
+ */
     
     'Minify_HTML' => $vendorDir . '/minify/min/lib/Minify/HTML.php',    
     'Minify_CSS' => $vendorDir . '/minify/min/lib/Minify/CSS.php',    

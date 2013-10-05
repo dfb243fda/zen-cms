@@ -33,11 +33,8 @@ class Module
         $app = $e->getTarget();
         $locator = $app->getServiceManager();        
         
-        $eventManager = $locator->get('application')->getEventmanager();        
-        $appConfig = $locator->get('ApplicationConfig');
-                
-        define('MUNEE_CACHE', $appConfig['module_listener_options']['cache_dir'] . '/munee');        
-              
+        $eventManager = $locator->get('application')->getEventmanager();  
+                             
         $publicResourcesComposer = $locator->get('HtmlJsCssMinifier\Listener\PublicResourcesComposer'); 
         $eventManager->attach($publicResourcesComposer);
         

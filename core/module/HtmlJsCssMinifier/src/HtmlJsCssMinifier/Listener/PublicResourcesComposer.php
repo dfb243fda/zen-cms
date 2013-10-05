@@ -7,7 +7,6 @@ use Zend\EventManager\ListenerAggregateInterface;
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\EventManager\EventInterface;
-use Zend\Mvc\MvcEvent;
 
 class PublicResourcesComposer implements
     ListenerAggregateInterface,

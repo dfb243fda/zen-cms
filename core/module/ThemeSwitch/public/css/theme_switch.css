@@ -22,7 +22,7 @@
     font-weight: bold;
     margin-bottom: 10px;
 }
-.themes-group__item-img img {
+.themes-group__item-img {
     max-width: 250px;
     max-height: 250px;
 }

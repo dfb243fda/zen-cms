@@ -71,18 +71,7 @@ class HtmlMinifier implements
 
                 $html = $htmlJsCssOptimizerService->minifyHtml($html, $options);  
                 $response->setContent($html);
-            }      
-            
-                        
-  /*          if (!@ini_get('zlib.output_compression') && (@strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false) ) {
-                $filter = new \Zend\Filter\Compress('Gz');
-                $response = $locator->get('response');
-        
-                $response->getHeaders()->addHeaderLine('Content-Encoding', 'gzip');
-                $params['result'] = $filter->filter($params['result']);
-            }
-   * 
-   */
+            }     
         }
     }    
 }

@@ -12,6 +12,8 @@ class HtmlJsCssMinifier implements ServiceManagerAwareInterface
      */
     protected $serviceManager;
     
+    protected $minifyDir = 'minify';
+    
     /**
      * Set service manager
      *
@@ -141,15 +143,7 @@ class HtmlJsCssMinifier implements ServiceManagerAwareInterface
             if ($v['optimize']) {
                 $tmp = clone $v['options'];
                 
-                $controllerPluginManager = $this->serviceManager->get('ControllerPluginManager');
-                
-                
-                $tmp->href = $controllerPluginManager->get('url')->fromRoute('minify', array(), array(
-                    'query' => array(
-                        'files' => implode(',', $v['items']),
-                        'minify' => $minify ? 'true' : 'false',
-                    ),            
-                ));   
+                $tmp->href = $this->getCssFileUrl($v['items'], $minify);
                 
                 $newLinks[] = $tmp;
             } else {
@@ -158,6 +152,92 @@ class HtmlJsCssMinifier implements ServiceManagerAwareInterface
         }
         
         $linkContainer->exchangeArray($newLinks);
+    }
+    
+    protected function getCssFileUrl($files, $minify)
+    {
+        $fileManager = $this->serviceManager->get('fileManager');
+        
+        $filesStr = implode(',', $files);
+        
+        $md5 = md5($filesStr);
+        
+        $dirPath = PUBLIC_PATH . '/' . $this->minifyDir . '/css/' . substr($md5, 0, 6);  
+        $dirUrl = ROOT_URL_SEGMENT . '/' . $this->minifyDir . '/css/' . substr($md5, 0, 6);
+        
+        $fileName = substr($md5, 6) . '.css';
+        $filePath = $dirPath . '/' . $fileName;
+        $fileUrl = $dirUrl . '/' . $fileName;
+        
+        if (file_exists($filePath)) {
+            return $fileUrl;
+        }
+        if (!is_dir($dirPath)) {
+            $fileManager->mkDir($dirPath, true);
+        }
+        
+        foreach ($files as $k=>$file) {
+            if (0 === stripos($file, ROOT_URL_SEGMENT)) {
+                $files[$k] = PUBLIC_PATH . substr($file, strlen(ROOT_URL_SEGMENT));
+            }
+        }
+        
+        $args = array();
+        if (!$minify) {
+            $args['minifiers'] = array(
+                \Minify::TYPE_CSS => '',
+            );
+        }
+        
+        $fileContent = \Minify::combine($files);
+        
+        file_put_contents($filePath, $fileContent);
+        $fileManager->fixPermissions($filePath);
+                
+        return $fileUrl;
+    }
+    
+    protected function getJsFileUrl($files, $minify)
+    {
+        $fileManager = $this->serviceManager->get('fileManager');
+        
+        $filesStr = implode(',', $files);
+        
+        $md5 = md5($filesStr);
+                
+        $dirPath = PUBLIC_PATH . '/' . $this->minifyDir . '/js/' . substr($md5, 0, 6);  
+        $dirUrl = ROOT_URL_SEGMENT . '/' . $this->minifyDir . '/js/' . substr($md5, 0, 6);
+        
+        $fileName = substr($md5, 6) . '.js';
+        $filePath = $dirPath . '/' . $fileName;
+        $fileUrl = $dirUrl . '/' . $fileName;
+        
+        if (file_exists($filePath)) {
+            return $fileUrl;
+        }
+        if (!is_dir($dirPath)) {
+            $fileManager->mkDir($dirPath, true);
+        }
+        
+        foreach ($files as $k=>$file) {
+            if (0 === stripos($file, ROOT_URL_SEGMENT)) {
+                $files[$k] = PUBLIC_PATH . substr($file, strlen(ROOT_URL_SEGMENT));
+            }
+        }
+            
+        $args = array();
+        if (!$minify) {
+            $args['minifiers'] = array(
+                \Minify::TYPE_JS => '',
+            );
+        }
+        \Minify::setDocRoot(ROOT_URL);
+        $fileContent = \Minify::combine($files, $args);
+        
+        file_put_contents($filePath, $fileContent);
+        $fileManager->fixPermissions($filePath);
+                
+        return $fileUrl;
     }
     
     protected function prepareScript($scriptContainer, $minify)
@@ -275,15 +355,7 @@ class HtmlJsCssMinifier implements ServiceManagerAwareInterface
             if ($v['optimize']) {
                 $tmp = clone $v['options'];
                 
-                $controllerPluginManager = $this->serviceManager->get('ControllerPluginManager');
-                
-                
-                $tmp->attributes['src'] = $controllerPluginManager->get('url')->fromRoute('minify', array(), array(
-                    'query' => array(
-                        'files' => implode(',', $v['items']),
-                        'minify' => $minify ? 'true' : 'false',
-                    ),            
-                ));   
+                $tmp->attributes['src'] = $this->getJsFileUrl($v['items'], $minify);
                 
                 $newScripts[] = $tmp;
             } else {
@@ -321,13 +393,11 @@ class HtmlJsCssMinifier implements ServiceManagerAwareInterface
         ), $options);
         
         $viewHelperManager = $this->serviceManager->get('ViewHelperManager');
-        
-        $jSqueeze = new \JSqueeze;
-                
+                        
         $minifierOptions = array(
             'xhtml' => $viewHelperManager->get('doctype')->isXhtml(),
             'cssMinifier' => $options['minifyCss'] ? array('Minify_CSS', 'minify') : null,
-            'jsMinifier' => $options['minifyJs'] ? array($jSqueeze, 'squeeze') : null,
+            'jsMinifier' => $options['minifyJs'] ? array('JSMin', 'minify') : null,
             'jsCleanComments' => $options['jsCleanComments'],
         );
 

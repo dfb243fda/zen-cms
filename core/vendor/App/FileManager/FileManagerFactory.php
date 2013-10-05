@@ -7,12 +7,6 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 class FileManagerFactory implements FactoryInterface
 {
-    /**
-     * Create db adapter service
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     * @return Adapter
-     */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {        
         $config = $serviceLocator->get('Config');        
