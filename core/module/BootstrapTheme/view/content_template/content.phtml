@@ -1,0 +1,61 @@
+<div class="content" id="content">
+    <?php
+    if (!isset($this->showTitle) || $this->showTitle) :
+        ?>
+        <h2 class="content__title"><?php echo $this->title ?></h2>
+        <?php
+    endif;
+    if (!empty($this->msg)) :
+        if (!is_array($this->msg)) {
+            $this->msg = array($this->msg);
+        }
+        foreach ($this->msg as $msg) :
+            ?>
+            <div class="alert alert-success">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <?php echo $msg ?>
+            </div>
+            <?php
+        endforeach;
+    endif;
+    if (!empty($this->errMsg)) :
+        if (!is_array($this->errMsg)) {
+            $this->errMsg = array($this->errMsg);
+        }
+        foreach ($this->errMsg as $msg) :
+            ?>
+            <div class="alert alert-error">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <?php echo $msg ?>
+            </div>
+            <?php
+        endforeach;
+    endif;
+    if (empty($this->tabs)) :
+        ?>
+        <div class="content__body">
+            <?php
+            echo $this->beforeContent; 
+            echo $this->content;
+            ?>
+        </div>    
+        <?php
+    else :
+        ?>
+        <div class="tab-content">
+            <ul class="nav nav-tabs">
+                <?php foreach ($this->tabs as $tab): ?>
+                    <li<?php echo (isset($tab['active']) && $tab['active']) ? ' class="active"' : '' ?>><a href="<?php echo $tab['link'] ?>"><?php echo $tab['title'] ?></a></li>
+                <?php endforeach; ?>
+            </ul>
+            <div class="tab-content__body">
+                <?php
+                echo $this->beforeContent; 
+                echo $this->content;
+                ?>
+            </div>
+        </div>
+        <?php
+    endif;
+    ?>                
+</div>

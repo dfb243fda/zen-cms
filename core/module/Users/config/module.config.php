@@ -173,8 +173,8 @@ return array(
                                         'type' => 'checkbox',
                                         'name' => 'allow_registration',
                                         'options' => array(
-                                            'label' => 'i18n::Dynamic config allow registration',
-                                            'description' => 'i18n::Dynamic config allow registration description',
+                                            'label' => 'Dynamic config allow registration',
+                                            'description' => 'Dynamic config allow registration description',
                                         ),
                                     ),
                                 ),
@@ -190,8 +190,8 @@ return array(
                                         'type' => 'checkbox',
                                         'name' => 'send_welcome_email_to_reg_users',
                                         'options' => array(
-                                            'label' => 'i18n::Users:Dynamic config send welcome email to reg users',
-                                            'description' => 'i18n::Users:Dynamic config send welcome email to reg users description',
+                                            'label' => 'Users:Dynamic config send welcome email to reg users',
+                                            'description' => 'Users:Dynamic config send welcome email to reg users description',
                                         ),
                                      ),
                                 ),
@@ -200,8 +200,8 @@ return array(
                                         'type' => 'text',
                                         'name' => 'welcome_email_subject',
                                         'options' => array(
-                                            'label' => 'i18n::Users:Dynamic config welcome email subject',
-                                            'description' => 'i18n::Users:Dynamic config welcome email subject description',
+                                            'label' => 'Users:Dynamic config welcome email subject',
+                                            'description' => 'Users:Dynamic config welcome email subject description',
                                         ),
                                     ),
                                 ),
@@ -210,8 +210,8 @@ return array(
                                         'type' => 'ckEditor',
                                         'name' => 'welcome_email_text',
                                         'options' => array(
-                                            'label' => 'i18n::Users:Dynamic config welcome email text',
-                                            'description' => 'i18n::Users:Dynamic config welcome email text description',
+                                            'label' => 'Users:Dynamic config welcome email text',
+                                            'description' => 'Users:Dynamic config welcome email text description',
                                         ),
                                     ),
                                 ),

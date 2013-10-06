@@ -58,8 +58,8 @@ return array(
                                     'spec' => array(
                                         'name' => 'site_name',
                                         'options' => array(
-                                            'label' => 'i18n::Dynamic config system site name',
-                                            'description' => 'i18n::Dynamic config system site name description',
+                                            'label' => 'Dynamic config system site name',
+                                            'description' => 'Dynamic config system site name description',
                                         ),
                                     ),
                                 ),
@@ -67,8 +67,8 @@ return array(
                                     'spec' => array(
                                         'name' => 'site_desc',
                                         'options' => array(
-                                            'label' => 'i18n::Dynamic config system site desc',
-                                            'description' => 'i18n::Dynamic config system site desc description',
+                                            'label' => 'Dynamic config system site desc',
+                                            'description' => 'Dynamic config system site desc description',
                                         ),
                                     ),
                                 ),
@@ -76,8 +76,8 @@ return array(
                                     'spec' => array(
                                         'name' => 'admin_email',
                                         'options' => array(
-                                            'label' => 'i18n::Dynamic config system admin email',
-                                            'description' => 'i18n::Dynamic config system admin email description',
+                                            'label' => 'Dynamic config system admin email',
+                                            'description' => 'Dynamic config system admin email description',
                                         ),
                                     ),
                                 ),
@@ -114,8 +114,8 @@ return array(
                                     'spec' => array(
                                         'name' => 'date_format',
                                         'options' => array(
-                                            'label' => 'i18n::Dynamic config system date format',
-                                            'description' => 'i18n::Dynamic config system date format description',
+                                            'label' => 'Dynamic config system date format',
+                                            'description' => 'Dynamic config system date format description',
                                         ),
                                     ),
                                 ),
@@ -123,8 +123,8 @@ return array(
                                     'spec' => array(
                                         'name' => 'js_date_format',
                                         'options' => array(
-                                            'label' => 'i18n::Dynamic config system js date format',
-                                            'description' => 'i18n::Dynamic config system js date format description',
+                                            'label' => 'Dynamic config system js date format',
+                                            'description' => 'Dynamic config system js date format description',
                                         ),
                                     ),
                                 ),
@@ -132,8 +132,8 @@ return array(
                                     'spec' => array(
                                         'name' => 'time_format',
                                         'options' => array(
-                                            'label' => 'i18n::Dynamic config system time format',
-                                            'description' => 'i18n::Dynamic config system time format description',
+                                            'label' => 'Dynamic config system time format',
+                                            'description' => 'Dynamic config system time format description',
                                         ),
                                     ),
                                 ),
@@ -141,8 +141,8 @@ return array(
                                     'spec' => array(
                                         'name' => 'js_time_format',
                                         'options' => array(
-                                            'label' => 'i18n::Dynamic config system js time format',
-                                            'description' => 'i18n::Dynamic config system js time format description',
+                                            'label' => 'Dynamic config system js time format',
+                                            'description' => 'Dynamic config system js time format description',
                                         ),
                                     ),
                                 ),

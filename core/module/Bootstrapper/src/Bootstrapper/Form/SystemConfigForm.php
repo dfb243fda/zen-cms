@@ -142,8 +142,8 @@ class SystemConfigForm extends Form implements ServiceLocatorAwareInterface
             'name' => 'language',
             'type' => 'select',
             'options' => array(
-                'label' => 'i18n::Dynamic config system language',
-                'description' => 'i18n::Dynamic config system language description',
+                'label' => 'Dynamic config system language',
+                'description' => 'Dynamic config system language description',
                 'value_options' => $languages,
             ),
         ));
@@ -152,7 +152,7 @@ class SystemConfigForm extends Form implements ServiceLocatorAwareInterface
             'name' => 'timezone',
             'type' => 'select',
             'options' => array(
-                'label' => 'i18n::Dynamic config system timezone',
+                'label' => 'Dynamic config system timezone',
                 'description' => sprintf($translator->translate('Dynamic config system timezone description'), $utcTime, $localTime),
                 'value_options' => $timeZones,
             ),

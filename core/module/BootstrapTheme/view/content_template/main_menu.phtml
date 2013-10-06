@@ -1,0 +1,21 @@
+<div class="nav-collapse collapse">
+    <ul class="nav">
+        <?php foreach ($this->mainMenu as $value): ?>
+            <?php if (!empty($value['items'])): ?>
+                <li class="dropdown">
+                    <?php if (1 == count($value['items'])): ?>
+                        <?php $item = reset($value['items']); ?>
+                        <a<?php $item['active'] ? ' class="active"' : '' ?> href="<?php echo $item['link'] ?>"><?php echo $item['title'] ?></a>
+                    <?php else: ?>
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#"><?php echo $value['title'] ?> <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <?php foreach ($value['items'] as $item): ?>                        
+                                <li><a<?php $item['active'] ? ' class="active"' : '' ?> href="<?php echo $item['link'] ?>"><?php echo $item['title'] ?></a></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php endif; ?>                    
+                </li>        
+            <?php endif; ?>
+        <?php endforeach; ?>
+    </ul>
+</div>

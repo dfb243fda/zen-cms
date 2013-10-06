@@ -1,4 +1,8 @@
 <?php
+    $this->headLink()->getContainer()->exchangeArray(array());
+    $this->headScript()->getContainer()->exchangeArray(array());
+    $this->inlineScript()->getContainer()->exchangeArray(array());
+
     $this->headLink()->appendStylesheet($this->basePath('/css/core/500.css'));
     $this->headLink(array('rel' => 'icon', 'href' => $this->basePath('/img/core/favicon.ico')));  
     

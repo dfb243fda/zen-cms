@@ -14,7 +14,7 @@
 return array(    
     'service_manager' => array(
         'factories' => array(
-            'App\I18n\Translator\Translator' => 'App\I18n\Translator\TranslatorServiceFactory',  
+            'App\Mvc\I18n\Translator\Translator' => 'App\Mvc\I18n\Translator\TranslatorServiceFactory',  
             'App\FileManager\FileManager' => 'App\FileManager\FileManagerFactory',
             'App\Method\MethodManager' => 'App\Method\MethodManagerFactory',    
             'Zend\Log\Logger' => 'Zend\Log\LoggerServiceFactory',    
@@ -58,7 +58,7 @@ return array(
             'App\Form\FormsMerger' => 'App\Form\FormsMerger',
         ),
         'aliases' => array(
-            'Translator' => 'App\I18n\Translator\Translator',
+            'Translator' => 'App\Mvc\I18n\Translator\Translator',
             'FileManager' => 'App\FileManager\FileManager',
             'MethodManager' => 'App\Method\MethodManager',
             'Logger' => 'Zend\Log\Logger',            
@@ -119,7 +119,7 @@ return array(
         'display_exceptions'       => true,
         'doctype'                  => 'HTML5',
         'not_found_template'       => 'page_template/core/error/404.phtml',
-        'exception_template'       => 'page_template/core/error/index.phtml',
+        'exception_template'       => 'page_template/core/error/exception.phtml',
         'template_map' => array(
             'layout/layout'        => APPLICATION_PATH . '/view/wrapper/core/wrapper.phtml',
         ),

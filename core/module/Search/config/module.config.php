@@ -87,8 +87,8 @@ return array(
                                     'spec' => array(
                                         'name' => 'items_per_page',
                                         'options' => array(
-                                            'label' => 'i18n::Search config items on page',
-                                            'description' => 'i18n::Search config items on page description',
+                                            'label' => 'Search config items on page',
+                                            'description' => 'Search config items on page description',
                                         ),
                                     ),
                                 ),

@@ -41,7 +41,7 @@ class LoginzaFieldset extends Fieldset implements InputFilterProviderInterface, 
             'name' => 'allow_loginza',
             'options' => array(
                 'label' => 'Dynamic config allow loginza',
-                'description' => 'i18n::Dynamic config allow loginza description',
+                'description' => 'Dynamic config allow loginza description',
             ),
         ));
                 
@@ -61,7 +61,7 @@ class LoginzaFieldset extends Fieldset implements InputFilterProviderInterface, 
             'name' => 'widget_id',
             'options' => array(
                 'label' => 'Dynamic config loginza_widget_id',
-                'description' => 'i18n::Dynamic config loginza_widget_id description',
+                'description' => 'Dynamic config loginza_widget_id description',
             ),
         ));
         
@@ -69,7 +69,7 @@ class LoginzaFieldset extends Fieldset implements InputFilterProviderInterface, 
             'name' => 'secret',
             'options' => array(
                 'label' => 'Dynamic config loginza_secret',
-                'description' => 'i18n::Dynamic config loginza_secret description',
+                'description' => 'Dynamic config loginza_secret description',
             ),
         ));
         
@@ -78,7 +78,7 @@ class LoginzaFieldset extends Fieldset implements InputFilterProviderInterface, 
             'name' => 'secret_is_protected',
             'options' => array(
                 'label' => 'Dynamic config loginza_secret_is_protected',
-                'description' => 'i18n::Dynamic config loginza_secret_is_protected description',
+                'description' => 'Dynamic config loginza_secret_is_protected description',
             ),
         ));
     }

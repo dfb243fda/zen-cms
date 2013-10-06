@@ -31,6 +31,10 @@ class FormElementWrapper3C extends FormRow
         $elementHelper       = $this->getElementHelper();
         $elementErrorsHelper = $this->getElementErrorsHelper();
 
+        if (!$element->hasAttribute('id')) {
+            $element->setAttribute('id', 'id_wrapper_3c_' . str_replace(array('[', ']'), '_', $element->getName()));
+        }
+        
         $label           = $element->getLabel();
 
         if (isset($label) && '' !== $label) {
@@ -65,18 +69,13 @@ class FormElementWrapper3C extends FormRow
 
         if (!isset($label)) {
             $label = '';
-        }
-        
-        $label = $escapeHtmlHelper($label);
-        $labelAttributes = $element->getLabelAttributes();
-
-        if (empty($labelAttributes)) {
-            $labelAttributes = $this->labelAttributes;
-        }
-
-        
+        }     
         if ('' != $label) {
-            $label = $this->view->translateI18n($label);
+            if (null !== ($translator = $this->getTranslator())) {
+                $label = $translator->translate(
+                    $label, $this->getTranslatorTextDomain()
+                );
+            }
             $element->setLabel($label);
             $label = $labelHelper($element);
         }
@@ -85,7 +84,15 @@ class FormElementWrapper3C extends FormRow
         if (null === $description) {
             $description = '';
         } else {
-            $description = $this->view->translateI18n($description);
+            if (null !== ($translator = $this->getTranslator())) {
+                $description = $translator->translate(
+                    $description, $this->getTranslatorTextDomain()
+                );
+            }
+            $description = trim($description);
+            if ('' != $description) {
+                $description = '<label for="' . $element->getAttribute('id') . '">' . $translator->translate($description) . '</label>';
+            }            
         }
                 
         $markup = '';

@@ -167,8 +167,8 @@ return array(
                                     'spec' => array(
                                         'name' => 'replace_spaces_with',
                                         'options' => array(
-                                            'label' => 'i18n::Pages:change spaces with',
-                                            'description' => 'i18n::Pages:change spaces with description',
+                                            'label' => 'Pages:change spaces with',
+                                            'description' => 'Pages:change spaces with description',
                                         ),
                                     ),
                                 ),

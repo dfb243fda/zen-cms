@@ -59,8 +59,8 @@ class RegistrationConfigForm extends Form implements ServiceLocatorAwareInterfac
             'type' => 'select',
             'name' => 'new_user_object_type',
             'options' => array(
-                'label' => 'i18n::Users:Dynamic config new object type',
-                'description' => 'i18n::Users:Dynamic config new object type description',
+                'label' => 'Users:Dynamic config new object type',
+                'description' => 'Users:Dynamic config new object type description',
                 'value_options' => $typeOptions,
             ),
         ));

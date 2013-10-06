@@ -1,0 +1,27 @@
+<?php
+
+if (empty($this->parents)) {
+    $data = array();
+}
+else {
+    $data = $this->parents;
+}
+
+$data[] = $this->page;
+
+$cnt = count($data);
+
+?>
+<ul class="breadcrumb">
+    <?php
+    $i = 0;
+    foreach ($data as $k=>$v) :
+        $i++;
+        ?>    
+        <?php if ($i == $cnt): ?>
+            <li class="active"><?php echo $v['title'] ?></li>
+        <?php else: ?>    
+            <li><a href="<?php echo $v['link'] ?>"><?php echo $v['title'] ?></a> <span class="divider">/</span></li>
+        <?php endif; ?>
+    <?php endforeach; ?>
+</ul>

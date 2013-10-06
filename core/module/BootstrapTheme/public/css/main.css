@@ -1,0 +1,312 @@
+body {
+    padding-top: 130px;
+}
+.loading-msg {
+    border-radius: 0 0 4px 4px;
+    color: #000;
+    left: 50%;
+    margin-left: -75px;
+    background-color: #FFF1A8;
+    font-weight: bold;
+    padding: 5px;
+    position: fixed;
+    z-index: 1000;
+    text-align: center;
+    display: none;
+}
+
+.buttons {
+    margin-bottom: 15px;
+}
+
+
+.block {
+    margin-bottom: 10px;
+}    
+    #groups-wrap .block__title {
+        cursor: move;
+    }
+    .block__title {        
+        border-top: 1px solid #BBBBBB;
+        border-left: 1px solid #BBBBBB;
+        border-right: 1px solid #BBBBBB;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        padding: 5px;
+        
+        background: rgb(255,255,255); /* Old browsers */
+        background: -moz-linear-gradient(top, rgba(255,255,255,1) 39%, rgba(246,246,246,1) 77%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(39%,rgba(255,255,255,1)), color-stop(77%,rgba(246,246,246,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+        background: -webkit-linear-gradient(top, rgba(255,255,255,1) 39%,rgba(246,246,246,1) 77%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+        background: -o-linear-gradient(top, rgba(255,255,255,1) 39%,rgba(246,246,246,1) 77%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+        background: -ms-linear-gradient(top, rgba(255,255,255,1) 39%,rgba(246,246,246,1) 77%,rgba(237,237,237,1) 100%); /* IE10+ */
+        background: linear-gradient(to bottom, rgba(255,255,255,1) 39%,rgba(246,246,246,1) 77%,rgba(237,237,237,1) 100%); /* W3C */
+        
+    }
+    .block__body {
+        border-bottom: 1px solid #BBBBBB;
+        border-left: 1px solid #BBBBBB;
+        border-right: 1px solid #BBBBBB;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        padding: 10px;
+        background-color: #fff;
+    }
+
+
+    
+    
+.form-element__errors {
+    margin: 0;
+    padding-left: 2px;
+    padding: 0;
+}
+.form-element__errors li {
+    display: block;
+    color: #FF2D2D;
+    margin-bottom: 5px;
+}
+
+.form-element__has_errors > label > span {
+    color: #960000;
+}
+.form-element.form-element__has_errors input[type=text],
+.form-element__textarea.form-element__has_errors textarea {
+    background-color: #FFA8A8;
+}
+
+.form-1c .form-element {
+    display: block;
+    margin-bottom: 10px;
+}
+.form-1c .form-element textarea {
+    width: 800px;
+    height: 200px;
+}
+.form-1c .form-element .ace_editor {
+    width: 800px;
+    height: 200px;
+}
+.form-1c .form-element__ckeditor,
+.form-1c .form-element__textarea {
+    display: block;
+    width: 100%;
+}    
+
+.form-1c .form-element > label {
+    display: block;
+    margin-bottom: 5px;
+}
+    .form-1c .form-element > label > span {
+        display: block;
+        margin-bottom: 5px;
+    } 
+    
+    
+
+.form-2c .form-element {
+    display: inline-block;
+    width: 49.7%;
+    margin-bottom: 10px;
+    vertical-align: top;
+}
+.form-2c .form-element textarea {
+    width: 800px;
+    height: 200px;
+}
+.form-2c .form-element .ace_editor {
+    width: 800px;
+    height: 200px;
+}
+.form-2c .form-element__ckeditor,
+.form-2c .form-element__textarea {
+    display: block;
+    width: 100%;
+}    
+
+.form-2c .multitext-item input[type="text"] {
+    margin-right: 5px;
+}
+.form-2c .multitext-item .icons__item {
+    margin-right: 5px;
+}
+.form-2c .multitext-item {
+    margin-bottom: 5px;
+}
+
+.form-2c .composite-item select {
+    margin-right: 10px;
+}
+.form-2c .composite-item input[type="text"] {
+    margin-right: 5px;
+}
+.form-2c .composite-item .icons__item {
+    margin-right: 5px;
+}
+.form-2c .composite-item {
+    margin-bottom: 5px;
+}
+
+.form-2c .object-type-edit-link,
+.form-2c .template-edit-link {
+    width: 300px;
+    text-align: right;
+    font-size: 0.85em;
+}
+    .form-2c .object-type-edit-link a,
+    .form-2c .template-edit-link a {
+        text-decoration: underline;
+    }
+
+.form-2c .form-element > label {
+    display: block;
+    margin-bottom: 5px;
+}
+    .form-2c .form-element > label > span {
+        display: block;
+        margin-bottom: 5px;
+    } 
+    .form-2c .form-element input[type=text],
+    .form-2c .form-element input[type=password] {
+        width: 245px;
+    }
+        .form-2c .form-element__integer input[type=text],
+        .form-2c .form-element__float input[type=text],
+        .form-2c .form-element__price input[type=text] {
+            width: 222px;
+        }
+    .form-2c .form-element select {
+        width: 250px;
+    }
+
+.form-2c fieldset input,
+.form-2c fieldset button {
+    float: right;
+    margin-left: 10px;
+    display:inline-block;
+    border-top:1px solid #ccc;
+    border-bottom:1px solid #ccc;
+    outline:0;
+
+    text-align:center;
+    background: rgb(255,255,255); 
+    background: -moz-linear-gradient(top, rgba(255,255,255,1) 39%, rgba(246,246,246,1) 77%, rgba(237,237,237,1) 100%); 
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(39%,rgba(255,255,255,1)), color-stop(77%,rgba(246,246,246,1)), color-stop(100%,rgba(237,237,237,1))); 
+    background: -webkit-linear-gradient(top, rgba(255,255,255,1) 39%,rgba(246,246,246,1) 77%,rgba(237,237,237,1) 100%); 
+    background: -o-linear-gradient(top, rgba(255,255,255,1) 39%,rgba(246,246,246,1) 77%,rgba(237,237,237,1) 100%); 
+    background: -ms-linear-gradient(top, rgba(255,255,255,1) 39%,rgba(246,246,246,1) 77%,rgba(237,237,237,1) 100%); 
+    background: linear-gradient(to bottom, rgba(255,255,255,1) 39%,rgba(246,246,246,1) 77%,rgba(237,237,237,1) 100%); 
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 ); 
+    padding:3px 6px 4px 6px;margin-right:-2px;left:-1px;position:relative;z-index:1;font:11px 'Arial';color:#666;border-left:1px solid #ccc;border-right:1px solid #ccc;
+}
+
+.form-2c fieldset input:hover, .form-2c fieldset button:hover {border-top:1px solid #8ac;border-bottom:1px solid #8ac;text-decoration:none; background-position:bottom right;color:#568;border-left:1px solid #8ac;border-right:1px solid #8ac;}
+
+    
+
+
+
+.form-3c .form-3c-element {  
+    margin-bottom: 25px;
+    font-size: 1.2em;
+}
+    .form-3c .form-3c-element a {
+        text-decoration: underline;
+    }
+.form-3c .form-3c-element__col-1,
+.form-3c .form-3c-element__col-2,
+.form-3c .form-3c-element__col-3 {
+    float: left;
+    width: 33%;
+}
+
+.form-1c fieldset legend,
+.form-2c fieldset legend, 
+.form-3c fieldset legend {
+    font-size: 1.2em;
+}
+
+.form-1c fieldset,
+.form-2c fieldset, 
+.form-3c fieldset {
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.add-collection-item {
+    margin-right: 15px;
+}
+
+.form-3c .form-element__submit {
+    margin-top: 15px;
+}
+
+.ace_editor {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 200px;
+}
+
+
+
+
+.block .icons {
+    float: right;
+    margin-right: 20px;
+    padding-top: 3px;
+}
+.datagrid-row .icons {
+    display: none;
+    float: right;
+    margin-right: 20px;
+    padding-top: 3px;
+}
+    .datagrid-row:hover .icons {
+        display: block;
+    }
+    .icons__item {
+        width: 16px;
+        height: 16px;
+        background: url("../../img/BootstrapTheme/icons.png");
+        margin-right: 5px;
+        cursor: pointer;
+    }    
+        .icons__item-add {
+            background-position: 16px 0;
+        }
+            .icons__item-add:hover {
+                background-position: 0 0;
+            }
+        .icons__item-edit {
+            background-position: 16px -16px;
+        }
+            .icons__item-edit:hover {
+                background-position: 0 -16px;
+            }
+        .icons__item-del {            
+            background-position: 16px -32px;
+        }
+            .icons__item-del:hover {
+                background-position: 0 -32px;
+            }
+       .icons__item-show {            
+            background-position: 16px -80px;
+        }
+            .icons__item-show:hover {
+                background-position: 0 -80px;
+            }     
+       .icons__item-active {            
+            background-position: 16px -48px;
+        }
+            .icons__item-active:hover {
+                background-position: 0 -48px;
+            }     
+       .icons__item-deactive {            
+            background-position: 16px -64px;
+        }
+            .icons__item-deactive:hover {
+                background-position: 0 -64px;
+            }       

@@ -1,4 +1,8 @@
 <?php
+    $this->headLink()->getContainer()->exchangeArray(array());
+    $this->headScript()->getContainer()->exchangeArray(array());
+    $this->inlineScript()->getContainer()->exchangeArray(array());
+
     $this->headTitle()->setSeparator(' - ');
     $this->headTitle('Zen-CMS');
     $this->headTitle($this->translate('Rbac:Access forbidden'));

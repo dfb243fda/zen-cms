@@ -31,6 +31,7 @@ class AdminMainMenu implements ServiceManagerAwareInterface
         
         $isAllowed = $controllerPluginManager->get('isAllowed');
         $urlPlugin = $controllerPluginManager->get('url');
+        $paramsPlugin = $controllerPluginManager->get('params');
         
         $blocks = $this->getMenuGroups();
         
@@ -54,9 +55,11 @@ class AdminMainMenu implements ServiceManagerAwareInterface
                 
                 $blocks[$block_key]['items'][$k]['link'] = $urlPlugin->fromRoute('admin/method', $params);
                 
-   //             if ($this->request->getQuery('module') == $v['module'] && $this->request->getQuery('method') == $v['method']) {
-     //               $blocks[$block_key]['items'][$k]['active'] = true;
-       //         }
+                if ($paramsPlugin->fromRoute('module') == $v['module'] && $paramsPlugin->fromRoute('method') == $v['method']) {
+                    $blocks[$block_key]['items'][$k]['active'] = true;
+                } else {
+                    $blocks[$block_key]['items'][$k]['active'] = false;
+                }
             }
         }
         

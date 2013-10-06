@@ -57,8 +57,8 @@ return array(
                                         'name' => 'activate_standard_comments',
                                         'type' => 'checkbox',
                                         'options' => array(
-                                            'label' => 'i18n::Comments:activate_standard_comments',
-                                            'description' => 'i18n::Comments:activate_standard_comments description',
+                                            'label' => 'Comments:activate_standard_comments',
+                                            'description' => 'Comments:activate_standard_comments description',
                                         ),
                                     ),
                                 ),
@@ -66,8 +66,8 @@ return array(
                                     'spec' => array(
                                         'name' => 'items_on_page',
                                         'options' => array(
-                                            'label' => 'i18n::Comments:items_on_page',
-                                            'description' => 'i18n::Comments:items_on_page description',
+                                            'label' => 'Comments:items_on_page',
+                                            'description' => 'Comments:items_on_page description',
                                         ),
                                     ),
                                 ),

@@ -44,8 +44,8 @@ class DynamicConfig implements ServiceManagerAwareInterface
             'type' => 'select',
             'name' => 'new_user_roles',
             'options' => array(
-                'label' => 'i18n::Dynamic config new user roles',
-                'description' => 'i18n::Dynamic config new user roles description',
+                'label' => 'Dynamic config new user roles',
+                'description' => 'Dynamic config new user roles description',
                 'value_options' => $roles,
             ),
             'attributes' => array(

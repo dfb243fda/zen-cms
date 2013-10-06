@@ -127,10 +127,14 @@ class HtmlJsCssMinifier implements ServiceManagerAwareInterface
                 throw new \Exception('this file is in output hosting ' . $file);
             }
             
-            $spec = array(
-                'filepath' => $filePath,
-            );
-            $minifySources[] = new \Minify_Source($spec);
+            if (file_exists($filePath)) {
+                $spec = array(
+                    'filepath' => $filePath,
+                );
+                $minifySources[] = new \Minify_Source($spec);
+            } else {
+                throw new \Exception('file ' . $filePath . ' not found');    
+            }            
         }
         
         return $minifySources;
