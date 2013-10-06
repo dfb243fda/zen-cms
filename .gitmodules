@@ -31,3 +31,6 @@
 [submodule "core/vendor/ZfcBase"]
 	path = core/vendor/ZfcBase
 	url = ../../ZF-Commons/ZfcBase.git
+[submodule "core/public/js/vendor/jQuery-easyui"]
+	path = core/public/js/vendor/jQuery-easyui
+	url = ../../houyongchao/jQuery-easyui
