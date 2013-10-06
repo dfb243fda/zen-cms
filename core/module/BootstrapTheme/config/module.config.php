@@ -10,6 +10,7 @@ return array(
         'be_main_page_method' => array('AdminPanel', 'AdminMainPage'),
         
         'type' => 'be_theme',
+        'themeImage' => '/img/BootstrapTheme/theme_image.png',
     ),
     
     'translator' => array(

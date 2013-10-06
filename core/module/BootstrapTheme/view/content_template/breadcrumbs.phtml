@@ -11,9 +11,8 @@ $data[] = $this->page;
 
 $cnt = count($data);
 
-?>
-<ul class="breadcrumb">
-    <?php
+if ($cnt > 1) :
+    echo '<ul class="breadcrumb">';
     $i = 0;
     foreach ($data as $k=>$v) :
         $i++;
@@ -23,5 +22,7 @@ $cnt = count($data);
         <?php else: ?>    
             <li><a href="<?php echo $v['link'] ?>"><?php echo $v['title'] ?></a> <span class="divider">/</span></li>
         <?php endif; ?>
-    <?php endforeach; ?>
-</ul>
+    <?php 
+    endforeach; 
+    echo '</ul';
+endif;
