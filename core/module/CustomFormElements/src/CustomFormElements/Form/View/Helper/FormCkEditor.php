@@ -45,9 +45,7 @@ class FormCkEditor extends FormTextarea
             if(zen.isDefined(ck_instance)) {
 				ck_instance.destroy();
 			}
-			CKEDITOR.replace(\''.$escapeHtml($attributes['id']).'\', {
-                customConfig: \'' . ROOT_URL_SEGMENT . '/js/core/wysiwyg/ckeditor_4.0.1/config.js\'
-            });
+			CKEDITOR.replace(\''.$escapeHtml($attributes['id']).'\');
         ');
         
         return sprintf(

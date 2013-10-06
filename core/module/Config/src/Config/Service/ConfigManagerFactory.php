@@ -1,4 +1,5 @@
 <?php
+
 namespace Config\Service;
 
 use Zend\ServiceManager\FactoryInterface;

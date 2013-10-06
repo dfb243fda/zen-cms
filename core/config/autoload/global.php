@@ -109,6 +109,11 @@ return array(
 //            ),
         ),
     ),    
+    'js_css_minifier' => array(
+        'ignoreJsFiles' => array(
+            '/.*js\/core\/wysiwyg\/ckeditor_4.0.1\/ckeditor.js/',
+        ),
+    ),
     'view_manager' => array(
         'display_not_found_reason' => true,
         'display_exceptions'       => true,

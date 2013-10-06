@@ -61,15 +61,8 @@ class HtmlMinifier implements
             if ($configManager->get('HtmlJsCssMinifier', 'minifyHtml')) {
                 $htmlJsCssOptimizerService = $this->serviceManager->get('HtmlJsCssMinifier\Service\HtmlJsCssMinifier');
                 $response = $e->getResponse();
-                $html = $response->getBody(); // Maybe better getContent() ?
-                
-                $options = array(
-                    'minifyCss' => true,
-                    'minifyJs' => true,
-                    'jsCleanComments' => true,
-                );
-
-                $html = $htmlJsCssOptimizerService->minifyHtml($html, $options);  
+                $html = $response->getBody(); // Maybe better getContent() ?                
+                $html = $htmlJsCssOptimizerService->minifyHtml($html);  
                 $response->setContent($html);
             }     
         }

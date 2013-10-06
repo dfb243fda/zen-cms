@@ -23,14 +23,15 @@ $this->inlineScript()->prependScript('zen.chameleonTheme.init({baseUrl: "' . $th
                    ->prependFile($this->basePath('/js/core/jquery_plugins/jquery-toastmessage-plugin/javascript/jquery.toastmessage.js'))
                    ->prependFile($this->basePath('/js/core/jquery_plugins/jquery.alerts-1.1/jquery.alerts.js'))
                    ->prependFile($this->basePath('/js/core/jquery_ui/jquery-ui-1.9.2/js/jquery-ui-1.9.2.custom.min.js'))
-                   ->prependFile($this->basePath('/js/core/jquery_easy_ui_1.3.1/locale/easyui-lang-ru.js'))
-                   ->prependFile($this->basePath('/js/core/jquery_easy_ui_1.3.1/jquery.easyui.min.js'))
+                   ->prependFile($this->basePath('/js/core/jquery-easyui-1.3.4/locale/easyui-lang-ru.js'))
+                   ->prependFile($this->basePath('/js/core/jquery-easyui-1.3.4/jquery.easyui.min.js'))
                    ->prependFile($this->basePath('/js/ChameleonTheme/chameleon_theme.js'))
                    ->prependFile($this->basePath('/js/core/zen_base.js'))
                    ->prependFile($this->basePath('/js/core/jquery_plugins/jquery.form.js'))
                    ->prependFile($this->basePath('/js/core/backbone-min.js'))
                    ->prependFile($this->basePath('/js/core/underscore-min.js'))
-                   ->prependFile($this->basePath('/js/core/jquery/jquery-1.8.3.min.js'));               
+                   ->prependScript('window.jQuery || document.write(\'<script src="' . $this->basePath('/js/core/jquery/jquery-1.10.2.min.js') . '"><\/script>\')')
+                   ->prependFile('//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js');               
                    
                    
 
@@ -40,7 +41,7 @@ $this->headLink()->prependStylesheet($this->basePath('/js/core/jquery_plugins/fa
                  ->prependStylesheet($this->basePath('/css/ChameleonTheme/main.css'))
                  ->prependStylesheet($this->basePath('/css/core/normalize.css'))
                  ->prependStylesheet($this->basePath('/js/core/jquery_ui/jquery-ui-1.9.2/css/smoothness/jquery-ui-1.9.2.custom.min.css'))
-                 ->prependStylesheet($this->basePath('/js/core/jquery_easy_ui_1.3.1/themes/metro/easyui.css'));
+                 ->prependStylesheet($this->basePath('/js/core/jquery-easyui-1.3.4/themes/metro/easyui.css'));
           
 
 ?>

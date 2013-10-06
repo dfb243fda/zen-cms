@@ -53,10 +53,9 @@ class PublicResourcesComposer implements
     public function preparePublicResources(EventInterface $e)
     {
         $htmlJsCssOptimizerService = $this->serviceManager->get('HtmlJsCssMinifier\Service\HtmlJsCssMinifier');
-        $configManager = $this->serviceManager->get('configManager');
         
-        $htmlJsCssOptimizerService->prepareHeadLink($configManager->get('HtmlJsCssMinifier', 'minifyCss'));
-        $htmlJsCssOptimizerService->prepareHeadScript($configManager->get('HtmlJsCssMinifier', 'minifyJs'));
-        $htmlJsCssOptimizerService->prepareInlineScript($configManager->get('HtmlJsCssMinifier', 'minifyJs'));
+        $htmlJsCssOptimizerService->prepareHeadLink();
+        $htmlJsCssOptimizerService->prepareHeadScript();
+        $htmlJsCssOptimizerService->prepareInlineScript();
     }    
 }

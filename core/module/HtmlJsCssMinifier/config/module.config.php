@@ -21,10 +21,9 @@ return array(
             
             'HtmlJsCssMinifier\Listener\PublicResourcesComposer' => 'HtmlJsCssMinifier\Listener\PublicResourcesComposer', 
             'HtmlJsCssMinifier\Listener\HtmlMinifier' => 'HtmlJsCssMinifier\Listener\HtmlMinifier', 
-            
-            
-            'HtmlJsCssMinifier\Service\HeaderSetter' => 'HtmlJsCssMinifier\Service\HeaderSetter',
-            'HtmlJsCssMinifier\Service\HtmlJsCssMinifier' => 'HtmlJsCssMinifier\Service\HtmlJsCssMinifier',
+        ),
+        'factories' => array(
+            'HtmlJsCssMinifier\Service\HtmlJsCssMinifier' => 'HtmlJsCssMinifier\Service\HtmlJsCssMinifierFactory',
         ),
     ),
     
