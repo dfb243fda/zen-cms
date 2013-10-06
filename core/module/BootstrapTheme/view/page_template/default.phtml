@@ -63,10 +63,10 @@ if (isset($this->errors)) {
 </div>
 <div class="container">	
     <?php echo $this->partial('content_template/BootstrapTheme/breadcrumbs.phtml'); ?>
-    <?php echo $this->partial('content_template/BootstrapTheme/content.phtml', $this->page); ?>    
-    <hr />
-    <footer class="footer">
-        <?php echo $this->partial('content_template/BootstrapTheme/page_info.phtml', $this->systemInfo); ?>
-        <br />
-    </footer>
+    <?php echo $this->partial('content_template/BootstrapTheme/content.phtml', $this->page); ?>       
 </div>
+<hr />
+<footer class="container footer">
+    <?php echo $this->partial('content_template/BootstrapTheme/page_info.phtml', $this->systemInfo); ?>
+    <br />
+</footer>

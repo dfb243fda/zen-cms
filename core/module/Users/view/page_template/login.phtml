@@ -27,7 +27,20 @@ $this->headLink()->appendStylesheet(ROOT_URL_SEGMENT . '/css/Users/users.css');
         <?php echo $this->form()->openTag($form) ?>
         <div class="b-login_form__wrapper">                
             <div class="b-login_form">  
-                <?php echo $this->formElementErrors($form->get('identity')) ?>
+                <?php
+                if (!empty($this->errMsg)) :
+                    if (!is_array($this->errMsg)) {
+                        $this->errMsg = array($this->errMsg);
+                    }
+                    echo '<ul>';
+                    foreach ($this->errMsg as $msg) :
+                        ?>
+                        <li><?php echo $msg ?></li>
+                        <?php
+                    endforeach;
+                    echo '</ul>';
+                endif;
+                ?>
                 <div class="b-login_form__login_div">                         
                     <div><?php echo $this->formLabel($form->get('identity')) ?></div>
                     <div><?php echo $this->formInput($form->get('identity')) ?></div>

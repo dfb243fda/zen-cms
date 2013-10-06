@@ -1,0 +1,69 @@
+<?php
+
+$this->headTitle()->setSeparator(' - ');
+$this->headTitle('Zen-CMS');
+$this->headTitle($this->translate('Users:Authorization'));
+
+$this->headLink(array('rel' => 'icon', 'href' => ROOT_URL_SEGMENT . '/img/Users/favicon.ico'));   
+
+$this->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=utf-8');
+
+$form = $this->form;   
+$form->prepare();
+
+$this->inlineScript()->prependFile($this->basePath('/tools/core/bootstrap/js/bootstrap.min.js'))
+                     ->prependScript('window.jQuery || document.write(\'<script src="' . $this->basePath('/js/core/jquery/jquery-1.10.2.min.js') . '"><\/script>\')')
+                     ->prependFile('//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js');
+$this->headLink()->prependStylesheet($this->basePath('/css/BootstrapTheme/login.css'))
+                 ->prependStylesheet($this->basePath('/tools/core/bootstrap/css/bootstrap.min.css'));
+
+?>
+<?php echo $this->form()->openTag($form) ?>
+<div class="login-form well form-horizontal">
+    <?php 
+    if (!empty($this->errMsg)) :
+        if (!is_array($this->errMsg)) {
+            $this->errMsg = array($this->errMsg);
+        }
+        foreach ($this->errMsg as $msg) :
+            ?>
+            <div class="alert alert-error">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <?php echo $msg ?>
+            </div>
+            <?php
+        endforeach;
+    endif;
+    ?>
+    <div class="control-group">
+        <label class="control-label" for="inputEmail"><?php echo $form->get('identity')->getLabel(); ?></label>
+        <div class="controls">
+            <?php echo $this->formInput($form->get('identity')) ?>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="inputPassword"><?php echo $form->get('credential')->getLabel(); ?></label>
+        <div class="controls">
+            <?php echo $this->formInput($form->get('credential')) ?>
+        </div>
+    </div>
+    <input type="hidden" name="remember_me" value="1" />
+    <div class="control-group">
+        <div class="controls"><input type="submit" class="btn" value="<?php echo $this->translate('Users:Login btn') ?>" /></div>
+    </div>
+    
+    <?php if ($this->allowRegistration) : ?>
+        <div class="text-right">
+            <a href="<?php echo $this->url('register', array(), $this->redirect ? array('query' => array('redirect' => $this->redirect)) : array()) ?>"><?php echo $this->translate('Users: Sign up') ?></a>
+        </div>
+    <?php endif; ?>
+    <?php if ($this->loginza) : ?>
+        <script src="http://loginza.ru/js/widget.js" type="text/javascript"></script>
+        <div class="text-right">
+            <a href="http://loginza.ru/api/widget?token_url=<?php echo $this->serverUrl() . $this->url('loginza', array(), $this->redirect ? array('query' => array('redirect' => $this->redirect)) : array()) ?>" class="loginza">
+                <img src="http://loginza.ru/img/sign_in_button_gray.gif" alt="Войти через loginza"/>
+            </a>                    
+        </div>
+    <?php endif; ?>    
+</div>
+<?php echo $this->form()->closeTag() ?>  

@@ -89,4 +89,6 @@ return array(
     'Dynamic config loginza domain description %s' => 'Оставьте это поле пустым, чтобы конфигурация действовала для любого домена. Пример домена "%s"',
     
     'Users:common fields group' => 'Основные параметры',
+    
+    'Users:Registration' => 'Регистрация',
 );

@@ -25,6 +25,20 @@ class LoginController extends AbstractActionController
         $config = $this->serviceLocator->get('config');
         $usersConfig = $config['Users'];        
         
+        $currentTheme = $configManager->get('system', 'default_be_theme');
+            
+        define('CURRENT_THEME', $currentTheme);
+        
+        if (isset($config[CURRENT_THEME]['exceptionTemplate'])) {
+            $viewManager->getExceptionStrategy()->setExceptionTemplate($config[CURRENT_THEME]['exceptionTemplate']);
+        }    
+        if (isset($config[CURRENT_THEME]['notFoundTemplate'])) {
+            $viewManager->getRouteNotFoundStrategy()->setNotFoundTemplate($config[CURRENT_THEME]['notFoundTemplate']);
+        }
+        if (is_dir(APPLICATION_PATH . '/view/theme_override/' . CURRENT_THEME)) {            
+            $this->serviceLocator->get('ViewTemplatePathStack')->addPath(APPLICATION_PATH . '/view/theme_override/' . CURRENT_THEME);
+        }      
+        
         $resultArray = array();
         
         if ($usersConfig['useRedirectParameterIfPresent'] && $this->params()->fromPost('redirect', $this->params()->fromQuery('redirect'))) {
@@ -52,9 +66,8 @@ class LoginController extends AbstractActionController
         } else {            
             $fm = $this->flashMessenger()->setNamespace('users-login-form')->getMessages();
             if (isset($fm[0])) {
-                $form->get('identity')->setMessages(array($fm[0]));
-            }      
-            
+                $resultArray['errMsg'] = $fm[0];
+            }                  
             $resultArray['form'] = $form;
             $resultArray['redirect'] = $redirect;
             $resultArray['allowRegistration'] = (bool)$configManager->get('users', 'allow_registration');
